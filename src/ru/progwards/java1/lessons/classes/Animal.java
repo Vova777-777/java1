@@ -42,6 +42,6 @@ return 0.02;
     }
 
     public String toStringFull(){// 2.7
-        return "I am " + getKind() + " eat " + getFoodKind() + " " + calculateFoodWeight();
+        return "I am " + getKind() +  "," + " eat " + getFoodKind() + " " + calculateFoodWeight();
     }
 }
