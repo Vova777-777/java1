@@ -4,10 +4,10 @@ import java.util.Arrays;
 
 
 public class DIntArray {
-    private static int[] array;
+    private int[] array;
 
     DIntArray() {
-        array = new int[10];
+        array = new int[0];
     }
 
 
@@ -16,7 +16,7 @@ public class DIntArray {
         arrayResult[arrayResult.length - 1] = num;
         System.arraycopy(array, 0, arrayResult, 0, array.length);
 
-        System.out.println(Arrays.toString(arrayResult));
+       array = arrayResult;
     }
 
 
@@ -25,16 +25,14 @@ public class DIntArray {
         arrayResult[pos] = num;
         System.arraycopy(array, 0, arrayResult, 0, pos);
         System.arraycopy(array, pos, arrayResult, pos + 1, arrayResult.length - 1 - pos);
-
-        System.out.println(Arrays.toString(arrayResult));
+        array = arrayResult;
     }
 
     public void atDelete(int pos) {
         int[] arrayResult = new int[array.length - 1];
         System.arraycopy(array, 0, arrayResult, 0, pos);
         System.arraycopy(array, pos + 1, arrayResult, pos, arrayResult.length - pos);
-
-        System.out.println(Arrays.toString(arrayResult));
+        array = arrayResult;
     }
 
     public int at(int pos) {
@@ -43,11 +41,21 @@ public class DIntArray {
 
     public static void main(String[] args) {
         DIntArray dint = new DIntArray();
-        array = new int[]{1,1,1,1,1,1,1,1};
-        dint.add(5);
-        dint.atDelete(array.length - 2);
-        dint.atInsert(array.length - 4, 7);
-        System.out.println(dint.at(array.length - 1));
+        dint.add(51);
+        dint.add(52);
+        dint.add(53);
+        dint.add(54);
+        dint.add(55);
+        dint.add(56);
+        dint.add(57);
+        dint.add(58);
+        dint.add(59);
+        System.out.println(Arrays.toString(dint.array));
+        dint.atInsert(2, 7);
+        System.out.println(Arrays.toString(dint.array));
+        dint.atDelete(2);
+        System.out.println(Arrays.toString(dint.array));
+        System.out.println(dint.at(2));
     }
 }
 
