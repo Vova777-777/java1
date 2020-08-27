@@ -1,6 +1,5 @@
 package ru.progwards.java1.lessons.arrays;
 
-import java.sql.Array;
 import java.util.Arrays;
 
 
