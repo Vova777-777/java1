@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 
 public class DIntArray {
-    private static int[] array;
+    private static int[] array = null;
 
     DIntArray() {
     }
