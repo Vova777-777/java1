@@ -16,7 +16,8 @@ public class Eratosthenes {
 
     private void sift() {
         for (int i = 2; i < sieve.length; i++) {
-            if (sieve[i]=false) continue;
+
+            if (!sieve[i]) continue;
 
             for (int j = i; j < sieve.length; j++) {
                 int k = j * i;
@@ -69,9 +70,9 @@ private void sift(){
     }
 
     public static void main(String[] args) {
-        Eratosthenes era = new Eratosthenes(20000000);
+        Eratosthenes era = new Eratosthenes(10);
         Date date1 = new Date();
-        System.out.println(era.isSimple(19999999));
+        System.out.println(era.isSimple(2));
         Date date2 = new Date();
         System.out.println(date2.getTime()-date1.getTime());
     }
