@@ -14,7 +14,19 @@ public class Eratosthenes {
         sift();
     }
 
-    private void sift(){
+    private void sift() {
+        for (int i = 2; i < sieve.length; i++) {
+            if (sieve[i]=false) continue;
+
+            for (int j = i; j < sieve.length; j++) {
+                int k = j * i;
+                if (k >= sieve.length) return;//Вместо return был break выскакивало исключение. Почему?
+                else sieve[k] = false;
+            }
+        }
+    }// 19мс при равных условиях N = 20000000; и n = 19999999; АБСОЛЮТНЫЙ ПОБЕДИТЕЛЬ.
+
+    /*private void sift(){
         for (int i = 2; i < sieve.length; i++) {
             for (int j = 2; j < sieve.length;j++) {
                 //i- это шаг, j- составное число
@@ -25,6 +37,8 @@ public class Eratosthenes {
             }
         }
     }
+
+     */
 /* //метод с шагом чере сложение
 private void sift(){
             for (int i = 2; i < sieve.length; i++) {
