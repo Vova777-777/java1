@@ -9,13 +9,13 @@ this.num = num;
 
     @Override
     public String toString(){
-        StringBuilder str = new StringBuilder(" ");
+        String str = "";
         for (int i = 7; i >= 0; i --) {
             int numberFor = num >>> i;
             int bit = numberFor & 1;
-            str.append(bit);
+            str = str + bit;
         }
-        return num + ":" + str;
+        return str;
     }
 
     public static void main(String[] args) {
