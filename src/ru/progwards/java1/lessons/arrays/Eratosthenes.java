@@ -1,5 +1,6 @@
 package ru.progwards.java1.lessons.arrays;
 
+import java.util.Arrays;
 import java.util.Date;
 
 public class Eratosthenes {
@@ -16,16 +17,14 @@ public class Eratosthenes {
 
     private void sift() {
         for (int i = 2; i < sieve.length; i++) {
-
             if (!sieve[i]) continue;
-
             for (int j = i; j < sieve.length; j++) {
-                int k = j * i;
-                if (k >= sieve.length) return;//Вместо return был break выскакивало исключение. Почему?
-                else sieve[k] = false;
+               double k = (double) j * i;//пришлось к double тк при N = 20000000; и n = 19999999; вылетало исключение
+                if (k >= sieve.length) break;
+                else sieve[(int) k] = false;
             }
         }
-    }// 19мс при равных условиях N = 20000000; и n = 19999999; АБСОЛЮТНЫЙ ПОБЕДИТЕЛЬ.
+    }// 0мс при равных условиях N = 20000000; и n = 19999999; АБСОЛЮТНЫЙ ПОБЕДИТЕЛЬ.
 
     /*private void sift(){
         for (int i = 2; i < sieve.length; i++) {
@@ -64,16 +63,17 @@ private void sift(){
     } //ДАЖЕ НЕ ДОЖДАЛСЯ, правильный, но НАМНОГО МЕДЛЕННЕЕ.
     */
     public  boolean isSimple(int n){
-        Eratosthenes number = new Eratosthenes(n+1);
+
 
         return sieve[n];
     }
 
     public static void main(String[] args) {
-        Eratosthenes era = new Eratosthenes(10);
+        Eratosthenes era = new Eratosthenes(20000000);
         Date date1 = new Date();
-        System.out.println(era.isSimple(2));
+        System.out.println(era.isSimple(19999999));
         Date date2 = new Date();
         System.out.println(date2.getTime()-date1.getTime());
+
     }
 }
