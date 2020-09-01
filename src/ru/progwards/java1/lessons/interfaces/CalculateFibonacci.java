@@ -4,9 +4,10 @@ import java.util.ArrayList;
 
 public class CalculateFibonacci {
 
-    private static CacheInfo lastFibo;
+    private static CacheInfo lastFibo = new CacheInfo();
 
     public static class CacheInfo{
+
         public int n = 0;
         public int fibo = 0;
     }
@@ -16,11 +17,12 @@ public class CalculateFibonacci {
         System.out.println(getLastFibo().n);
         System.out.println(getLastFibo().fibo);
         clearLastFibo();
-        System.out.println(lastFibo);
+
+         System.out.println(lastFibo.fibo);
     }
 
     public static int fiboNumber(int n) {
-        lastFibo = new CacheInfo();
+
         if (n == lastFibo.n) return lastFibo.fibo;
         else {
             ArrayList<Integer> listFibo = new ArrayList<>();
@@ -43,6 +45,7 @@ public class CalculateFibonacci {
 
     public static void clearLastFibo(){
         lastFibo = null;
+        lastFibo = new CacheInfo();
 
     }
 
