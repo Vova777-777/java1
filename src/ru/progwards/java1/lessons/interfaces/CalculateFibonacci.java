@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class CalculateFibonacci {
 
     private static CacheInfo lastFibo = new CacheInfo();
-
+    private static CacheInfo fiboObj = new CacheInfo();
     public static class CacheInfo{
 
         public int n = 0;
@@ -17,8 +17,8 @@ public class CalculateFibonacci {
         System.out.println(getLastFibo().n);
         System.out.println(getLastFibo().fibo);
         clearLastFibo();
-
-         System.out.println(lastFibo.fibo);
+        System.out.println(getLastFibo());
+         System.out.println(getLastFibo().fibo);
     }
 
     public static int fiboNumber(int n) {
@@ -31,22 +31,22 @@ public class CalculateFibonacci {
             for (int i = 2; i <= n; i++) {
                 listFibo.add(listFibo.get(i - 2) + listFibo.get(i - 1));
             }
-            lastFibo.n = n;
-            lastFibo.fibo = listFibo.get(n - 1);
-            return lastFibo.fibo;
+            fiboObj.n = n;
+            fiboObj.fibo = listFibo.get(n - 1);
+            return fiboObj.fibo;
         }
     }
 
     public static CacheInfo getLastFibo(){
+        lastFibo = new CacheInfo();
+        lastFibo = fiboObj;
 
-     lastFibo.fibo = fiboNumber(lastFibo.n);
+
      return lastFibo;
     }
 
     public static void clearLastFibo(){
         lastFibo = null;
-        lastFibo = new CacheInfo();
-
     }
 
 }
