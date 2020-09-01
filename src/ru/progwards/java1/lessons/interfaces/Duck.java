@@ -1,8 +1,6 @@
 package ru.progwards.java1.lessons.interfaces;
 
-import ru.progwards.java1.lessons.classes.Animal;
-import ru.progwards.java1.lessons.classes.AnimalKind;
-import ru.progwards.java1.lessons.classes.FoodKind;
+
 
 public class Duck extends Animal {
 
@@ -11,7 +9,7 @@ public class Duck extends Animal {
     }
 
     @Override
-    public ru.progwards.java1.lessons.classes.AnimalKind getKind() {// 1.8
+    public AnimalKind getKind() {// 1.8
         return AnimalKind.DUCK;
     }
 

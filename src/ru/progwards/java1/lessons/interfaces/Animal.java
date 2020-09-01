@@ -4,7 +4,7 @@ package ru.progwards.java1.lessons.interfaces;
 
 import java.util.Objects;
 
-import static ru.progwards.java1.lessons.classes.FoodKind.*;
+
 
 public class Animal implements FoodCompare {
 

@@ -1,8 +1,6 @@
 package ru.progwards.java1.lessons.interfaces;
 
-import ru.progwards.java1.lessons.classes.Animal;
-import ru.progwards.java1.lessons.classes.AnimalKind;
-import ru.progwards.java1.lessons.classes.FoodKind;
+
 
 public class Hamster extends Animal {
     public Hamster(double weight) {
@@ -10,12 +8,12 @@ public class Hamster extends Animal {
     }
 
     @Override
-    public ru.progwards.java1.lessons.classes.AnimalKind getKind() {// 1.6
+    public AnimalKind getKind() {// 1.6
         return AnimalKind.HAMSTER;
     }
 
     @Override
-    public ru.progwards.java1.lessons.classes.FoodKind getFoodKind() {// 1.7
+    public FoodKind getFoodKind() {// 1.7
         return FoodKind.CORN;
     }
 
