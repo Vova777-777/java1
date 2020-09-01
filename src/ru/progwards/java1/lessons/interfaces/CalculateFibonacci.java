@@ -16,7 +16,7 @@ public class CalculateFibonacci {
         System.out.println(getLastFibo().n);
         System.out.println(getLastFibo().fibo);
         clearLastFibo();
-        System.out.println(getLastFibo().fibo);
+        System.out.println(lastFibo);
     }
 
     public static int fiboNumber(int n) {
@@ -29,19 +29,20 @@ public class CalculateFibonacci {
             for (int i = 2; i <= n; i++) {
                 listFibo.add(listFibo.get(i - 2) + listFibo.get(i - 1));
             }
+            lastFibo.n = n;
             lastFibo.fibo = listFibo.get(n - 1);
             return lastFibo.fibo;
         }
     }
 
     public static CacheInfo getLastFibo(){
+
      lastFibo.fibo = fiboNumber(lastFibo.n);
      return lastFibo;
     }
 
     public static void clearLastFibo(){
-        lastFibo.fibo = 0;
-        lastFibo.n = 0;
+        lastFibo = null;
 
     }
 
