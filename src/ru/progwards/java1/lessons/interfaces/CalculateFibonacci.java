@@ -12,7 +12,7 @@ public class CalculateFibonacci {
     }
 
     public static void main(String[] args) {
-        System.out.println(fiboNumber(15));
+        System.out.println(fiboNumber(1));
         System.out.println(getLastFibo().n);
         System.out.println(getLastFibo().fibo);
         clearLastFibo();
@@ -42,7 +42,8 @@ public class CalculateFibonacci {
     }
 
     public static void clearLastFibo(){
-        lastFibo = null;
+        lastFibo.n = 0;
+        lastFibo.fibo = 0;
 
     }
 
