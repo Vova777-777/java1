@@ -1,9 +1,6 @@
 package ru.progwards.java1.lessons.interfaces;
 
-
-
 import java.util.Objects;
-
 
 
 public class Animal implements FoodCompare {
@@ -24,6 +21,7 @@ public class Animal implements FoodCompare {
         System.out.println(new Animal(20).getFood1kgPrice());
         System.out.println("цена еды коровы " + new Cow(1D).getFood1kgPrice());
         System.out.println("цена еды утки " + new Duck(1D).getFood1kgPrice());
+        System.out.println(" " + new Animal(1D).compareFoodPrice(new Cow(1D)));
     }
 
     public Animal(double weight){// 1.0 Реализовать конструктор
@@ -90,6 +88,6 @@ return 0.02;
 
     @Override
     public int compareFoodPrice(Animal animal) {
-        return Double.compare(this.getFoodPrice(),getFoodPrice());
+        return Double.compare(this.getFoodPrice(),animal.getFoodPrice());
     }
 }
