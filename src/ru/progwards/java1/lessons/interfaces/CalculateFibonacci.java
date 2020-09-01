@@ -18,12 +18,12 @@ public class CalculateFibonacci {
         System.out.println(getLastFibo().fibo);
         clearLastFibo();
         System.out.println(getLastFibo());
-         System.out.println(getLastFibo().fibo);
+         System.out.println(fiboNumber(15));
     }
 
     public static int fiboNumber(int n) {
-
-        if (n == lastFibo.n) return lastFibo.fibo;
+        if (lastFibo == null) lastFibo = new CacheInfo();
+         if (n == lastFibo.n) return lastFibo.fibo;
         else {
             ArrayList<Integer> listFibo = new ArrayList<>();
             listFibo.add(1);
@@ -35,10 +35,10 @@ public class CalculateFibonacci {
             lastFibo.fibo = listFibo.get(n - 1);
             return lastFibo.fibo;
         }
+
     }
 
     public static CacheInfo getLastFibo(){
-
         return lastFibo;
     }
 
