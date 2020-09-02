@@ -1,5 +1,7 @@
 package ru.progwards.java1.lessons.classes;
 
+import java.util.Objects;
+
 public class Animal {
 
     private double weight;
@@ -10,6 +12,7 @@ public class Animal {
         System.out.println(new Hamster(2.5).toStringFull());
         System.out.println(new Duck(3).toStringFull());
         System.out.println(new Duck(2.7).toString());
+
     }
 
     public Animal(double weight){// 1.0 Реализовать конструктор
@@ -44,4 +47,5 @@ return 0.02;
     public String toStringFull(){// 2.7
         return "I am " + getKind() +  "," + " eat " + getFoodKind() + " " + calculateFoodWeight();
     }
+
 }

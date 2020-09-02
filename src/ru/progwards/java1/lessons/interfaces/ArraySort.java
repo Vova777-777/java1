@@ -14,15 +14,8 @@ public class ArraySort implements CompareWeight {
 
         System.out.println(Arrays.toString(b));
 
-        CompareWeight.sort(b);
-        System.out.println(Arrays.toString(b));
 
-        Random random1 = new Random();
-        for (int i = 0; i < b.length; i++) {
-            b[i] = random1.nextInt((200 - 1) + 1);
-        }
 
-        System.out.println(Arrays.toString(b));
 
         sort(b);
         System.out.println(Arrays.toString(b));
@@ -42,6 +35,5 @@ public class ArraySort implements CompareWeight {
     public CompareResult compareWeight(CompareWeight smthHasWeigt) {
         return null;
     }
-
 
 }

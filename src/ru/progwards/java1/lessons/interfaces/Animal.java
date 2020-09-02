@@ -1,5 +1,6 @@
 package ru.progwards.java1.lessons.interfaces;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import static ru.progwards.java1.lessons.interfaces.CompareWeight.CompareResult.*;
@@ -29,6 +30,21 @@ public class Animal implements FoodCompare, CompareWeight {
         System.out.println("цена еды утки " + new Duck(1D).getFood1kgPrice());
         System.out.println(" " + new Animal(1D).compareFoodPrice(new Cow(1D)));
         System.out.println(new Animal(40).compareWeight(new Animal(20)));
+        Animal[] animals = new Animal[5];
+        Animal animal1 = new Animal(100);
+        animals[1] = animal1;
+        Animal animal2 = new Animal(90);
+        animals[2] = animal2;
+        Animal animal3 = new Animal(105);
+        animals[3] = animal3;
+        Animal animal4 = new Animal(380);
+        animals[4] = animal4;
+        Animal animal5 = new Animal(190);
+        animals[0] = animal5;
+        CompareWeight.sort(animals);
+        for (int i = 0; i < 5; i++){
+            System.out.print(animals[i] + ", ");
+        }
     }
 
 
@@ -111,8 +127,4 @@ return 0.02;
             result = GREATER;
         return result;
     }
-
-
-
-
 }

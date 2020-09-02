@@ -17,7 +17,10 @@ public class Eratosthenes {
 
     private void sift() {
         for (int i = 2; i < sieve.length; i++) {
-            if (!sieve[i]) continue;
+            if (!sieve[i]) {
+                continue;
+            }
+           
             for (int j = i; j < sieve.length; j++) {
                double k = (double) j * i;//пришлось к double тк при N = 20000000; и n = 19999999; вылетало исключение
                 if (k >= sieve.length) break;
