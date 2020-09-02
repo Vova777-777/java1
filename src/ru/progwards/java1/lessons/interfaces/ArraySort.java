@@ -1,7 +1,5 @@
 package ru.progwards.java1.lessons.interfaces;
 
-import java.util.Arrays;
-import java.util.Random;
 
 public class ArraySort implements CompareWeight {
 
@@ -17,13 +15,23 @@ public class ArraySort implements CompareWeight {
         animals[4] = animal4;
         Animal animal5 = new Animal(190);
         animals[0] = animal5;
-        CompareWeight.sort(animals);
+        sort(animals);
         for (int i = 0; i < 5; i++) {
             System.out.print(animals[i] + ", ");
         }
     }
 
+    public static void sort(CompareWeight[] a){
+        Animal[] b;
+        b = (Animal[]) a;
 
+        for ( int i = 0; i < b.length - 1; i++){
+            for (int j = i + 1; j < b.length; j++){
+                Animal k;
+                if (b[i].getWeight() > b[j].getWeight()) {k = b[i]; b[i] = b[j]; b[j] = k;}
+            }
+        }
+    }
 
 
     @Override
