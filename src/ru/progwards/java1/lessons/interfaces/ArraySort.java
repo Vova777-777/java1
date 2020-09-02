@@ -6,34 +6,28 @@ import java.util.Random;
 public class ArraySort implements CompareWeight {
 
     public static void main(String[] args) {
-        int[] b = new int[50];
-        Random random = new Random();
-        for (int i = 0; i < b.length; i++) {
-            b[i] = random.nextInt((200 - 1) + 1);
-        }
-
-        System.out.println(Arrays.toString(b));
-
-
-
-
-        sort(b);
-        System.out.println(Arrays.toString(b));
-
-    }
-
-    public static void sort(int[] a){
-        for ( int i = 0; i < a.length - 1; i++){
-            for (int j = i + 1; j < a.length; j++){
-                int k;
-                if (a[i] > a[j]) {k = a[i]; a[i] = a[j]; a[j] = k;}
-            }
+        Animal[] animals = new Animal[5];
+        Animal animal1 = new Animal(100);
+        animals[1] = animal1;
+        Animal animal2 = new Animal(90);
+        animals[2] = animal2;
+        Animal animal3 = new Animal(105);
+        animals[3] = animal3;
+        Animal animal4 = new Animal(380);
+        animals[4] = animal4;
+        Animal animal5 = new Animal(190);
+        animals[0] = animal5;
+        CompareWeight.sort(animals);
+        for (int i = 0; i < 5; i++) {
+            System.out.print(animals[i] + ", ");
         }
     }
+
+
+
 
     @Override
     public CompareResult compareWeight(CompareWeight smthHasWeigt) {
         return null;
     }
-
 }
