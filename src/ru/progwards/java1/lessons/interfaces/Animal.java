@@ -2,10 +2,16 @@ package ru.progwards.java1.lessons.interfaces;
 
 import java.util.Objects;
 
+import static ru.progwards.java1.lessons.interfaces.CompareWeight.CompareResult.*;
 
-public class Animal implements FoodCompare {
+
+public class Animal implements FoodCompare, CompareWeight {
 
     private double weight;
+
+    public Animal(double weight){// 1.0 Реализовать конструктор
+        this.weight = weight;
+    }
 
     public static void main(String[] args) {
         System.out.println(new Animal(500).toStringFull());
@@ -22,11 +28,10 @@ public class Animal implements FoodCompare {
         System.out.println("цена еды коровы " + new Cow(1D).getFood1kgPrice());
         System.out.println("цена еды утки " + new Duck(1D).getFood1kgPrice());
         System.out.println(" " + new Animal(1D).compareFoodPrice(new Cow(1D)));
+        System.out.println(new Animal(40).compareWeight(new Animal(20)));
     }
 
-    public Animal(double weight){// 1.0 Реализовать конструктор
-this.weight = weight;
-    }
+
 
     public AnimalKind getKind(){// 1.1 Метод
 return AnimalKind.ANIMAL;
@@ -90,4 +95,24 @@ return 0.02;
     public int compareFoodPrice(Animal animal) {
         return Double.compare(this.getFoodPrice(),animal.getFoodPrice());
     }
+
+
+    @Override
+    public CompareResult compareWeight(CompareWeight smthHasWeigt) {
+        Animal animal;
+        animal = (Animal) smthHasWeigt;
+        CompareResult result;
+        boolean less1 = this.weight < animal.weight ;
+        boolean equal1 = this.weight == animal.weight;
+        if (less1) result = LESS;
+        else
+            if (equal1) result = EQUAL;
+        else
+            result = GREATER;
+        return result;
+    }
+
+
+
+
 }

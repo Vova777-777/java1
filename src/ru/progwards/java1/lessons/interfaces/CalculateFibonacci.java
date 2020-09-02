@@ -7,7 +7,6 @@ public class CalculateFibonacci {
     private static CacheInfo lastFibo = new CacheInfo();
 
     public static class CacheInfo{
-
         public int n = 0;
         public int fibo = 0;
     }
@@ -18,12 +17,14 @@ public class CalculateFibonacci {
         System.out.println(getLastFibo().fibo);
         clearLastFibo();
         System.out.println(getLastFibo());
-         System.out.println(fiboNumber(15));
+        System.out.println(fiboNumber(15));
     }
 
     public static int fiboNumber(int n) {
-        if (lastFibo == null) lastFibo = new CacheInfo();
-         if (n == lastFibo.n) return lastFibo.fibo;
+//не знал как бороться с исключением из-за lastFibo == null
+//поэтому создал через условие новый объект. Нет уверенности в правильности.
+        if (lastFibo == null) lastFibo = new CacheInfo();//!!! Эта строчка. Если неправильно, нуждаюсь в явной подсказке
+        if (n == lastFibo.n) return lastFibo.fibo;
         else {
             ArrayList<Integer> listFibo = new ArrayList<>();
             listFibo.add(1);
