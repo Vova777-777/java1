@@ -20,10 +20,10 @@ try {
         int numberForGetLastBit = value >> bitNumber;
         int bit = numberForGetLastBit & 1;
 
-return bit;
+        return bit;
     }
 
     public static void main(String[] args) {
-        System.out.println(checkBit((byte) 127,7));
+        System.out.println(checkBit((byte) 3,3));
     }
 }

@@ -19,7 +19,7 @@ this.num = num;
     }
 
     public static void main(String[] args) {
-        Binary binary = new Binary((byte)-5);
+        Binary binary = new Binary((byte)3);
         System.out.println(binary.toString());
     }
 }

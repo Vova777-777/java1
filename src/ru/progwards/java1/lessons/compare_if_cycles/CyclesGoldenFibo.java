@@ -42,6 +42,7 @@ for ( int i = 1; i <= 100; i++){// определяем сторона до 100 
         }
         return listFibo.get(n - 1);
     }
+
     public static boolean isGoldenTriangle(int a, int b, int c){
         double a1 = a;
         double b1 = b;

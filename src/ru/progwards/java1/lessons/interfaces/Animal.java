@@ -41,7 +41,7 @@ public class Animal implements FoodCompare, CompareWeight {
         animals[4] = animal4;
         Animal animal5 = new Animal(190);
         animals[0] = animal5;
-        CompareWeight.sort(animals);
+
         for (int i = 0; i < 5; i++){
             System.out.print(animals[i] + ", ");
         }
