@@ -43,8 +43,4 @@ public abstract class AbsInteger{
         System.out.println((add(new ShortInteger((short) 127),new ByteInteger((byte)10))).getClass());
 
     }
-
-
-
-
 }
