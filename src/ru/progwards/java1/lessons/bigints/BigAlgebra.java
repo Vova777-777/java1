@@ -24,7 +24,7 @@ public class BigAlgebra {
     }
 //        в этом методе использовал схему "слева направо"
 //        воспользовался операцией со строкой, тк посчитал наиболее простым решением
-    BigDecimal fastPow(BigDecimal num, int pow){
+    static BigDecimal fastPow(BigDecimal num, int pow){
 
         BigDecimal result = new BigDecimal("1");
         BigDecimal numPowBit;
@@ -41,7 +41,7 @@ public class BigAlgebra {
         return result;
     }
 
-    BigInteger fibonacci(int n){
+   static BigInteger fibonacci(int n){
         ArrayList<BigInteger> listFibo = new ArrayList<>();
         listFibo.add(new BigInteger("1"));
         listFibo.add(new BigInteger("1"));
