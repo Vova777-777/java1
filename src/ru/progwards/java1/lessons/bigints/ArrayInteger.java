@@ -31,7 +31,10 @@ public class ArrayInteger {
           return new BigInteger(strNumberBigInt);
        }
 
-
+    boolean add(ArrayInteger num){
+        boolean b = true;
+        return b;
+    }
 
     public static void main(String[] args) {
 
