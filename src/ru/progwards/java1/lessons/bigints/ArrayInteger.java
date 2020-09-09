@@ -33,25 +33,32 @@ public class ArrayInteger {
        }
 
     boolean add(ArrayInteger num) {
+
         boolean forReturn = false;
-        byte[] array = this.digits;
-        byte[] numArray = num.digits;
-        int leastLength = 0;
+        byte[] array = this.digits;     //для более короткой записи в теле метода
+        byte[] numArray = num.digits;   //для более короткой записи в теле метода
+        int leastLength = 0;//
+
+
         if (array.length <= numArray.length) leastLength = array.length;
+
         else leastLength = numArray.length;
-        if (numArray.length > array.length) return false;
-        byte vspom = 0;
+
+        if (numArray.length > array.length) return false;// вызывет переполнение
+
+        byte additionalVariable = 0;  //переменная для работы с остатком при суммировании столбиком через цикл
         for (int i = 0; i < leastLength; i++) {
             array[array.length - 1 - i] = (byte) (array[array.length - 1 - i] + numArray[numArray.length - 1 - i]);
             if (array[array.length - 1 - i] >= 10 && (array.length - 1 - i) != 0) {
-                vspom = (byte) (array[array.length - 1 - i] - 10);
-                array[array.length - 1 - i] = vspom;
+                additionalVariable = (byte) (array[array.length - 1 - i] - 10);
+                array[array.length - 1 - i] = additionalVariable;
                 array[array.length - 2 - i] = (byte) (array[array.length - 2 - i] + 1);
             } else if (array[array.length - 1 - i] >= 10 && (array.length - 1 - i) == 0) {
                 array[array.length - 1 - i] = 0;
                 forReturn = false;
             } else forReturn = true;
         }
+
         return forReturn;
     }
 
@@ -66,6 +73,6 @@ public class ArrayInteger {
         ArrayInteger ai2 = new ArrayInteger(5);
         ai2.fromInt(new BigInteger("11893"));
         ai1.add(ai2);
-        System.out.println(ai1.toInt());
+        System.out.println(ai1.toInt());//18346690
     }
 }
