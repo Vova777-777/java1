@@ -23,11 +23,11 @@ public class ArrayInteger {
         }
    }
        BigInteger toInt(){
-          int lengthOfArray = arrayInteger.digits.length;
+          int lengthOfArray = this.digits.length;
           String strNumberBigInt = "";
 
           for (int i = 0; i < lengthOfArray; i++){
-              strNumberBigInt = strNumberBigInt + arrayInteger.digits[i];
+              strNumberBigInt = strNumberBigInt + this.digits[i];
           }
           return new BigInteger(strNumberBigInt);
        }
@@ -45,8 +45,8 @@ public class ArrayInteger {
             array[array.length - 1 - i] = (byte) (array[array.length - 1 - i] + numArray[numArray.length - 1 - i]);
             if (array[array.length - 1 - i] >= 10 && (array.length - 1 - i) != 0) {
                 vspom = (byte) (array[array.length - 1 - i] - 10);
-                array[array.length - 1 - i] = 0;
-                array[array.length - 2 - i] = (byte) (array[array.length - 2 - i] + vspom);
+                array[array.length - 1 - i] = vspom;
+                array[array.length - 2 - i] = (byte) (array[array.length - 2 - i] + 1);
             } else if (array[array.length - 1 - i] >= 10 && (array.length - 1 - i) == 0) {
                 array[array.length - 1 - i] = 0;
                 forReturn = false;
@@ -59,17 +59,13 @@ public class ArrayInteger {
 
     public static void main(String[] args) {
 
-ArrayInteger a = new ArrayInteger(0);
-ArrayInteger b = new ArrayInteger(1);
-        a.fromInt(new BigInteger("723"));
-        b.fromInt(new BigInteger("234"));
-
-        System.out.println(Arrays.toString(a.digits));
-        System.out.println(Arrays.toString(b.digits));
-        System.out.println(a.toInt().toString());
-        System.out.println(a.add(b));
 
 
-
+        ArrayInteger ai1 = new ArrayInteger(8);
+        ai1.fromInt(new BigInteger("18334797"));
+        ArrayInteger ai2 = new ArrayInteger(5);
+        ai2.fromInt(new BigInteger("11893"));
+        ai1.add(ai2);
+        System.out.println(ai1.toInt());
     }
 }
