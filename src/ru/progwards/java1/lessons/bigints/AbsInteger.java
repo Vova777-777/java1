@@ -6,9 +6,6 @@ public abstract class AbsInteger{
 
  static AbsInteger a;
 
-
-
-
     @Override
     public String toString() {
         String str = "" + a;

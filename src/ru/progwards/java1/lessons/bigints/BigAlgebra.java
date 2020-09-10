@@ -6,22 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class BigAlgebra {
-//    в этом методе просто вместо умноженя числа самого на себя n раз
-//    использовал квадрат числа умноженого на себя
-//    не знаю насколько продуктивно и является ли это оптимизацией по заданию. Метод помечен другим названием
-
-    BigDecimal fastPow1(BigDecimal num, int pow){
-        BigDecimal num2 = new BigDecimal(String.valueOf(num.multiply(num)));
-        BigDecimal numVspom = new BigDecimal(String.valueOf(num));
-        int j = 1;
-        for(int i =1; i < pow - j; i++) {
-            num = num.multiply(num2);
-            j++;
-        }
-        if (pow%2 != 0) return num;
-        else num = num.multiply(numVspom);
-        return num;
-    }
+// ваш метод более наглядный, оставил свой, тк дошел до него сам в рамках обучения
 //        в этом методе использовал схему "слева направо"
 //        воспользовался операцией со строкой, тк посчитал наиболее простым решением
     static BigDecimal fastPow(BigDecimal num, int pow){
@@ -54,11 +39,14 @@ public class BigAlgebra {
 
 
     public static void main(String[] args) {
+
+        System.out.println(fastPow(new BigDecimal("3"), 9));
+
         BigAlgebra algebra = new BigAlgebra();
         BigDecimal proba = new BigDecimal("33");
 
         Date date1 = new Date();
-        System.out.println(algebra.fastPow1(proba,45));
+
         Date date11 = new Date();
         System.out.println(date11.getTime() - date1.getTime());
 

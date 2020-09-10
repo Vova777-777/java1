@@ -13,6 +13,4 @@ public class IntInteger extends AbsInteger{
         return str;
     }
 
-
-
 }
