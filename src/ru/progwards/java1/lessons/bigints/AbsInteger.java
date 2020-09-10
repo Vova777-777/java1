@@ -15,7 +15,14 @@ public abstract class AbsInteger{
         return str;
     }
 
-    public abstract AbsInteger getSum(AbsInteger num1, AbsInteger num2);
+    public AbsInteger getSum(AbsInteger num1, AbsInteger num2) {
+        int c = Integer.valueOf(num1.toString());
+        int d = Integer.valueOf(num2.toString());
+        int e = c+d;
+
+        AbsInteger result = new IntInteger(e);
+        return result;
+    }
 
    public AbsInteger getNeedType(AbsInteger b){
        AbsInteger a1 = new ByteInteger((byte) 0);
@@ -35,6 +42,7 @@ public abstract class AbsInteger{
 
 
     public static void main(String[] args) {
+        System.out.println(add(new ByteInteger((byte) 127),new ByteInteger((byte)15)));
         System.out.println(add(new ByteInteger((byte) 127),new ByteInteger((byte)15)));
         System.out.println(add(new ShortInteger((short) 127),new ByteInteger((byte)10)));
         System.out.println(add(new IntInteger( 2000000000),new ByteInteger((byte) 5)));

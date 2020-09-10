@@ -15,13 +15,5 @@ public class ShortInteger extends AbsInteger {
     }
 
 
-    @Override
-    public AbsInteger getSum (AbsInteger num1, AbsInteger num2) {
-        short c = Short.valueOf(num1.toString());
-        short d = Short.valueOf(num2.toString());
-        short e = (short) (c+d);
 
-        AbsInteger result = new ShortInteger(e);
-        return result;
-    }
 }
