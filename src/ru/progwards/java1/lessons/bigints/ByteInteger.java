@@ -15,8 +15,4 @@ public class ByteInteger extends AbsInteger {
         String str = "" + a;
         return str;
     }
-
-
-
-
 }
