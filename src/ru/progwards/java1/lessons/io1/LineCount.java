@@ -3,11 +3,12 @@ package ru.progwards.java1.lessons.io1;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class LineCount {
-    static File file = new File("B//", "New.txt");
-    public static int calcEmpty(String fileName) throws FileNotFoundException {
+
+    public static int calcEmpty(String fileName)  {
 
         try {
         FileReader fileReader = new FileReader(fileName);
@@ -18,15 +19,21 @@ public class LineCount {
             System.out.println(str);
             if (str.isEmpty()) count++;
         }
-        fileReader.close();
-        return count;
-        }catch (Exception e){
-            return -1;
-
+            try {
+                fileReader.close();
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                return -1;
+            }
+            return count;
+        }catch (FileNotFoundException e){
+           return -1;
         }
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
-
+    public static void main(String[] args) throws IOException {
+        System.out.println(calcEmpty("999"));
     }
 }
+
+
