@@ -12,17 +12,13 @@ public class Coder {
         try {
             fileReader = new FileReader(inFileName);
             Scanner scanner = new Scanner(fileReader);
-            while (scanner.hasNextLine()){
-              String str = scanner.nextLine();
-              String strForSymbols = "";
-              for (int i = 0; i < str.length(); i++){
-                  char symbol = str.charAt(i);// достаю символ из строки файла
-                  for (int j = 0; j < code.length; j++){//кодирую символ и помещаю его в строку
-                      if (symbol==code[j]) {strForSymbols = strForSymbols + j; break;}
-                  }
+            String strForSymbols = "";
+            while (scanner.hasNextInt()){
+                int symbol = scanner.nextInt();
+                strForSymbols = strForSymbols + code[symbol];
               }
               writer.writerFile(outFileName, strForSymbols, logName);
-            }try {
+            try {
                 fileReader.close();
             } catch (IOException e) {
             writerMistake.writerMistakeFile(logName, e);
@@ -33,14 +29,9 @@ public class Coder {
     }
 
 
-    public static void main(String[] args) throws IOException {
+
+    public static void main(String[] args){
         char[] array = new char[10];
-       array [0] = 'q';
-       array [1] = 'w';
-       array [2] = 'e';
-       array [3] = 'r';
-       array [4] = 't';
-codeFile("B://New.t", "B://New1.txt", array, "B://Mistakes.txt" );
 
 
     }
