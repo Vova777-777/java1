@@ -1,0 +1,23 @@
+package ru.progwards.java1.lessons.io1;
+
+
+import java.io.FileWriter;
+import java.io.IOException;
+
+
+public class ForWrite {
+    protected void writerFile(String  outFileName, String str, String logName){
+        ForWriteMistake writerMistake = new ForWriteMistake();
+        FileWriter fileWriter;
+        try {
+            fileWriter = new FileWriter(outFileName,true);
+            try {
+                fileWriter.write(str + "\n");
+            }finally {
+                fileWriter.close();
+            }
+        }catch (IOException e){
+            writerMistake.writerMistakeFile(logName, e);
+        }
+    }
+}
