@@ -12,7 +12,7 @@ public class ForWrite {
         try {
             fileWriter = new FileWriter(outFileName,true);
             try {
-                fileWriter.write(a/*str*/ + "\n");
+                fileWriter.write(a + "\n");
             }finally {
                 fileWriter.close();
             }

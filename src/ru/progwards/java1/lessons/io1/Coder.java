@@ -12,13 +12,10 @@ public class Coder {
         try {
             fileReader = new FileReader(inFileName);
             Scanner scanner = new Scanner(fileReader);
-            String strForSymbols = "";
             while (scanner.hasNextInt()){
                 int symbol = scanner.nextInt();
-                writer.writerFile(outFileName, code[symbol]/*strForSymbols*/, logName);
-                //strForSymbols = strForSymbols + code[symbol];
+                writer.writerFile(outFileName, code[symbol], logName);
               }
-              //writer.writerFile(outFileName, strForSymbols, logName);
             try {
                 fileReader.close();
             } catch (IOException e) {
@@ -38,7 +35,7 @@ public class Coder {
         array[2] = 'а';
         array[3] = 'п';
         array[4] = 'а';
-        codeFile("B://New.txt","B://New1.txt", array, "B://Mistakes.txt");
+        codeFile("B://New.txt","B://11.txt", array, "B://Mistakes.txt");
 
     }
 }
