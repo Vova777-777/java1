@@ -15,9 +15,10 @@ public class Coder {
             String strForSymbols = "";
             while (scanner.hasNextInt()){
                 int symbol = scanner.nextInt();
-                strForSymbols = strForSymbols + code[symbol];
+                writer.writerFile(outFileName, code[symbol]/*strForSymbols*/, logName);
+                //strForSymbols = strForSymbols + code[symbol];
               }
-              writer.writerFile(outFileName, strForSymbols, logName);
+              //writer.writerFile(outFileName, strForSymbols, logName);
             try {
                 fileReader.close();
             } catch (IOException e) {
@@ -32,7 +33,12 @@ public class Coder {
 
     public static void main(String[] args){
         char[] array = new char[10];
-
+        array[0] = '!';
+        array[1] = 'п';
+        array[2] = 'а';
+        array[3] = 'п';
+        array[4] = 'а';
+        codeFile("B://New.txt","B://New1.txt", array, "B://Mistakes.txt");
 
     }
 }

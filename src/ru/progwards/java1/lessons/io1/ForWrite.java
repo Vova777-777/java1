@@ -6,13 +6,13 @@ import java.io.IOException;
 
 
 public class ForWrite {
-    protected void writerFile(String  outFileName, String str, String logName){
+    protected void writerFile(String  outFileName, char a/*String str*/, String logName){
         ForWriteMistake writerMistake = new ForWriteMistake();
         FileWriter fileWriter;
         try {
             fileWriter = new FileWriter(outFileName,true);
             try {
-                fileWriter.write(str + "\n");
+                fileWriter.write(a/*str*/ + "\n");
             }finally {
                 fileWriter.close();
             }
