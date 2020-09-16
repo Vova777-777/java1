@@ -10,11 +10,11 @@ import java.util.List;
 public class CharFilter {
         public static void main(String[] args) throws IOException {
             String str = "не !";
-            filterFile("B://1//test1.txt", str);
+            
             System.out.println(new CharFilter().listWithCharsFromFile("B://1//test1.txt").toString());
         }
 
-    public static void filterFile(String inFileName, /*String outFileName,*/ String filter){
+    public static void filterFile(String inFileName, String outFileName, String filter){
         char[] array = filter.toCharArray();
         try {
             List list = new CharFilter().listWithCharsFromFile(inFileName);
@@ -28,8 +28,7 @@ public class CharFilter {
 
                 }
             }
-            new CharFilter().writerFileMethod("B://1//test2.txt", list);
-            System.out.println(list.toString());
+            new CharFilter().writerFileMethod(outFileName, list);
         }catch (IOException e){
             e.getMessage();
         }
