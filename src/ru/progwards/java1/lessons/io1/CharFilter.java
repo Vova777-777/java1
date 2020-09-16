@@ -10,7 +10,7 @@ import java.util.List;
 public class CharFilter {
         public static void main(String[] args) throws IOException {
             String str = "не !";
-            
+
             System.out.println(new CharFilter().listWithCharsFromFile("B://1//test1.txt").toString());
         }
 
