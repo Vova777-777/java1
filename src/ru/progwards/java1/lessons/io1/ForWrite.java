@@ -6,7 +6,7 @@ import java.io.IOException;
 
 
 public class ForWrite {
-    protected void writerFile(String  outFileName, char a/*String str*/, String logName){
+    protected void writerFile(String  outFileName, char a, String logName){
         ForWriteMistake writerMistake = new ForWriteMistake();
         FileWriter fileWriter;
         try {

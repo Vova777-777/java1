@@ -1,9 +1,7 @@
 package ru.progwards.java1.lessons.io1;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+
 
 public class Coder {
 
@@ -13,8 +11,6 @@ public class Coder {
         FileReader fileReader;
         try {
             fileReader = new FileReader(inFileName);
-            Scanner scanner = new Scanner(fileReader);
-            List buffer = new ArrayList();
             while (fileReader.ready()){
                 int symbol = fileReader.read();
 
