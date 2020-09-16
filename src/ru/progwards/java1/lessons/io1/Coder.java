@@ -18,7 +18,11 @@ public class Coder {
             while (fileReader.ready()){
                 int symbol = fileReader.read();
 
-                writer.writerFile(outFileName, code[symbol], logName);
+               try {
+                   writer.writerFile(outFileName, code[symbol], logName);
+               }catch (ArrayIndexOutOfBoundsException e){
+                   writerMistake.writerMistakeFile(logName, e);
+               }
               }
             try {
                 fileReader.close();
@@ -33,7 +37,7 @@ public class Coder {
 
 
     public static void main(String[] args){
-        char[] array = new char[1088];
+        char[] array = new char[10];
         array[33] = '!';//33
         array[1087] = 'п';//1087
         array[1072] = 'а';//1072
