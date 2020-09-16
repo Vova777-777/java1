@@ -1,6 +1,8 @@
 package ru.progwards.java1.lessons.io1;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Coder {
@@ -12,8 +14,10 @@ public class Coder {
         try {
             fileReader = new FileReader(inFileName);
             Scanner scanner = new Scanner(fileReader);
-            while (scanner.hasNextInt()){
-                int symbol = scanner.nextInt();
+            List buffer = new ArrayList();
+            while (fileReader.ready()){
+                int symbol = fileReader.read();
+
                 writer.writerFile(outFileName, code[symbol], logName);
               }
             try {
@@ -21,7 +25,7 @@ public class Coder {
             } catch (IOException e) {
             writerMistake.writerMistakeFile(logName, e);
             }
-        }catch (FileNotFoundException e){
+        }catch (IOException e){
             writerMistake.writerMistakeFile(logName, e);
         }
     }
@@ -29,13 +33,13 @@ public class Coder {
 
 
     public static void main(String[] args){
-        char[] array = new char[10];
-        array[0] = '!';
-        array[1] = 'п';
-        array[2] = 'а';
+        char[] array = new char[1088];
+        array[33] = '!';//33
+        array[1087] = 'п';//1087
+        array[1072] = 'а';//1072
         array[3] = 'п';
         array[4] = 'а';
-        codeFile("B://New.txt","B://11.txt", array, "B://Mistakes.txt");
+        codeFile("B://New.txt","B://New1.txt", array, "B://Mistakes.txt");
 
     }
 }
