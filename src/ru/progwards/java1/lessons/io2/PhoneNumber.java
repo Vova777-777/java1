@@ -3,7 +3,8 @@ package ru.progwards.java1.lessons.io2;
 
 
 public class PhoneNumber {
-    public static void/*String*/ format(String phone) throws Exception {
+
+    public static String format(String phone) throws Exception {
        String onlyNumPhone = "";
        for (int i = 0; i < phone.length(); i++){
            onlyNumPhone = onlyNumPhone + getNum(phone.substring(i,i+1));
@@ -17,6 +18,7 @@ public class PhoneNumber {
         System.out.println(onlyNumPhone);
         StringBuilder stringBuilder = new StringBuilder(onlyNumPhone.substring(0,2)+ "(" + onlyNumPhone.substring(2,5) + ")" + onlyNumPhone.substring(5,8) + "-" + onlyNumPhone.substring(8));
         System.out.println(stringBuilder.toString());
+        return stringBuilder.toString();
     }
 
     public static String getNum(String a){
