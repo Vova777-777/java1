@@ -11,7 +11,7 @@ public class PhoneNumber {
        }
         System.out.println(onlyNumPhone);
 
-       if (onlyNumPhone.length() > 11 || onlyNumPhone.length() <10) throw new Exception();
+       if (onlyNumPhone.length() > 11 || onlyNumPhone.length() <10) {throw new Exception();}
        String firstValueOfNumber = "+7";
        if (onlyNumPhone.length() == 11) onlyNumPhone = firstValueOfNumber + onlyNumPhone.substring(1);
        else onlyNumPhone = firstValueOfNumber + onlyNumPhone;
@@ -23,6 +23,7 @@ public class PhoneNumber {
 
     public static String getNum(String a){
         switch (a){
+            case "0": return a;
             case "1": return a;
             case "2": return a;
             case "3": return a;
@@ -39,10 +40,8 @@ public class PhoneNumber {
     }
 
     public static void main(String[] args) throws Exception {
-        format("79991112233");
-        format("8(999) -111-2233");
-        format("+79991112233");
-        format("(99911)12-233");
+
+        format("7(108)3630950");
 
     }
 }
