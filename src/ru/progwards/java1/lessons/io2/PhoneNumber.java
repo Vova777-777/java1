@@ -14,7 +14,6 @@ public class PhoneNumber {
        phoneNumber.insert(6,")");
        phoneNumber.insert(10,"-");
 
-        System.out.println(phoneNumber);
         return phoneNumber.toString();
     }
 
@@ -39,7 +38,7 @@ public class PhoneNumber {
 
     public static void main(String[] args)  {
        try {
-           format("7(108)3630");
+           System.out.println(format("7(108)3630880"));
        }catch (Exception e){
            System.out.println("введите правильное количество цифр вашего номера");
        }
