@@ -8,7 +8,8 @@ public class PhoneNumber {
        StringBuilder phoneNumber = new StringBuilder(phone);
        getOnlyNumbers(phoneNumber);
        if (phoneNumber.length() > 11 || phoneNumber.length() <10) {throw new Exception();}
-       if (phoneNumber.length() == 11) phoneNumber.insert(0,'+');
+       if (phoneNumber.length() == 11 && phoneNumber.substring(0,1).equals("8")) phoneNumber.deleteCharAt(0);
+       if (phoneNumber.length() == 11) phoneNumber.insert(0,"+");
        else phoneNumber.insert(0,"+7");
        phoneNumber.insert(2,"(");
        phoneNumber.insert(6,")");
@@ -38,7 +39,7 @@ public class PhoneNumber {
 
     public static void main(String[] args)  {
        try {
-           System.out.println(format("7(108)3630880"));
+           System.out.println(format("8108)3630880"));
        }catch (Exception e){
            System.out.println("введите правильное количество цифр вашего номера");
        }
