@@ -51,7 +51,7 @@ public class Translator {
     public String getNeedRegister(String[] up, String[] down, String str){
        String[] array = str.split(" ");
         StringBuilder stringBuilderResult = new StringBuilder();
-        for (int i = 0; i < up.length; i++){
+        for (int i = 0; i < array.length/*up.length*/; i++){
             stringBuilderResult.replace(0,stringBuilderResult.length(),"");
             stringBuilderResult.append(array[i]);
             for (int j = 0; j < down.length; j++) {
