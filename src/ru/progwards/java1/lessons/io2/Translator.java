@@ -52,6 +52,7 @@ public class Translator {
        String[] array = str.split(" ");
         StringBuilder stringBuilderResult = new StringBuilder();
         for (int i = 0; i < up.length; i++){
+            stringBuilderResult.replace(0,stringBuilderResult.length(),"");
             stringBuilderResult.append(array[i]);
             for (int j = 0; j < down.length; j++) {
                 if (up[i].equalsIgnoreCase(down[j]) && !(up[i].equals(down[j]))) {
@@ -62,7 +63,7 @@ public class Translator {
 
 
                  array[i] = stringBuilderResult.toString();
-                 stringBuilderResult.replace(0,stringBuilderResult.length(),"");
+
             }
 
 
@@ -78,10 +79,10 @@ public class Translator {
     }
 
     public static void main(String[] args) {
-        String[] inLang = {"hello", "my", "world"};
-        String[] outLang = {"привет", "мой", "мир"};
+        String[] inLang = {"make", "love", "not", "war"};
+        String[] outLang = {"твори", "любовь", "не", "войну"};
 
-        System.out.println( new Translator(inLang, outLang).translate("Hello, World! my"));
+        System.out.println( new Translator(inLang, outLang).translate("Make love! Not war!"));
 
 
         Set<Character> PUNCT_SET = new HashSet<>(Arrays.asList(
