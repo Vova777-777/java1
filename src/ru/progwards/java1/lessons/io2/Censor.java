@@ -14,7 +14,7 @@ public class Censor {
         }
         @Override
         public String getMessage() {
-            return  super.getMessage() + (fileName == null ? "" : " \"" + fileName + "\"");
+            return  fileName + ":" + super.getMessage();
         }
     }
 
@@ -60,9 +60,9 @@ public class Censor {
     public static void main(String[] args){
         String str = "loves much his";
         try {
-            censorFile("B:/1/ne", str.split(" ") );
+            censorFile(null, null);
         } catch (CensorException e) {
-            System.out.println(e.getMessage());
+            System.out.println(e);
         }
     }
 
