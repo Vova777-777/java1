@@ -1,8 +1,6 @@
 package ru.progwards.java1.lessons.io2;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Translator {
     private  String[] inLang;
@@ -13,21 +11,7 @@ public class Translator {
         this.outLang = outLang;
     }
 
-    public String[] getInLang() {
-        return inLang;
-    }
 
-    public String[] getOutLang() {
-        return outLang;
-    }
-
-    public void setInLang(String[] inLang) {
-        this.inLang = inLang;
-    }
-
-    public void setOutLang(String[] outLang) {
-        this.outLang = outLang;
-    }
 
     public  String translate(String sentence){
       String[] arrayNoPunct = sentence.replaceAll("\\p{Punct}","").split(" ");
@@ -38,14 +22,18 @@ public class Translator {
         for (int i = 0; i < arrayNoPunct.length; i++){
             for (int j = 0; j < inLang.length; j++){
                if (arrayNoPunct[i].equalsIgnoreCase(inLang[j])){ stringBuilderResult.append(outLang[j]);}
-               else continue;
+
+               else { continue;}
+
                if (!(arrayNoPunct[i].equalsIgnoreCase(arrayWithPunctuation[i]))){
                    stringBuilderResult.append(arrayWithPunctuation[i].substring(arrayWithPunctuation[i].length()-1));}
                stringBuilderResult.append(" ");
             }
+
         }
 
-        return getNeedRegister(arrayNoPunct, inLang, stringBuilderResult.toString().trim());
+        String result = getNeedRegister(arrayNoPunct, inLang, stringBuilderResult.toString().trim());
+        return reviseIndividualPunctuationMark(arrayNoPunct, arrayWithPunctuation, result);
     }
 
     public String getNeedRegister(String[] up, String[] down, String str){
@@ -60,13 +48,8 @@ public class Translator {
                    stringBuilderResult.replace(0, 1, firstChar).toString();
                 }
                 else continue;
-
-
-                 array[i] = stringBuilderResult.toString();
-
+                array[i] = stringBuilderResult.toString();
             }
-
-
         }
         stringBuilderResult.replace(0, stringBuilderResult.length(),"");
         for (int i = 0; i < array.length; i++){
@@ -75,14 +58,30 @@ public class Translator {
         }
 
         return stringBuilderResult.toString().trim();
+    }
 
+    public String reviseIndividualPunctuationMark(String[] arrayNoPunct, String[] arrayWithPunctuation, String result){
+        String str = "";
+        ArrayList listResult = new ArrayList();
+          Collections.addAll(listResult,result.split(" "));
+        StringBuilder stringBuilder = new StringBuilder();
+        int j = -1;
+        for(int i = 0; i < arrayNoPunct.length; i++){
+            j++;
+            if(str.equals (arrayNoPunct[i])) {listResult.add(j,arrayWithPunctuation[i]); j++; }
+        }
+        for (int i = 0; i < listResult.size(); i++){
+            stringBuilder.append(listResult.get(i));
+            stringBuilder.append(" ");
+        }
+        return stringBuilder.toString().trim();
     }
 
     public static void main(String[] args) {
         String[] inLang = {"make", "love", "not", "war"};
         String[] outLang = {"твори", "любовь", "не", "войну"};
 
-        System.out.println( new Translator(inLang, outLang).translate("Make love! Not war!"));
+        System.out.println( new Translator(inLang, outLang).translate("Not war! love make!"));
 
 
         Set<Character> PUNCT_SET = new HashSet<>(Arrays.asList(
