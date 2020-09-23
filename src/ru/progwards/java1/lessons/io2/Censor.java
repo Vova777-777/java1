@@ -14,7 +14,7 @@ public class Censor {
         }
         @Override
         public String getMessage() {
-            return (fileName == null ? "null:null" : " \"" + fileName + "\"") + super.getMessage();
+            return  super.getMessage() + (fileName == null ? "" : " \"" + fileName + "\"");
         }
     }
 
