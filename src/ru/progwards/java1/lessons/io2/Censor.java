@@ -6,7 +6,7 @@ import java.io.RandomAccessFile;
 
 public class Censor {
 
-    public static class CensorException extends IOException{
+    public static class CensorException extends Exception{
         public String fileName = "";
         public CensorException(String fileName){
             super();
@@ -33,7 +33,7 @@ public class Censor {
                if (str.contains(obscene[i])) {changeWardToStars(inoutFileName,str,obscene[i]);}
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             CensorException censorExeption = new CensorException(inoutFileName);
             throw censorExeption;
         }
