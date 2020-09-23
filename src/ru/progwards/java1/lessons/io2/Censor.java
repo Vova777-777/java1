@@ -23,14 +23,14 @@ public class Censor {
     public static void censorFile(String inoutFileName, String[] obscene) throws CensorException {
         try (RandomAccessFile randomAccessFile = new RandomAccessFile(inoutFileName, "rw")){
           int b = randomAccessFile.read();
-          String str = "";
+          String dateFromFile = "";
           while (b != -1){
-              str = str + (char) b;
+              dateFromFile = dateFromFile + (char) b;
               b = randomAccessFile.read();
           }
 
           for ( int i = 0; i < obscene.length; i++){
-               if (str.contains(obscene[i])) {changeWardToStars(inoutFileName,str,obscene[i]);}
+               if (dateFromFile.contains(obscene[i])) {changeWardToStars(inoutFileName,dateFromFile,obscene[i]);}
             }
 
         } catch (Exception e) {
