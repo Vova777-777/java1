@@ -23,6 +23,8 @@ public class Finder {
         }
         return  setForMinIndex;
     }
+
+
 /*найти локальные максимумы - числа, которые больше соседа справа и слева. Первый и последний элемент
 коллекции не может являться локальным  максимумом, вернуть коллекцию, содержащую значения этих максимумов
  */
@@ -72,7 +74,7 @@ public class Finder {
             for (int i = 0; i < list.size(); i++){
                 if (name.equals(list.get(i))) count++;
             }
-            if (count > countMax) {countMax = count; result.replace(0, result.length(),name);}
+            if (count > countMax) {countMax = count; result.replace(0, result.length(),name + ":" + countMax);}
             count = 0;
         }
         return result.toString();
