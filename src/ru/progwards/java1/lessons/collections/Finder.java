@@ -66,22 +66,15 @@ public class Finder {
 */
     public static String findSimilar(Collection<String> names){
         List<String> list = new ArrayList(names);
-        Set<String> set = new HashSet(names);
-        StringBuilder result = new StringBuilder("");
+        StringBuilder result = new StringBuilder();
         int index = 0;
-        int count = 0;
+        int count = 1;
         int countMax = 0;
-        for (String name : set) {
-            for (int i = 0; i < list.size(); i++){
-                if (name.equals(list.get(i))) count++;
-            }
-            if (count > countMax)
-            {countMax = count; index = list.indexOf(name);
-            result.replace(0, result.length(),name + ":" + countMax);}
-            if (count == countMax && list.indexOf(name) < index)
-            {countMax = count; index = list.indexOf(name);
-            result.replace(0, result.length(),name + ":" + countMax);}
-            count = 0;
+        for (int i = 1; i < list.size(); i++){
+             if (list.get(i).equals(list.get(i-1))) count++;
+             else count = 1;
+             if (count > countMax) {countMax = count; index = i;
+             result.replace(0,result.length(),list.get(i));}
         }
         return result.toString();
     }
@@ -114,7 +107,7 @@ public class Finder {
         ArrayList list = new ArrayList();
         list.add("Василий");
         list.add("Василий");
-        list.add("Василий");
+        list.add("Васили");
         list.add("владимир");
         list.add("владимир");
         list.add("владимир");
