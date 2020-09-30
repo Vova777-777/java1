@@ -74,7 +74,7 @@ public class Finder {
              if (list.get(i).equals(list.get(i-1))) count++;
              else count = 1;
              if (count > countMax) {countMax = count; index = i;
-             result.replace(0,result.length(),list.get(i));}
+             result.replace(0,result.length(),list.get(i-1) + ":" + countMax);}
         }
         return result.toString();
     }
