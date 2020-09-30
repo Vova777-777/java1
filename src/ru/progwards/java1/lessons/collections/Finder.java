@@ -68,13 +68,19 @@ public class Finder {
         List<String> list = new ArrayList(names);
         Set<String> set = new HashSet(names);
         StringBuilder result = new StringBuilder("");
+        int index = 0;
         int count = 0;
         int countMax = 0;
         for (String name : set) {
             for (int i = 0; i < list.size(); i++){
                 if (name.equals(list.get(i))) count++;
             }
-            if (count > countMax) {countMax = count; result.replace(0, result.length(),name + ":" + countMax);}
+            if (count > countMax)
+            {countMax = count; index = list.indexOf(name);
+            result.replace(0, result.length(),name + ":" + countMax);}
+            if (count == countMax && list.indexOf(name) < index)
+            {countMax = count; index = list.indexOf(name);
+            result.replace(0, result.length(),name + ":" + countMax);}
             count = 0;
         }
         return result.toString();
