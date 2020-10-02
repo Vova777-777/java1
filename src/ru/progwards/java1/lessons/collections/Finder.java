@@ -4,8 +4,7 @@ import java.util.*;
 
 
 public class Finder {
-    /*2.1 -  найти 2 соседних числа в коллекции сумма которых минимальна, вернуть коллекцию,
-     содержащую индексы этих чисел*/
+    /*очень много раз перебираю список. мне не нраввится*/
 
     public static Collection<Integer> findMinSumPair(Collection<Integer> numbers){
         ArrayList<Integer> listForSum = new ArrayList<>(numbers);
@@ -21,7 +20,12 @@ public class Finder {
         for (int i = 0; i < listForSum.size(); i++){
             if (listForSum.get(i) == valueMin) {setForMinIndex.add(i); setForMinIndex.add(i+1);}
         }
-        return  setForMinIndex;
+        List<Integer> result = new ArrayList<>(); //создал, тк set в произвольном порядке, а компилятор требовал в сортированом
+        for (int a : setForMinIndex) {
+            result.add(a);
+        }
+        Collections.sort(result);
+        return  result;
     }
 
 
@@ -38,7 +42,7 @@ public class Finder {
         return listMaxValue;
     }
 
-    //проверить, содержит ли коллекция все числа от 1 до size(), порядок может быть произвольный
+    //первый вариант решения. ушел вроде бы от двойного цикла, но это не так. ниже более изящный вариант по моему мнению
     public static boolean findSequence1(Collection<Integer> numbers){
         Integer[] arrayFromCollection = new Integer[numbers.size()];
         numbers.toArray(arrayFromCollection);
@@ -82,11 +86,23 @@ public class Finder {
 
     public static void main(String[] args) {
         Collection<Integer> numbers = new ArrayList<>();
-        numbers.add(23);
-        numbers.add(11);
-        numbers.add(2);
-        numbers.add(1);
-        numbers.add(2);
+        numbers.add(67);
+        numbers.add(64);
+        numbers.add(-86);
+        numbers.add(80);
+        numbers.add(12);
+        numbers.add(74);
+        numbers.add(71);
+        numbers.add(-19);
+        numbers.add(-21);
+        numbers.add(-55);
+        numbers.add(20);
+        numbers.add(84);
+        numbers.add(96);
+        numbers.add(52);
+        numbers.add(-13);
+        numbers.add(-22);
+        numbers.add(-63);
         System.out.println(findMinSumPair(numbers).toString());//задача 2.1
         numbers.add(3);
         numbers.add(4);
