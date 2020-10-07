@@ -54,8 +54,21 @@ public class SetOperations {
         System.out.println(difference(set1,set2));
 
         //1.4
-        set1.add(12);
-        set1.add(13);
+        set1.clear();
+        set2.clear();
+        set1.add(3);
+        set1.add(5);
+        set1.add(6);
+        set1.add(9);
+        set1.add(10);
+        set2.add(0);
+        set2.add(1);
+        set2.add(2);
+        set2.add(4);
+        set2.add(5);
+        set2.add(8);
+        set2.add(9);
+        set2.add(10);
         System.out.println(symDifference(set1,set2));
     }
 }
