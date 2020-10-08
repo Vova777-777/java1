@@ -27,10 +27,10 @@ public class SetOperations {
 //1.4 Метод public static Set<Integer> symDifference(Set<Integer> set1, Set<Integer> set2) - симметрическая разница
         public static Set<Integer> symDifference(Set<Integer> set1, Set<Integer> set2){
            Set setInteresection = new HashSet(set1);
-           Set setSymDifference = new HashSet();
+           Set setSymDifference = new HashSet(set2);
             setInteresection.retainAll(set2);
-            setSymDifference.addAll(set2);
             setSymDifference.removeAll(setInteresection);
+            setSymDifference.addAll(difference(set1,set2));//
            return setSymDifference;
         }
 
@@ -38,14 +38,14 @@ public class SetOperations {
         //1.1
         Set<Integer> set1 = new HashSet();
         Set<Integer> set2 = new HashSet();
-        set1 = Set.of(0,3,4,8,10);
-        set2 = Set.of(1,2,5,7,9,10);
+        set1 = Set.of(0,1,2,5,7,8,9,10);
+        set2 = Set.of(0,1,3,4,5,6,7,8,9);
         System.out.println(union(set1,set2));
         //1.2
         System.out.println(intersection(set1, set2));
         //1.3
         System.out.println(difference(set1,set2));
         //1.4
-        System.out.println(symDifference(set1,set2));
+        System.out.println(symDifference(set1,set2));//2,3,4,6,10
     }
 }

@@ -19,7 +19,7 @@ public class LettersInFile {
         }
         scanner.close();
         String str = stringBuilder.toString().replaceAll( " ", "");
-        String[] array = str.replaceAll("\\p{Punct}","").toUpperCase().split("");
+        String[] array = str.replaceAll("\\p{Punct}","").split("");
         Set<String> set = new HashSet<>(Arrays.asList(array));
         String[] strings = new String[set.size()];
         set.toArray(strings);
