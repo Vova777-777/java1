@@ -6,68 +6,46 @@ import java.util.Set;
 public class SetOperations {
 /*1.1 Метод public static Set<Integer> union(Set<Integer> set1, Set<Integer> set2) - объединение множеств*/
        public static Set<Integer> union(Set<Integer> set1, Set<Integer> set2){
-             set1.addAll(set2);
-             return set1;
+           Set<Integer> setUnion = new HashSet<>(set1);
+           setUnion.addAll(set2);
+             return setUnion;
         }
 
 //1.2 Метод public static Set<Integer> intersection(Set<Integer> set1, Set<Integer> set2) - пересечение множеств;
         public static Set<Integer> intersection(Set<Integer> set1, Set<Integer> set2) {
-            set1.retainAll(set2);
-            return set1;
+           Set<Integer> setIntersection = new HashSet<>(set1);
+            setIntersection.retainAll(set2);
+            return setIntersection;
         }
 
 //1.3 Метод public static Set<Integer> difference(Set<Integer> set1, Set<Integer> set2) - разница множеств;
         public static Set<Integer> difference(Set<Integer> set1, Set<Integer> set2){
-           set1.removeAll(set2);
-           return set1;
+           Set<Integer> setDifference = new HashSet<>(set1);
+            setDifference.removeAll(set2);
+           return setDifference;
         }
 //1.4 Метод public static Set<Integer> symDifference(Set<Integer> set1, Set<Integer> set2) - симметрическая разница
         public static Set<Integer> symDifference(Set<Integer> set1, Set<Integer> set2){
-           Set interesectionSet = new HashSet(set1);
-           interesectionSet.retainAll(set2);
-           set1.addAll(set2);
-           set1.removeAll(interesectionSet);
-           return set1;
+           Set setInteresection = new HashSet(set1);
+           Set setSymDifference = new HashSet();
+            setInteresection.retainAll(set2);
+            setSymDifference.addAll(set2);
+            setSymDifference.removeAll(setInteresection);
+           return setSymDifference;
         }
 
     public static void main(String[] args) {
         //1.1
-        Set set1 = new HashSet();
-        set1.add(1);
-        set1.add(2);
-        set1.add(3);
-        set1.add(4);
-        set1.add(5);
-        Set set2 = new HashSet();
-        set2.add(1);
-        set2.add(12);
-        set2.add(13);
-        set2.add(14);
-        set2.add(15);
+        Set<Integer> set1 = new HashSet();
+        Set<Integer> set2 = new HashSet();
+        set1 = Set.of(0,3,4,8,10);
+        set2 = Set.of(1,2,5,7,9,10);
         System.out.println(union(set1,set2));
-
         //1.2
         System.out.println(intersection(set1, set2));
-
         //1.3
-        set1.add(777);
         System.out.println(difference(set1,set2));
-
         //1.4
-        set1.clear();
-        set2.clear();
-        set1.add(4);
-        set1.add(7);
-        set1.add(9);
-        set1.add(10);
-        set2.add(0);
-        set2.add(1);
-        set2.add(2);
-        set2.add(3);
-        set2.add(5);
-        set2.add(6);
-        set2.add(7);
-        set2.add(9);
         System.out.println(symDifference(set1,set2));
     }
 }
