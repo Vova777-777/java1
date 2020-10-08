@@ -29,8 +29,6 @@ public class LettersInFile {
             stringBuilder.append(strings[i]);
         }
         return stringBuilder.toString();
-
-
     }
 
 
