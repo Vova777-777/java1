@@ -104,9 +104,5 @@ public class ProductAnalytics {
         System.out.println(productAnalytics.existAtListInOne());
         System.out.println(productAnalytics.notExistInShops());
         System.out.println(productAnalytics.existOnlyInOne());
-
-
     }
-
-
 }
