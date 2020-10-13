@@ -17,9 +17,6 @@ public class CollectionsSort {
             public String toString() {
                 return method;
             }
-
-
-
     }
 
     public static void mySort(Collection<Integer> data){
