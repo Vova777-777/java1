@@ -1,14 +1,10 @@
 package ru.progwards.java1.lessons.queues;
 
-import com.sun.jdi.Method;
-
 import java.util.*;
-
-
 
 public class CollectionsSort {
 
-    public static class Sort{
+    private static class Sort{
         long time;
         String method;
 
@@ -21,6 +17,9 @@ public class CollectionsSort {
             public String toString() {
                 return method;
             }
+
+
+
     }
 
     public static void mySort(Collection<Integer> data){
@@ -68,6 +67,34 @@ public class CollectionsSort {
      В случае равенства производительности каких-то методов, возвращать их названия в алфавитном порядке.*/
 
     public static Collection<String> compareSort(){
+        long timeOfMySort = timeOfSort().get(0);
+        long timeOfMinSort = timeOfSort().get(1);
+        long timeOfCollSort = timeOfSort().get(2);
+        Sort mySort = new Sort(timeOfMySort, "mySort");
+        Sort minSort = new Sort(timeOfMinSort, "minSort");
+        Sort collSort = new Sort(timeOfCollSort, "collSort");
+
+        Comparator<Sort> comparator1 = new Comparator<Sort>() {
+            @Override
+            public int compare(Sort o1, Sort o2) {
+                if (o1.time > o2.time) return 1;
+                if (o2.time > o1.time) return -1;
+                else return o1.method.compareTo(o2.method);
+
+            }
+        };
+
+        List<Sort> listSort = new ArrayList<>();
+        Collections.addAll(listSort, mySort, minSort, collSort);
+        Collections.sort(listSort,comparator1);
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < listSort.size(); i++){
+            result.add(listSort.get(i).toString());
+        }
+        return result;
+    }
+
+    public static List<Long> timeOfSort (){
         List<Integer> list = new ArrayList<>();
         for (int i = 5000; i >= 0; i--){
             list.add(i);
@@ -84,27 +111,8 @@ public class CollectionsSort {
         collSort(list);
         Date dateStartOfCollSort2 = new Date();
         long timeOfCollSort = dateStartOfCollSort2.getTime() - dateStartOfCollSort1.getTime();
-
-        Sort mySort = new Sort(timeOfMySort, "mySort");
-        Sort minSort = new Sort(timeOfMinSort, "minSort");
-        Sort collSort = new Sort(timeOfCollSort, "collSort");
-
-        Comparator<Sort> comparator1 = new Comparator<Sort>() {
-            @Override
-            public int compare(Sort o1, Sort o2) {
-                if (o1.time > o2.time) return 1;
-                if (o2.time > o1.time) return -1;
-                else return o1.method.compareTo(o2.method);
-
-            }
-        };
-        List<Sort> listSort = new ArrayList<>();
-        Collections.addAll(listSort, mySort, minSort, collSort);
-        Collections.sort(listSort,comparator1);
-        List<String> result = new ArrayList<>();
-        for (int i = 0; i < listSort.size(); i++){
-            result.add(listSort.get(i).toString());
-        }
+        List<Long> result = new ArrayList<>();
+        Collections.addAll(result, timeOfMySort, timeOfMinSort, timeOfCollSort);
         return result;
     }
 
