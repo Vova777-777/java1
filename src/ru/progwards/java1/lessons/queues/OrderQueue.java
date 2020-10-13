@@ -1,5 +1,7 @@
 package ru.progwards.java1.lessons.queues;
 
+import jdk.jfr.StackTrace;
+
 import java.util.*;
 
 public class OrderQueue {
@@ -24,12 +26,10 @@ public class OrderQueue {
         if (order.getSum() > 20000) orderMoreThenTwenty.offer(order);
     }
 
-    public Order get(){
-
-        if (!(orderMoreThenTwenty.isEmpty())) return orderMoreThenTwenty.remove();
-        if (!(orderBetweenTenAndTwenty.isEmpty())) return orderBetweenTenAndTwenty.remove();
-        else return orderLessThenTen.remove();
-
+    public Order get() throws NullPointerException {
+            if (!(orderMoreThenTwenty.isEmpty())) return orderMoreThenTwenty.poll();
+            if (!(orderBetweenTenAndTwenty.isEmpty())) return orderBetweenTenAndTwenty.poll();
+            else return orderLessThenTen.poll();
     }
 
     public static void main(String[] args) {

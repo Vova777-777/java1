@@ -93,7 +93,7 @@ public class CollectionsSort {
 
     public static List<Long> timeOfSort (){
         List<Integer> list = new ArrayList<>();
-        for (int i = 5000; i >= 0; i--){
+        for (int i = 500; i >= 0; i--){
             list.add(i);
         }
         Date dateStartOfMySort1 = new Date();
