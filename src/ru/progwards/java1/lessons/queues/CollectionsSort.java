@@ -1,7 +1,15 @@
 package ru.progwards.java1.lessons.queues;
 
 import java.util.*;
-
+/*Сергей посмотрите пожалуйста ещё класс CollectionsSort777. Скажите что лучше. В этом классе более прямолинейно
+* решил, а в 777 решил метод по подсчету времени работы метода вынести в отдельный метод, и сделать его более
+* универсальным (расширяемым), но для этого мне требовалось передавать ф - цию в качестве параметра метода, а так нельзя
+* как я понимаю. Поэтому создал дополнительно enum. Какие нибудь способы есть дя передачи метода в качестве параметра
+* которые можно бы было здесь использовать? При этом сама задача по общему количеству строк осталась примерно такой же
+* и читаемость на мой взгляд не улучшилась. Но возможно универсальность чуть повысилась. Так ли это? И если есть
+* какие то способы передать метод как параметр для другого метода напишите. В курсе было что передавали с помощью
+* анонимного класса, но здесь это не подходит, тк анонимный класс привязан к какомуто методу и там немного по другому
+*  Или я ошибаюсь? и здесь можно это применить */
 public class CollectionsSort {
 
     private static class Sort{
@@ -32,13 +40,6 @@ public class CollectionsSort {
         data.addAll(list);
     }
 
-    /*1.2 Реализовать метод public static void minSort(Collection<Integer> data) по следующему алгоритму
-- создать новую коллекцию
-- найти минимальный элемент с использованием функции min()
-- переместить его в новую коллекцию
-- делать так до тех пор, пока все элементы не окажутся в новой коллекции
-- скопировать новую коллекцию в старую*/
-
     public static void minSort(Collection<Integer> data){
         List<Integer> list = new ArrayList<>();
         for (int i = 0; i < data.size(); i++){
@@ -50,18 +51,12 @@ public class CollectionsSort {
         data.addAll(list);
     }
 
-    /*1.3 Реализовать метод public static void collSort(Collection<Integer> data) используя метод sort из Collections*/
-
     public static void collSort(Collection<Integer> data){
         List<Integer> list = new ArrayList<>(data);
         Collections.sort(list);
         data.removeAll(list);
         data.addAll(list);
     }
-
-    /*1.4 Реализовать метод public static Collection<String> compareSort() в котором сравнить производительность
-     методов и вернуть их имена, отсортированные в порядке производительности, первый - самый быстрый.
-     В случае равенства производительности каких-то методов, возвращать их названия в алфавитном порядке.*/
 
     public static Collection<String> compareSort(){
         long timeOfMySort = timeOfSort().get(0);
@@ -112,9 +107,6 @@ public class CollectionsSort {
         Collections.addAll(result, timeOfMySort, timeOfMinSort, timeOfCollSort);
         return result;
     }
-
-
-
 
     public static void main(String[] args) {
         /*задача  1.1*/

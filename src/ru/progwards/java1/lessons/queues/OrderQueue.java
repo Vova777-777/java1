@@ -1,26 +1,15 @@
 package ru.progwards.java1.lessons.queues;
 
-import jdk.jfr.StackTrace;
 
 import java.util.*;
 
 public class OrderQueue {
-    /*2.7 Создать метод, public void add(Order order), размещающий заказы в очередь с приоритетом, разбивая их
-    по 3-м классам
-    3 - заказы до 10000 руб включительно
-    2 - заказы от 10000 до 20000 руб включительно
-    1 - заказы от 20000 руб*/
-    /*2.8 Создать метод, public Order get(), возвращающий первый заказ в очереди для обслуживания. Вначале
-    обслуживаются заказы класса 1, потом 2, потом 3. Внутри каждого класса заказы должны обслуживаться в порядке
-    поступления (по номеру заказа). Метод не выбрасывает исключения, возвращает null в случае пустой очереди.*/
-    /*Продумать, и, при необходимости, добавить в классы нужные методы и свойства, для того, чтобы реализовать
-    эту задачу.*/
+
     Queue<Order> orderLessThenTen = new ArrayDeque<>();
     Queue<Order> orderBetweenTenAndTwenty = new ArrayDeque<>();
     Queue<Order> orderMoreThenTwenty = new ArrayDeque<>();
 
     public void add(Order order){
-
         if (order.getSum() <= 10000) orderLessThenTen.offer(order);
         if (order.getSum() > 10000 && order.getSum() <= 20000) orderBetweenTenAndTwenty.offer(order);
         if (order.getSum() > 20000) orderMoreThenTwenty.offer(order);

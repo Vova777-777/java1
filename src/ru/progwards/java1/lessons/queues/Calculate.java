@@ -1,13 +1,7 @@
 package ru.progwards.java1.lessons.queues;
-import ru.progwards.java1.lessons.queues.StackCalc;
+
 public class Calculate {
-    /*3.7 public static double calculation1(), возвращающую результат вычисления следующей формулы:
 
-2.2*(3+12.1), используя класс StackCalc
-3.8 public static double calculation2(), возвращающую результат вычисления следующей формулы:
-
-(737.22+24)/(55.6-12.1)+(19-3.33)*(87+2*(13.001-9.2)), используя класс StackCalc
-*/
     public static double calculation1(){
         StackCalc stackCalc = new StackCalc();
         stackCalc.push(12.1);
