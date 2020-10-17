@@ -3,6 +3,7 @@ package ru.progwards.java1.lessons.maps;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 
 public class UsageFrequency {
@@ -19,30 +20,35 @@ public class UsageFrequency {
     StringBuilder stringBuilder = new StringBuilder("");
 
     public void processFile(String fileName){
-        try (FileReader reader = new FileReader(fileName)){
+        try (Scanner scanner = new Scanner(Path.of(fileName))){
             int a = 0;
-            while (reader.read() != -1) {
-                a = reader.read();
-                stringBuilder.append((char) a);
+            while (scanner.hasNextLine()) {
+
+                stringBuilder.append(scanner.nextLine());
             }
         }catch (IOException e){
             System.out.println(e);
         }
-        str.replaceAll("\\p{Punct}","");
+        str = stringBuilder.toString().replaceAll("\\p{Punct}","");
+
+        stringBuilder.delete(0, stringBuilder.length());
+        stringBuilder.append(str);
         System.out.println(stringBuilder.toString());//
     }
 
     public Map<Character, Integer> getLetters(){
         Map<Character, Integer> map = new HashMap<>();
         int count = 0;
-        stringBuilder.toString().replaceAll(" ", "");
+        String str1 = stringBuilder.toString().replaceAll(" ", "");
+        stringBuilder.delete(0,stringBuilder.length());
+        stringBuilder.append(str1);
         list.clear();
-        for (int i = 0; i < str.length(); i++){
-            list.add(str.charAt(i));
+        for (int i = 0; i < stringBuilder.length(); i++){
+            list.add(stringBuilder.toString().charAt(i));
         }
         for (int i = 0; i < list.size(); i++){
             count = Collections.frequency(list, list.get(i));
-            map.put(list.get(i), count);
+            map.putIfAbsent(list.get(i), count);
         }
         return map;
     }
@@ -64,9 +70,9 @@ public class UsageFrequency {
     public static void main(String[] args) {
         UsageFrequency usageFrequency = new UsageFrequency();
         usageFrequency.processFile("B://1//wiki.test.tokens");
-        usageFrequency.getLetters();
+        System.out.println(usageFrequency.getLetters());
         usageFrequency.getWords();
-        System.out.println(usageFrequency.getWords());
+
     }
 
 }
