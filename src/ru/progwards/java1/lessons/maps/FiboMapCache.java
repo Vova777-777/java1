@@ -17,8 +17,21 @@ public class FiboMapCache {
 
     public BigDecimal fiboNumber(int n) {
         if (fiboCache.containsKey(n)) return fiboCache.get(n);
-        else {fiboCache.put(n, new BigDecimal("" + fiboNumber(n)));
+        else {fiboCache.put(n, new BigDecimal("" + fiboNumberCasheOnFalse(n)));
         return fiboCache.get(n);}
+    }
+
+    public static BigDecimal fiboNumberCasheOnFalse(int n){
+        BigDecimal number = new BigDecimal(0);
+        BigDecimal a = new BigDecimal(1);
+        BigDecimal b = new BigDecimal(1);
+        if (n == 1 || n == 2) return a;
+        for (int i = 3; i <= n; i++){
+            number = a.add(b);
+            a = b;
+            b = number;
+        }
+        return number;
     }
 
     public void clearCahe(){
@@ -43,34 +56,18 @@ cacheOn=??? время выполнения ???" для cacheOn=true и cacheOn=
         Date dateCasheOnTrueFinish = new Date();
         long timeCasheOnTrue = dateCasheOnTrueFinish.getTime() - dateCasheOnTrueStart.getTime();
         System.out.println("fiboNumber cacheOn=true время выполнения " + timeCasheOnTrue);
+        System.out.println(fiboMapCache.fiboNumber(1000));
 
         Date dateCasheOnFalseStart = new Date();
         fiboNumberCasheOnFalse(1000);
         Date dateCasheOnFalseFinish = new Date();
         long timeCasheOnFalse = dateCasheOnFalseFinish.getTime() - dateCasheOnFalseStart.getTime();
         System.out.println("fiboNumber cacheOn=false время выполнения " + timeCasheOnFalse);
+        System.out.println(fiboNumberCasheOnFalse(1000));
     }
-
-    public static int fiboNumberCasheOnFalse(int n){
-        int number = 0;
-        int a = 1;
-        int b = 1;
-        if (n == 1 || n == 2) return a;
-        for (int i = 3; i <= n; i++){
-            number = a + b;
-            a = b;
-            b = number;
-        }
-        return number;
-    }
-
-
-
-
 
     public static void main(String[] args) {
         test();
 
     }
-
 }
