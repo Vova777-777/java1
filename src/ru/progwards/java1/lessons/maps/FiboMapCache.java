@@ -35,7 +35,8 @@ public class FiboMapCache {
     }
 
     public void clearCahe(){
-        fiboCache = null;
+        fiboCache.clear();
+
     }
 
     /*1.5 Для проверки работы реализовать public static void test() - тест для расчета чисел Фибоначчи от n = 1 до 1000
@@ -56,18 +57,16 @@ cacheOn=??? время выполнения ???" для cacheOn=true и cacheOn=
         Date dateCasheOnTrueFinish = new Date();
         long timeCasheOnTrue = dateCasheOnTrueFinish.getTime() - dateCasheOnTrueStart.getTime();
         System.out.println("fiboNumber cacheOn=true время выполнения " + timeCasheOnTrue);
-        System.out.println(fiboMapCache.fiboNumber(1000));
 
         Date dateCasheOnFalseStart = new Date();
         fiboNumberCasheOnFalse(1000);
         Date dateCasheOnFalseFinish = new Date();
         long timeCasheOnFalse = dateCasheOnFalseFinish.getTime() - dateCasheOnFalseStart.getTime();
         System.out.println("fiboNumber cacheOn=false время выполнения " + timeCasheOnFalse);
-        System.out.println(fiboNumberCasheOnFalse(1000));
+
     }
 
     public static void main(String[] args) {
         test();
-
     }
 }
