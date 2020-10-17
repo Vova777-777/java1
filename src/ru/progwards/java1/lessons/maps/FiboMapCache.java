@@ -39,10 +39,6 @@ public class FiboMapCache {
 
     }
 
-    /*1.5 Для проверки работы реализовать public static void test() - тест для расчета чисел Фибоначчи от n = 1 до 1000
-включительно и замерить разницу во времени с on = true и on = false, результат вывести на экран в формате "fiboNumber
-cacheOn=??? время выполнения ???" для cacheOn=true и cacheOn=false, вместо ??? вывести реальные значения в мсек.*/
-
     public static void test(){
         FiboMapCache fiboMapCache = new FiboMapCache(true);
         fiboMapCache.fiboCache.put(1,new BigDecimal(1));
