@@ -1,7 +1,5 @@
 package ru.progwards.java1.lessons.maps;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
@@ -30,7 +28,7 @@ public class UsageFrequency {
         }catch (IOException e){
             System.out.println(e);
         }
-        str = stringBuilder1.toString().replaceAll("\\p{Punct}","");
+        str = stringBuilder1.toString().replaceAll("\\p{Punct}","").replaceAll("–","");
         stringBuilder2.append(str);
 
         stringBuilder1.delete(0, stringBuilder1.length());
@@ -39,6 +37,7 @@ public class UsageFrequency {
     }
 
     public Map<Character, Integer> getLetters(){
+
         Map<Character, Integer> map = new TreeMap<>();
         int count = 0;
         String str1 = stringBuilder1.toString().replaceAll(" ", "");
@@ -74,8 +73,5 @@ public class UsageFrequency {
         usageFrequency.processFile("B://1//wiki.test.tokens");
         System.out.println(usageFrequency.getLetters());
         System.out.println(usageFrequency.getWords());
-
-
     }
-
 }
