@@ -17,34 +17,36 @@ public class UsageFrequency {
 */
     List<Character> list = new ArrayList<>();
     public String str = "";
-    StringBuilder stringBuilder = new StringBuilder("");
+    StringBuilder stringBuilder1 = new StringBuilder("");
+    StringBuilder stringBuilder2 = new StringBuilder("");
 
     public void processFile(String fileName){
         try (Scanner scanner = new Scanner(Path.of(fileName))){
             int a = 0;
             while (scanner.hasNextLine()) {
 
-                stringBuilder.append(scanner.nextLine());
+                stringBuilder1.append(scanner.nextLine());
             }
         }catch (IOException e){
             System.out.println(e);
         }
-        str = stringBuilder.toString().replaceAll("\\p{Punct}","");
+        str = stringBuilder1.toString().replaceAll("\\p{Punct}","");
+        stringBuilder2.append(str);
 
-        stringBuilder.delete(0, stringBuilder.length());
-        stringBuilder.append(str);
-        System.out.println(stringBuilder.toString());//
+        stringBuilder1.delete(0, stringBuilder1.length());
+        stringBuilder1.append(str);
+        System.out.println(stringBuilder1.toString());//
     }
 
     public Map<Character, Integer> getLetters(){
-        Map<Character, Integer> map = new HashMap<>();
+        Map<Character, Integer> map = new TreeMap<>();
         int count = 0;
-        String str1 = stringBuilder.toString().replaceAll(" ", "");
-        stringBuilder.delete(0,stringBuilder.length());
-        stringBuilder.append(str1);
+        String str1 = stringBuilder1.toString().replaceAll(" ", "");
+        stringBuilder1.delete(0,stringBuilder1.length());
+        stringBuilder1.append(str1);
         list.clear();
-        for (int i = 0; i < stringBuilder.length(); i++){
-            list.add(stringBuilder.toString().charAt(i));
+        for (int i = 0; i < stringBuilder1.length(); i++){
+            list.add(stringBuilder1.toString().charAt(i));
         }
         for (int i = 0; i < list.size(); i++){
             count = Collections.frequency(list, list.get(i));
@@ -54,9 +56,9 @@ public class UsageFrequency {
     }
 
     public Map<String, Integer> getWords(){
-        Map<String, Integer> map = new HashMap<>();
+        Map<String, Integer> map = new TreeMap<>();
         List<String> listString;
-        String[] arr = stringBuilder.toString().split(" ");
+        String[] arr = stringBuilder2.toString().split(" ");
         listString = Arrays.asList(arr);
        int count = 0;
        for (int i = 0; i < listString.size(); i++){
@@ -71,7 +73,8 @@ public class UsageFrequency {
         UsageFrequency usageFrequency = new UsageFrequency();
         usageFrequency.processFile("B://1//wiki.test.tokens");
         System.out.println(usageFrequency.getLetters());
-        usageFrequency.getWords();
+        System.out.println(usageFrequency.getWords());
+
 
     }
 
