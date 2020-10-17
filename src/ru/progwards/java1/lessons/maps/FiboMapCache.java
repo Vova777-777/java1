@@ -30,21 +30,10 @@ public class FiboMapCache {
         fiboCache.clear();
     }
 
-    public static void test(){
 
-        ArrayList<Integer> listFibo = new ArrayList<>();
-            fiboMapCache.fiboCache.put(1, new BigDecimal(1));
-            listFibo.add(1);
-            listFibo.add(1);
-            for (int i = 2; i <= 1000; i ++){
-                listFibo.add(listFibo.get(i - 2) + listFibo.get(i - 1));
-                fiboMapCache.fiboCache.put(listFibo.get(listFibo.size()-1), new BigDecimal(listFibo.size()-1));
-            }
-        System.out.println(fiboMapCache1.fiboNumber(6));
-    }
 
     public static void main(String[] args) {
-test();
+
     }
 
 }
