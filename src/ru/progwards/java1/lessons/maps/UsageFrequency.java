@@ -21,19 +21,21 @@ public class UsageFrequency {
     public void processFile(String fileName){
         try (FileReader reader = new FileReader(fileName)){
             int a = 0;
-            while (reader.read() != -1)
+            while (reader.read() != -1) {
                 a = reader.read();
-             str = "" + (char) a;
+                stringBuilder.append((char) a);
+            }
         }catch (IOException e){
             System.out.println(e);
         }
         str.replaceAll("\\p{Punct}","");
+        System.out.println(stringBuilder.toString());//
     }
 
     public Map<Character, Integer> getLetters(){
         Map<Character, Integer> map = new HashMap<>();
         int count = 0;
-        str.replaceAll(" ", "");
+        stringBuilder.toString().replaceAll(" ", "");
         list.clear();
         for (int i = 0; i < str.length(); i++){
             list.add(str.charAt(i));
@@ -48,7 +50,7 @@ public class UsageFrequency {
     public Map<String, Integer> getWords(){
         Map<String, Integer> map = new HashMap<>();
         List<String> listString;
-        String[] arr = str.split(" ");
+        String[] arr = stringBuilder.toString().split(" ");
         listString = Arrays.asList(arr);
        int count = 0;
        for (int i = 0; i < listString.size(); i++){
