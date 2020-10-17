@@ -63,6 +63,7 @@ public class UsageFrequency {
        for (int i = 0; i < listString.size(); i++){
            count = Collections.frequency(listString, listString.get(i));
            map.put(listString.get(i), count);
+           map.remove("");
        }
        return map;
 
