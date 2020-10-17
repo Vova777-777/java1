@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import ru.progwards.java1.lessons.compare_if_cycles.CyclesGoldenFibo;
 
 public class FiboMapCache {
     private Map<Integer, BigDecimal> fiboCache;
