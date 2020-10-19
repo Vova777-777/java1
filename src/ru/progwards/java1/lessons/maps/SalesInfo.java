@@ -36,38 +36,21 @@ public class SalesInfo {
     public int loadOrders(String fileName){
         int count = 0;
         try (Scanner scanner = new Scanner(Path.of(fileName), StandardCharsets.UTF_8)){
-            int countOfInt = 0;
+            int countOfInt;
             while (scanner.hasNextLine()){
-                int a = 0;
-                double b = 0;
-                String str1 = null;
-                String str2 = null;
+                countOfInt = 0;
              String str = scanner.nextLine();
              String[] arr = str.split(", ");
-             if (arr.length != 4) break;
-             if (checkStringIsNumber(arr[0]) == true) {countOfInt++; a = Integer.valueOf(arr[0]);}
-             else str1 = arr[0];
-             if (checkStringIsNumber(arr[1]) == true) {countOfInt++;
-                if (countOfInt == 1) a = Integer.valueOf(arr[1]);
-                if (countOfInt == 2) b = Integer.valueOf(arr[1]);}
-             else {if (str1 == null) str1 = arr[1]; if (str1!=null) str2 = arr[1];}
-             if (checkStringIsNumber(arr[2]) == true) {countOfInt++;
-                if (countOfInt == 1) a = Integer.valueOf(arr[2]);
-                if (countOfInt == 2) b = Integer.valueOf(arr[2]);}
-             else {if (str1 == null) str1 = arr[2]; if (str1!=null) str2 = arr[2];}
-             if (checkStringIsNumber(arr[3]) == true) {countOfInt++;
-                if (countOfInt == 1) a = Integer.valueOf(arr[3]);
-                if (countOfInt == 2) b = Integer.valueOf(arr[3]);}
-             else {if (str1 == null) str1 = arr[3]; if (str1!=null) str2 = arr[3];}
-             if (countOfInt > 2) break;
+             if (arr.length != 4) continue;
+             if (checkStringIsNumber(arr[2]) == true) countOfInt++;
+             if (checkStringIsNumber(arr[3]) == true) countOfInt++;
+             if (countOfInt != 2) continue;
              else count++;
-                listNamesBuyer.add(str1);
-                listGoods.add(str2);
-                listHowMany.add(a);
-                listMoney.add(b);
-                countOfInt = 0;
+                listNamesBuyer.add(arr[0]);
+                listGoods.add(arr[1]);
+                listHowMany.add(Integer.valueOf(2));
+                listMoney.add(Double.valueOf(arr[3]));
             }
-
         }catch (IOException e){
             System.out.println(e);
         }
@@ -93,8 +76,12 @@ public class SalesInfo {
         return map;
     }
 
+
+
     Map<String, AbstractMap.SimpleEntry<Double, Integer>> getCustomers(){
+
         Map<String, AbstractMap.SimpleEntry<Double, Integer>> map = new TreeMap<>();
+
         for (int i = 0; i < listHowMany.size(); i++){
             if (map.containsKey(listNamesBuyer.get(i))){
                 AbstractMap.SimpleEntry<Double, Integer> entry = map.get(listNamesBuyer.get(i));
