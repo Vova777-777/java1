@@ -101,5 +101,4 @@ public class SalesInfo {
         System.out.println(salesInfo.getCustomers());
 
      }
-
 }
