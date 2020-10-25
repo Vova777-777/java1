@@ -56,7 +56,7 @@ public class Insurance {
 
     public void setDuration(int months, int days, int hours){
         duration = Duration.ofSeconds(0);
-        duration = Duration.between(start, start.plusMonths(months).plusDays(days).plusDays(hours));
+        duration = Duration.between(start, start.plusMonths(months).plusDays(days).plusHours(hours));
         System.out.println(duration.toDays());
 
     }
@@ -97,9 +97,9 @@ FULL - стандартный формат Duration, который получа
     }
 
     public static void main(String[] args) {
-        ZonedDateTime start = ZonedDateTime.parse("2021-02-02T22:08:15.306949+03:00[Europe/Moscow]");
+        ZonedDateTime start = ZonedDateTime.parse("2020-10-25T20:58:13.848532+03:00[Europe/Moscow]");
         Insurance ins = new Insurance(start);
-        //ins.setDuration("0000-01-04T00:00:00", Insurance.FormatStyle.LONG);
-        System.out.println(ins.checkValid(ZonedDateTime.parse("2020-11-04T22:08:15.306986+03:00[Europe/Moscow]")));
+        ins.setDuration(0, 0, 1);
+        System.out.println(ins.toString());
     }
 }
