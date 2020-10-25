@@ -2,14 +2,12 @@ package ru.progwards.java1.lessons.datetime;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 import static java.time.format.DateTimeFormatter.*;
 
 public class Insurance {
 
     public static enum FormatStyle {SHORT, LONG, FULL}
-
     private ZonedDateTime start;
     private Duration duration;
     DateTimeFormatter dtf = null;
@@ -27,14 +25,12 @@ public class Insurance {
     }
 
     public Insurance(String strStart, FormatStyle style){
-        ZoneId zoneId = ZoneId.systemDefault();
-
         switch (style){
             case SHORT: LocalDate ld = LocalDate.parse(strStart, ISO_LOCAL_DATE);
-            start = ZonedDateTime.of(ld, LocalTime.of(00,00,00), zoneId);
+            start = ZonedDateTime.of(ld, LocalTime.of(00,00,00), ZoneId.systemDefault());
             break;
             case LONG: LocalDateTime localDateTime = LocalDateTime.parse(strStart, ISO_LOCAL_DATE_TIME);
-                start = ZonedDateTime.of(localDateTime, zoneId);
+                start = ZonedDateTime.of(localDateTime, ZoneId.systemDefault());
             break;
             case FULL: start = ZonedDateTime.parse(strStart, ISO_ZONED_DATE_TIME);
             break;
@@ -51,7 +47,6 @@ public class Insurance {
     public void setDuration(ZonedDateTime expiration){
         duration = Duration.ofSeconds(0);
         duration = Duration.between(start, expiration);
-        System.out.println(duration.toDays());//////
     }
 
     public void setDuration(int months, int days, int hours){
@@ -60,10 +55,6 @@ public class Insurance {
         System.out.println(duration.toDays());
 
     }
-
-/*SHORT - целое число миллисекунд (тип long)
-LONG  - ISO_LOCAL_DATE_TIME - как период, например “0000-06-03T10:00:00” означает, что продолжительность действия страховки 0 лет, 6 месяцев, 3 дня 10 часов.
-FULL - стандартный формат Duration, который получается через toString()*/
 
     public void setDuration(String strDuration, FormatStyle style){
         duration = Duration.ofSeconds(0);
@@ -84,6 +75,7 @@ FULL - стандартный формат Duration, который получа
 
     public boolean checkValid(ZonedDateTime dateTime){
         if (duration == null) return true;
+        if (start.isAfter(ZonedDateTime.now())) return false;
         if (!(dateTime.isAfter(start))) return false;
         if (dateTime.isAfter(start.plus(duration))) return false;
         else return true;
