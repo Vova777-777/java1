@@ -76,8 +76,7 @@ public class Insurance {
     public boolean checkValid(ZonedDateTime dateTime){
         if (duration == null) return true;
         if (start.isAfter(ZonedDateTime.now())) return false;
-        if (start.equals(ZonedDateTime.now())) return false;
-        if (!(dateTime.isAfter(start))) return false;
+        if (dateTime.isBefore(start)) return false;
         if (dateTime.isAfter(start.plus(duration))) return false;
         else return true;
     }
