@@ -27,9 +27,11 @@ public class Insurance {
     }
 
     public Insurance(String strStart, FormatStyle style){
+        ZoneId zoneId = ZoneId.systemDefault();
 
         switch (style){
-            case SHORT: start = ZonedDateTime.parse(strStart, ISO_LOCAL_DATE);
+            case SHORT: LocalDate ld = LocalDate.parse(strStart, ISO_LOCAL_DATE);
+            start = ZonedDateTime.of(ld, LocalTime.of(00,00,00), zoneId);
             break;
             case LONG: start = ZonedDateTime.parse(strStart, ISO_LOCAL_DATE_TIME);
             break;
@@ -94,7 +96,6 @@ FULL - стандартный формат Duration, который получа
     }
 
     public static void main(String[] args) {
-        System.out.println(ZoneId.getAvailableZoneIds());
         ZoneId zoneId = ZoneId.of("Europe/Moscow");
         ZonedDateTime zdt1 = ZonedDateTime.of(2020,9,1,00,00,00,00,zoneId);
         ZonedDateTime zdt2 = ZonedDateTime.of(2020,10,6,00,00,00,00,zoneId);
@@ -111,6 +112,8 @@ FULL - стандартный формат Duration, который получа
         //System.out.println(ins.duration);
 
         System.out.println(ins.checkValid(zdt2));
+
+        new Insurance("2020-10-24", FormatStyle.SHORT);
 
 
 
