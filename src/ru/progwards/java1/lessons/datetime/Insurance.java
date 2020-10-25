@@ -33,7 +33,8 @@ public class Insurance {
             case SHORT: LocalDate ld = LocalDate.parse(strStart, ISO_LOCAL_DATE);
             start = ZonedDateTime.of(ld, LocalTime.of(00,00,00), zoneId);
             break;
-            case LONG: start = ZonedDateTime.parse(strStart, ISO_LOCAL_DATE_TIME);
+            case LONG: LocalDateTime localDateTime = LocalDateTime.parse(strStart, ISO_LOCAL_DATE_TIME);
+                start = ZonedDateTime.of(localDateTime, zoneId);
             break;
             case FULL: start = ZonedDateTime.parse(strStart, ISO_ZONED_DATE_TIME);
             break;
@@ -49,7 +50,7 @@ public class Insurance {
 
     public void setDuration(ZonedDateTime expiration){
         duration = Duration.ofSeconds(0);
-        duration = Duration.between(expiration, start);
+        duration = Duration.between(start, expiration);
         System.out.println(duration.toDays());//////
     }
 
@@ -72,7 +73,7 @@ FULL - стандартный формат Duration, который получа
             case LONG:
                 LocalDateTime ldt2 = LocalDateTime.parse(strDuration, ISO_LOCAL_DATE_TIME);
                 LocalDateTime ldt1 = LocalDateTime.of(0000,01,01,00,00,00);
-                duration = Duration.between(ldt1, ldt2);
+                duration = Duration.between(ldt1, ldt2.plusMonths(1));
                 break;
             case FULL: duration = Duration.parse(strDuration);
             default:
@@ -83,7 +84,7 @@ FULL - стандартный формат Duration, который получа
 
     public boolean checkValid(ZonedDateTime dateTime){
         if (duration == null) return true;
-        if (!dateTime.isAfter(start)) return false;
+        if (!(dateTime.isAfter(start))) return false;
         if (dateTime.isAfter(start.plus(duration))) return false;
         else return true;
     }
@@ -96,28 +97,9 @@ FULL - стандартный формат Duration, который получа
     }
 
     public static void main(String[] args) {
-        ZoneId zoneId = ZoneId.of("Europe/Moscow");
-        ZonedDateTime zdt1 = ZonedDateTime.of(2020,9,1,00,00,00,00,zoneId);
-        ZonedDateTime zdt2 = ZonedDateTime.of(2020,10,6,00,00,00,00,zoneId);
-        Insurance ins  = new Insurance(zdt1);
-        //ins.setDuration(zdt2);
-
-
-        //ins.setDuration(1,0,1);
-        //System.out.println(ins.duration.toDays());
-
-        //ins.setDuration("1000", FormatStyle.SHORT);
-        //System.out.println(ins.duration);
-        ins.setDuration("0000-06-03T00:00:25", FormatStyle.LONG);
-        //System.out.println(ins.duration);
-
-        System.out.println(ins.checkValid(zdt2));
-
-        new Insurance("2020-10-24", FormatStyle.SHORT);
-
-
-
-
-
+        ZonedDateTime start = ZonedDateTime.parse("2021-02-02T22:08:15.306949+03:00[Europe/Moscow]");
+        Insurance ins = new Insurance(start);
+        //ins.setDuration("0000-01-04T00:00:00", Insurance.FormatStyle.LONG);
+        System.out.println(ins.checkValid(ZonedDateTime.parse("2020-11-04T22:08:15.306986+03:00[Europe/Moscow]")));
     }
 }
