@@ -7,22 +7,22 @@ import java.util.List;
 
 public class Profiler {
 
-    Instant insEnter;
-    Instant insExit;
+    Instant insEnter = Instant.now();
+    Instant insExit = Instant.now();
     long timeWorkSection = 0;
     public static List<StatisticInfo> list = new ArrayList<>();
+    static Profiler profiler = new Profiler();
 
 
 
 /*войти в профилировочную секцию, замерить время входа.*/
     public static void enterSection(String name){
-        new Profiler().insEnter = Instant.now();
+        profiler.insEnter = Instant.now();
     }
 
 /*выйти из профилировочной секции. Замерить время выхода, вычислить промежуток времени между входом и
 выходом в миллисекундах.*/
     public static void exitSection(String name){
-        Profiler profiler = new Profiler();
         profiler.insExit = Instant.now();
         long timeWorkSection = Duration.between(profiler.insEnter, profiler.insExit).toMillis();
         System.out.println(timeWorkSection);
