@@ -13,6 +13,13 @@ public class StatisticInfo {
     public int count;            /*количество вызовов. В случае, если вызовов более одного, fullTime и
                                selfTime содержат суммарное время выполнения всех вызовов.*/
 
+    StatisticInfo(String n, int ft, int st, int count){
+        this.sectionName = n;
+        this.fullTime = ft;
+        this.selfTime = st;
+        this.count = count;
+    }
+
     Instant insEnter = new Profiler().insEnter;
     Instant insExit = new Profiler().insExit;
 Profiler profiler = new Profiler();
