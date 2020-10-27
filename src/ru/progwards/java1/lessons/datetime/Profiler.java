@@ -9,7 +9,7 @@ public class Profiler {
 
     Instant insEnter;
     Instant insExit;
-    long timeWorkSection;
+    long timeWorkSection = 0;
     public static List<StatisticInfo> list = new ArrayList<>();
 
 

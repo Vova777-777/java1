@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StatisticInfo {
-    public String sectionName;
+    public String sectionName = "unknown";
     public int fullTime =(int) new Profiler().timeWorkSection;      //полное время выполнения секции в миллисекундах.
     public int selfTime = fullTime;       /* чистое время выполнения секции в миллисекундах. Для вложенных секций,
                                  из времени выполнения внешней секции нужно вычесть времена выполнения
