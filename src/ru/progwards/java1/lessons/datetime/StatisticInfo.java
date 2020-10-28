@@ -13,37 +13,34 @@ public class StatisticInfo {
     public int count;            /*количество вызовов. В случае, если вызовов более одного, fullTime и
                                selfTime содержат суммарное время выполнения всех вызовов.*/
 
-    StatisticInfo(String n, int ft, int st, int count){
-        this.sectionName = n;
-        this.fullTime = ft;
-        this.selfTime = st;
-        this.count = count;
-    }
 
-    Instant insEnter = new Profiler().insEnter;
-    Instant insExit = new Profiler().insExit;
-Profiler profiler = new Profiler();
+
+    Profiler profiler = new Profiler();
+    Instant insEnter = profiler.insEnter;
+    Instant insExit = profiler.insExit;
+List<StatisticInfo> list1 = new ArrayList<>();
 
     public void method(StatisticInfo statisticInfo){
-        if (profiler.list.isEmpty()) profiler.list.add(statisticInfo);
-        else if (profiler.list.contains(statisticInfo)) {method1(statisticInfo); method2(statisticInfo);}
+        if (list1.isEmpty()) list1.add(statisticInfo);
+        else if (list1.contains(statisticInfo)) {method1(statisticInfo); method2(statisticInfo);}
     }
 
     public void method1(StatisticInfo st){
-        for (int i = 0; i < profiler.list.size(); i++){
-            if (profiler.list.get(i).sectionName.equals(st.sectionName)) {profiler.list.get(i).count++;
-                profiler.list.get(i).fullTime = st.fullTime + profiler.list.get(i).fullTime;
+        for (int i = 0; i < list1.size(); i++){
+            if (list1.get(i).sectionName.equals(st.sectionName)) {list1.get(i).count++;
+                list1.get(i).fullTime = st.fullTime + list1.get(i).fullTime;
                 }
         }
     }
 
     public void method2(StatisticInfo stat){
-        int a = -1;
-        for (int i = 0; i < profiler.list.size(); i++){
-            if (stat.insEnter.isAfter(profiler.list.get(i).insEnter)
-                    &&stat.insEnter.isBefore(profiler.list.get(i).insExit)) profiler.list.get(i).selfTime = profiler.list.get(i).selfTime - stat.selfTime;
+        for (int i = 0; i < list1.size(); i++){
+            if (stat.insEnter.isAfter(list1.get(i).insEnter)
+                    &&stat.insEnter.isBefore(list1.get(i).insExit)) list1.get(i).selfTime = list1.get(i).selfTime - stat.selfTime;
 
         }
     }
+
+
 }
 

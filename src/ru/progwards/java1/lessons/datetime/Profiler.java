@@ -29,7 +29,7 @@ public class Profiler {
     }
 
     public static List<StatisticInfo> getStatisticInfo(){ //это пока чтоб не путался
-        return list;
+        return new StatisticInfo().list1;
     }
 
 
