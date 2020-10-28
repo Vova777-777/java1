@@ -15,15 +15,19 @@ public class Profiler {
     static Profiler profiler = new Profiler();
    static List<StatisticInfo> list1 = new ArrayList<>();
 
+   static String  name1;
 
 /*войти в профилировочную секцию, замерить время входа.*/
     public static void enterSection(String name){
-        insEnter = Instant.now();
+        if (insEnter==null) {name1= name;
+        insEnter = Instant.now();}
+        else return;
     }
 
 /*выйти из профилировочной секции. Замерить время выхода, вычислить промежуток времени между входом и
 выходом в миллисекундах.*/
     public static void exitSection(String name){
+        if (!(name1.equals(name))) return;
         insExit = Instant.now();
 
         long timeWorkSection = Duration.between(insEnter, insExit).toMillis();
@@ -31,6 +35,8 @@ public class Profiler {
         statisticInfo.sectionName = name;
         statisticInfo.timeOfEnter = insEnter;
         statisticInfo.fullTime = (int) timeWorkSection;
+        statisticInfo.selfTime = statisticInfo.fullTime;
+        statisticInfo.count++;
          method(statisticInfo);
         System.out.println(timeWorkSection);
     }
@@ -66,9 +72,15 @@ public class Profiler {
         for (int i = 0; i < 1000000; i++){
             listInt.add(i);
         }
+        enterSection("2");
+        exitSection("2");
         exitSection("1");
         System.out.println(getStatisticInfo().get(0).fullTime);
-
+        System.out.println(getStatisticInfo().get(0).selfTime);
+        System.out.println(getStatisticInfo().get(0).count);
+        System.out.println(getStatisticInfo().get(1).fullTime);
+        System.out.println(getStatisticInfo().get(1).selfTime);
+        System.out.println(getStatisticInfo().get(1).count);
 
 
 
