@@ -7,9 +7,9 @@ import java.util.List;
 
 public class Profiler {
 
-    Instant insEnter = Instant.now();
-    Instant insExit = Instant.now();
-    long timeWorkSection = 0;
+    static Instant insEnter ;
+    static Instant insExit ;
+    long timeWorkSection ;
     public static List<StatisticInfo> list = new ArrayList<>();
     static Profiler profiler = new Profiler();
    static List<StatisticInfo> list1 = new ArrayList<>();
@@ -17,16 +17,16 @@ public class Profiler {
 
 /*войти в профилировочную секцию, замерить время входа.*/
     public static void enterSection(String name){
-        profiler.insEnter = Instant.now();
+        insEnter = Instant.now();
     }
 
 /*выйти из профилировочной секции. Замерить время выхода, вычислить промежуток времени между входом и
 выходом в миллисекундах.*/
     public static void exitSection(String name){
-        profiler.insExit = Instant.now();
+        insExit = Instant.now();
         StatisticInfo statisticInfo = new StatisticInfo();
         statisticInfo.sectionName = name;
-        long timeWorkSection = Duration.between(profiler.insEnter, profiler.insExit).toMillis();
+        long timeWorkSection = Duration.between(insEnter, insExit).toMillis();
          method(statisticInfo);
         System.out.println(timeWorkSection);
     }
