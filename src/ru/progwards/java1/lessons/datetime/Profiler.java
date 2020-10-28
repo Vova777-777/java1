@@ -3,6 +3,7 @@ package ru.progwards.java1.lessons.datetime;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Profiler {
@@ -24,9 +25,12 @@ public class Profiler {
 выходом в миллисекундах.*/
     public static void exitSection(String name){
         insExit = Instant.now();
+
+        long timeWorkSection = Duration.between(insEnter, insExit).toMillis();
         StatisticInfo statisticInfo = new StatisticInfo();
         statisticInfo.sectionName = name;
-        long timeWorkSection = Duration.between(insEnter, insExit).toMillis();
+        statisticInfo.timeOfEnter = insEnter;
+        statisticInfo.fullTime = (int) timeWorkSection;
          method(statisticInfo);
         System.out.println(timeWorkSection);
     }
@@ -63,7 +67,7 @@ public class Profiler {
             listInt.add(i);
         }
         exitSection("1");
-        getStatisticInfo();
+        System.out.println(getStatisticInfo().get(0).fullTime);
 
 
 
