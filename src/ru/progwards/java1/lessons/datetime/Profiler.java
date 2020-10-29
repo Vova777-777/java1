@@ -79,7 +79,9 @@ public class Profiler {
     public static void method2(StatisticInfo stat){
         for (int i = 0; i < list1.size(); i++){
             if (stat.timeOfEnter.isBefore(list1.get(i).timeOfEnter)
-                    &&stat.timeOfEnter.isAfter(list1.get(i).timeOfEnter)) stat.selfTime = stat.selfTime - list1.get(i).fullTime;
+                    &&stat.timeOfEnter.isAfter(list1.get(i).timeOfEnter))
+            {stat.selfTime = stat.selfTime - list1.get(i).fullTime;
+            list1.remove(i); list1.add(stat);}
 
         }
     }
