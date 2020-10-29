@@ -2,9 +2,7 @@ package ru.progwards.java1.lessons.datetime;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Profiler {
 
@@ -15,39 +13,54 @@ public class Profiler {
     static Profiler profiler = new Profiler();
    static List<StatisticInfo> list1 = new ArrayList<>();
 
-   static String  name1;
 
+  static ArrayDeque<StatisticInfo> stack = new ArrayDeque<>();
 /*войти в профилировочную секцию, замерить время входа.*/
     public static void enterSection(String name){
-        if (insEnter==null) {name1= name;
-        insEnter = Instant.now();}
-        else return;
+
+        insEnter = Instant.now();
+        stack.push(createStaticInfo(name));
     }
 
 /*выйти из профилировочной секции. Замерить время выхода, вычислить промежуток времени между входом и
 выходом в миллисекундах.*/
     public static void exitSection(String name){
-        if (!(name1.equals(name))) return;
         insExit = Instant.now();
-
         long timeWorkSection = Duration.between(insEnter, insExit).toMillis();
+         StatisticInfo st = stack.pop();
+         st.fullTime = (int) timeWorkSection;
+         st.selfTime = st.fullTime;
+
+            method(st);
+
+
+    }
+
+    public static StatisticInfo createStaticInfo(String name){
         StatisticInfo statisticInfo = new StatisticInfo();
         statisticInfo.sectionName = name;
         statisticInfo.timeOfEnter = insEnter;
-        statisticInfo.fullTime = (int) timeWorkSection;
+        statisticInfo.fullTime = 0; //= (int) timeWorkSection;
         statisticInfo.selfTime = statisticInfo.fullTime;
         statisticInfo.count++;
-         method(statisticInfo);
-        System.out.println(timeWorkSection);
+        return statisticInfo;
     }
 
     public static List<StatisticInfo> getStatisticInfo(){ //это пока чтоб не путался
+        Collections.sort(list1, new Comparator<StatisticInfo>() {
+            @Override
+            public int compare(StatisticInfo o1, StatisticInfo o2) {
+                o1.sectionName.compareTo(o2.sectionName);
+                return -1;
+            }
+        });
         return list1;
     }
 
     public static void method(StatisticInfo statisticInfo){
         if (list1.isEmpty()) list1.add(statisticInfo);
         else if (list1.contains(statisticInfo.sectionName)) {method1(statisticInfo); method2(statisticInfo);}
+        else {list1.add(statisticInfo) ;method2(statisticInfo);}
     }
 
     public static void method1(StatisticInfo st){
@@ -81,8 +94,7 @@ public class Profiler {
         System.out.println(getStatisticInfo().get(1).fullTime);
         System.out.println(getStatisticInfo().get(1).selfTime);
         System.out.println(getStatisticInfo().get(1).count);
-
-
+        System.out.println(getStatisticInfo());
 
     }
 
