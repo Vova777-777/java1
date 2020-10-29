@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class StatisticInfo {
+ public class StatisticInfo {
     public String sectionName;
     public int fullTime;      //полное время выполнения секции в миллисекундах.
     public int selfTime;       /* чистое время выполнения секции в миллисекундах. Для вложенных секций,

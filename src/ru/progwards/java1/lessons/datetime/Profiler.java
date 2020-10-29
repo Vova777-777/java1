@@ -56,14 +56,22 @@ public class Profiler {
 
     public static void method(StatisticInfo statisticInfo){
         if (list1.isEmpty()) list1.add(statisticInfo);
-        else if (list1.contains(statisticInfo.sectionName)) {method1(statisticInfo); method2(statisticInfo);}
+        else if (containListStInfo(list1, statisticInfo.sectionName)) {method1(statisticInfo); method2(statisticInfo);}
         else {list1.add(statisticInfo) ;method2(statisticInfo);}
+    }
+
+    public static boolean containListStInfo(List<StatisticInfo> list, String name){
+        for (int i = 0; i < list.size(); i++){
+            if (list.get(i).sectionName.equals(name)) return true;
+        }
+        return false;
     }
 
     public static void method1(StatisticInfo st){
         for (int i = 0; i < list1.size(); i++){
             if (list1.get(i).sectionName.equals(st.sectionName)) {list1.get(i).count++;
                 list1.get(i).fullTime = st.fullTime + list1.get(i).fullTime;
+                list1.get(i).selfTime = st.selfTime + list1.get(i).selfTime;
             }
         }
     }
@@ -83,6 +91,14 @@ public class Profiler {
             listInt.add(i);
         }
         enterSection("2");
+        for (int i = 0; i < 1000; i++){
+            listInt.add(i);
+        }
+        exitSection("2");
+        enterSection("2");
+        for (int i = 0; i < 1000; i++){
+            listInt.add(i);
+        }
         exitSection("2");
         exitSection("1");
         System.out.println(getStatisticInfo().get(0).fullTime);
