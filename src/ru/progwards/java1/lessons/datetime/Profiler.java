@@ -8,9 +8,6 @@ public class Profiler {
 
     static Instant insEnter ;
     static Instant insExit ;
-    long timeWorkSection ;
-    public static List<StatisticInfo> list = new ArrayList<>();
-    static Profiler profiler = new Profiler();
    static List<StatisticInfo> list1 = new ArrayList<>();
 
 
@@ -73,8 +70,8 @@ public class Profiler {
 
     public static void method2(StatisticInfo stat){
         for (int i = 0; i < list1.size(); i++){
-            if (stat.timeOfEnter.isAfter(list1.get(i).timeOfEnter)
-                    &&stat.timeOfEnter.isBefore(list1.get(i).timeOfEnter)) list1.get(i).selfTime = list1.get(i).selfTime - stat.selfTime;
+            if (stat.timeOfEnter.isBefore(list1.get(i).timeOfEnter)
+                    &&stat.timeOfEnter.isAfter(list1.get(i).timeOfEnter)) stat.selfTime = stat.selfTime - list1.get(i).fullTime;
 
         }
     }
