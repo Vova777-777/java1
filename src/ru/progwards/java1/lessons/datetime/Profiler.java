@@ -60,10 +60,10 @@ public class Profiler {
 
     public static void method(StatisticInfo statisticInfo){
         if (list1.isEmpty()) list1.add(statisticInfo);
-        else {method2(statisticInfo);}
+        else {method2(statisticInfo);
         if (containListStInfo(list1, statisticInfo.sectionName)) {method1(statisticInfo); method2(statisticInfo);
         list1.remove(indexList1Remove); indexList1Remove = 0;}
-        list1.add(statisticInfo);
+        list1.add(statisticInfo);}
 
     }
 
