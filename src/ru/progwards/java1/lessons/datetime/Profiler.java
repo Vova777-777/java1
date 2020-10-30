@@ -10,6 +10,8 @@ public class Profiler {
     static Instant insExit ;
    static List<StatisticInfo> list1 = new ArrayList<>();
 
+  static int indexList1Remove = 0;
+
 
   static ArrayDeque<StatisticInfo> stack = new ArrayDeque<>();
 /*войти в профилировочную секцию, замерить время входа.*/
@@ -27,6 +29,7 @@ public class Profiler {
          StatisticInfo st = stack.pop();
          st.fullTime = (int) timeWorkSection;
          st.selfTime = st.fullTime;
+         st.timeOfExit = insExit;
 
             method(st);
 
@@ -37,6 +40,7 @@ public class Profiler {
         StatisticInfo statisticInfo = new StatisticInfo();
         statisticInfo.sectionName = name;
         statisticInfo.timeOfEnter = insEnter;
+        statisticInfo.timeOfExit = insExit;
         statisticInfo.fullTime = 0; //= (int) timeWorkSection;
         statisticInfo.selfTime = statisticInfo.fullTime;
         statisticInfo.count++;
@@ -47,8 +51,8 @@ public class Profiler {
         Collections.sort(list1, new Comparator<StatisticInfo>() {
             @Override
             public int compare(StatisticInfo o1, StatisticInfo o2) {
-                o1.sectionName.compareTo(o2.sectionName);
-                return -1;
+               o1.equals(o2);
+                return 0;
             }
         });
         return list1;
@@ -56,8 +60,11 @@ public class Profiler {
 
     public static void method(StatisticInfo statisticInfo){
         if (list1.isEmpty()) list1.add(statisticInfo);
-        else if (containListStInfo(list1, statisticInfo.sectionName)) {method1(statisticInfo); method2(statisticInfo);}
-        else {list1.add(statisticInfo) ;method2(statisticInfo);}
+        else {method2(statisticInfo);}
+        if (containListStInfo(list1, statisticInfo.sectionName)) {method1(statisticInfo); method2(statisticInfo);
+        list1.remove(indexList1Remove); indexList1Remove = 0;}
+        list1.add(statisticInfo);
+
     }
 
     public static boolean containListStInfo(List<StatisticInfo> list, String name){
@@ -69,9 +76,10 @@ public class Profiler {
 
     public static void method1(StatisticInfo st){
         for (int i = 0; i < list1.size(); i++){
-            if (list1.get(i).sectionName.equals(st.sectionName)) {list1.get(i).count++;
-                list1.get(i).fullTime = st.fullTime + list1.get(i).fullTime;
-                list1.get(i).selfTime = st.selfTime + list1.get(i).selfTime;
+            if (list1.get(i).sectionName.equals(st.sectionName)) {st.count++;
+                st.fullTime = st.fullTime + list1.get(i).fullTime;
+                st.selfTime = st.selfTime + list1.get(i).selfTime;
+                indexList1Remove = i;
             }
         }
     }
@@ -79,9 +87,9 @@ public class Profiler {
     public static void method2(StatisticInfo stat){
         for (int i = 0; i < list1.size(); i++){
             if (stat.timeOfEnter.isBefore(list1.get(i).timeOfEnter)
-                    &&stat.timeOfEnter.isAfter(list1.get(i).timeOfEnter))
-            {stat.selfTime = stat.selfTime - list1.get(i).fullTime;
-            list1.remove(i); list1.add(stat);}
+                    &&stat.timeOfExit.isAfter(list1.get(i).timeOfExit))
+            {for (int j = 0; j < list1.size(); j++)
+                stat.selfTime = stat.fullTime - list1.get(i).selfTime; }
 
         }
     }
