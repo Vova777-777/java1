@@ -25,12 +25,15 @@ countEnter++;
 /*выйти из профилировочной секции. Замерить время выхода, вычислить промежуток времени между входом и
 выходом в миллисекундах.*/
     public static void exitSection(String name){
+        StatisticInfo st = stack.pop();
         insExit = Instant.now();
-        long timeWorkSection = Duration.between(insEnter, insExit).toMillis();
-         StatisticInfo st = stack.pop();
+        st.timeOfExit = insExit;
+
+        long timeWorkSection = Duration.between(st.timeOfEnter, insExit).toMillis();
+
          st.fullTime = (int) timeWorkSection;
          st.selfTime = st.fullTime;
-         st.timeOfExit = insExit;
+
 
             method1(st);
             countExit++;
@@ -50,16 +53,7 @@ countEnter++;
         return statisticInfo;
     }
 
-    public static List<StatisticInfo> getStatisticInfo(){ //это пока чтоб не путался
-        Collections.sort(list2, new Comparator<StatisticInfo>() {
-            @Override
-            public int compare(StatisticInfo o1, StatisticInfo o2) {
-               o1.equals(o2);
-                return 0;
-            }
-        });
-        return list2;
-    }
+
 
     public static void method1(StatisticInfo statisticInfo){
         if (list1.isEmpty()) list1.add(statisticInfo);
@@ -101,37 +95,50 @@ countEnter++;
         return false;
     }
 
-    public static void main(String[] args) {
+    public static List<StatisticInfo> getStatisticInfo(){ //это пока чтоб не путался
+        Collections.sort(list2, new Comparator<StatisticInfo>() {
+            @Override
+            public int compare(StatisticInfo o1, StatisticInfo o2) {
+                o1.equals(o2);
+                return 0;
+            }
+        });
+        return list2;
+    }
+
+    public static void main(String[] args) throws InterruptedException {
         List<Integer> listInt = new ArrayList<>();
         enterSection("1");
-        for (int i = 0; i < 10; i++){
-            listInt.add(i);
-        }
+        Thread.sleep(300);
 
         enterSection("2");
+        Thread.sleep(200);
+
         enterSection("3");
-        for (int i = 0; i < 10; i++){
-            listInt.add(i);
-        }
+        Thread.sleep(100);
         exitSection("3");
+
         exitSection("2");
 
         enterSection("2");
+        Thread.sleep(200);
+
         enterSection("3");
-        for (int i = 0; i < 10; i++){
-            listInt.add(i);
-        }
+        Thread.sleep(100);
         exitSection("3");
+
         exitSection("2");
 
         enterSection("2");
+        Thread.sleep(200);
+
         enterSection("3");
-        for (int i = 0; i < 10; i++){
-            listInt.add(i);
-        }
+        Thread.sleep(100);
         exitSection("3");
+
         exitSection("2");
         exitSection("1");
+
 
         System.out.println(getStatisticInfo());
 
