@@ -36,7 +36,7 @@ public static int countExit = 0;
         StatisticInfo st = stack.pop();
         insExit = Instant.now();
         st.timeOfExit = insExit;
-        long timeWorkSection = Duration.between(st.timeOfEnter, insExit).toMillis();
+        long timeWorkSection = Duration.between(st.timeOfEnter, st.timeOfExit).toMillis();
         st.fullTime = (int) timeWorkSection;
         st.selfTime = st.fullTime;
         method1(st);
