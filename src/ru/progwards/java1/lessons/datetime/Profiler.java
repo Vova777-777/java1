@@ -59,7 +59,7 @@ public static int countExit = 0;
                 if (statisticInfo.equals(list1.get(i))){
                     statisticInfo.fullTime = statisticInfo.fullTime + list1.get(i).fullTime;
                     statisticInfo.count = statisticInfo.count + list1.get(i).count;
-                    statisticInfo.selfTime = statisticInfo.selfTime + list1.get(i).selfTime;
+                    //statisticInfo.selfTime = statisticInfo.selfTime + list1.get(i).selfTime;
                 }
 
                 if (statisticInfo.equals(list1.get(i))) {list1.set(i, statisticInfo); count777 = 1;}
@@ -70,6 +70,9 @@ public static int countExit = 0;
 
         public static List<StatisticInfo> getStatisticInfo(){
         list1.sort(comparator);
+        for (int i = 0; i < list1.size(); i++){
+            list1.get(i).selfTime = list1.get(i).selfTime * list1.get(i).count;
+        }
         return list1;
     }
 
