@@ -73,33 +73,48 @@ public static int countExit = 0;
         }
 
         public static List<StatisticInfo> getStatisticInfo(){ //это пока чтоб не путался
-        list1.sort(new Comparator<StatisticInfo>() {
-            @Override
-            public int compare(StatisticInfo o1, StatisticInfo o2) {
-                if (o1.equals(o2))
-                return 0;
-                if (o1.sectionName.compareTo(o2.sectionName) > 0) return 1;
-                else return -1;
-            }
-        });
+        list1.sort(comparator);
         return list1;
     }
+
+   static Comparator<StatisticInfo> comparator = new Comparator<StatisticInfo>() {
+        @Override
+        public int compare(StatisticInfo o1, StatisticInfo o2) {
+            if (o1.equals(o2))
+                return 0;
+            if (o1.sectionName.compareTo(o2.sectionName) > 0) return 1;
+            else return -1;
+        }
+    };
 
     public static void main(String[] args) throws InterruptedException {
         List<Integer> listInt = new ArrayList<>();
         enterSection("1");
         Thread.sleep(1);
-        enterSection("2");
+
+        enterSection("Process2");
         Thread.sleep(2);
-        enterSection("3");
+        enterSection("Process3");
         Thread.sleep(1);
-        exitSection("3");
-        exitSection("2");
+        exitSection("Process3");
+        exitSection("Process2");
+
+        enterSection("Process2");
+        Thread.sleep(2);
+        enterSection("Process3");
+        Thread.sleep(1);
+        exitSection("Process3");
+        exitSection("Process2");
+
+
         exitSection("1");
 
+        enterSection("1");
+        Thread.sleep(1);
+        exitSection("1");
 
         enterSection("1");
-        Thread.sleep(100);
+        Thread.sleep(1);
         exitSection("1");
 
 
