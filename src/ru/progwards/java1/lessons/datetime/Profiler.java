@@ -9,11 +9,7 @@ public class Profiler {
     static Instant insEnter ;
     static Instant insExit ;
    static List<StatisticInfo> list1 = new ArrayList<>();
-   static List<StatisticInfo> list2 = new ArrayList<>();
-
   public static int count777 = 0;
-
-
 public static int countExit = 0;
 
   static ArrayDeque<StatisticInfo> stack = new ArrayDeque<>();
@@ -72,7 +68,7 @@ public static int countExit = 0;
             count777 = 0;
         }
 
-        public static List<StatisticInfo> getStatisticInfo(){ //это пока чтоб не путался
+        public static List<StatisticInfo> getStatisticInfo(){
         list1.sort(comparator);
         return list1;
     }
@@ -106,9 +102,7 @@ public static int countExit = 0;
         exitSection("Process3");
         exitSection("Process2");
 
-
         exitSection("1");
-
         enterSection("1");
         Thread.sleep(1);
         exitSection("1");
@@ -116,15 +110,6 @@ public static int countExit = 0;
         enterSection("1");
         Thread.sleep(1);
         exitSection("1");
-
-
-
-
-
-
-
         System.out.println(getStatisticInfo());
-
     }
-
 }
