@@ -11,13 +11,13 @@ public class Profiler {
    static List<StatisticInfo> list1 = new ArrayList<>();
    static List<StatisticInfo> list2 = new ArrayList<>();
 
-public static int countEnter = 0;
+public static int count111 = 0;
+public static int index111 = 0;
 public static int countExit = 0;
 
   static ArrayDeque<StatisticInfo> stack = new ArrayDeque<>();
 /*войти в профилировочную секцию, замерить время входа.*/
     public static void enterSection(String name){
-countEnter++;
         insEnter = Instant.now();
         stack.push(createStaticInfo(name));
     }
@@ -28,17 +28,11 @@ countEnter++;
         StatisticInfo st = stack.pop();
         insExit = Instant.now();
         st.timeOfExit = insExit;
-
         long timeWorkSection = Duration.between(st.timeOfEnter, insExit).toMillis();
+        st.fullTime = (int) timeWorkSection;
+        st.selfTime = st.fullTime;
+        method1(st);
 
-         st.fullTime = (int) timeWorkSection;
-         st.selfTime = st.fullTime;
-
-
-            method1(st);
-            countExit++;
-
-            if (countExit == countEnter) method2();
 
     }
 
@@ -57,87 +51,61 @@ countEnter++;
 
     public static void method1(StatisticInfo statisticInfo){
         if (list1.isEmpty()) list1.add(statisticInfo);
-        else {list1.add(statisticInfo); method11();}
+        else { method11(statisticInfo);}
     }
-    public static void method11(){
-        int index = list1.size() - 1;
-        int variable = list1.get(index).fullTime;
+    public static void method11(StatisticInfo statisticInfo){
         for (int i = 0; i < list1.size(); i++){
-            if (list1.get(index).timeOfEnter.isBefore(list1.get(i).timeOfEnter)
-                    &&list1.get(index).timeOfExit.isAfter(list1.get(i).timeOfExit)){
-                list1.get(index).selfTime = variable - list1.get(i).selfTime;
-            variable = list1.get(index).selfTime;}
+            if (statisticInfo.timeOfEnter.isBefore(list1.get(i).timeOfEnter)
+                    &&statisticInfo.timeOfExit.isAfter(list1.get(i).timeOfExit))
+              statisticInfo.selfTime =statisticInfo.fullTime - list1.get(i).selfTime;
+            method111(statisticInfo, list1.get(i));
+            if (count111 > 0) {list1.set(i, statisticInfo);}
+            else continue;
+        }
+        if (count111 == 0){list1.add(statisticInfo); }
+        count111 = 0;
+
+    }
+
+    public static void method111(StatisticInfo stat, StatisticInfo statFromList){
+        if (stat.equals(statFromList)){
+            stat.fullTime = stat.fullTime + statFromList.fullTime;
+            stat.count = stat.count + statFromList.count;
+            stat.selfTime = stat.selfTime + statFromList.selfTime;
+            count111 = 1;
         }
     }
 
-    public static void method2(){
-        list2.add(list1.get(list1.size() - 1));
-        for (int i =0; i < list1.size()-1; i++){
-            StatisticInfo stat = list1.get(i);
-            for (int j = i+1; j < list1.size(); j++){
-                if (stat.equals(list1.get(j))){
-                stat.fullTime = stat.fullTime + list1.get(j).fullTime;
-                stat.count = stat.count + list1.get(j).count;
-                stat.selfTime = stat.selfTime + list1.get(j).selfTime;
-                }
-            }
-            method22(stat);
-        }
-    }
-    public static void method22(StatisticInfo stat){
-        if (list2.isEmpty()) list2.add(stat);
-        else if (!checkContain(stat)) list2.add(stat);
-    }
-    public static boolean checkContain(StatisticInfo stat){
-        for (int i = 0; i < list2.size(); i++){
-            if (stat.sectionName.equals(list2.get(i).sectionName)) return true;
-        }
-        return false;
-    }
+
 
     public static List<StatisticInfo> getStatisticInfo(){ //это пока чтоб не путался
         Collections.sort(list2, new Comparator<StatisticInfo>() {
+            int result;
             @Override
             public int compare(StatisticInfo o1, StatisticInfo o2) {
-                o1.equals(o2);
-                return 0;
+              if  (o1.sectionName.equals(o2.sectionName)) result = 0;
+              else if (o1.sectionName.compareTo(o2.sectionName) == 1) result = 1;
+              else if (o2.sectionName.compareTo(o1.sectionName) == -1) result = -1;
+              return result;
             }
         });
-        return list2;
+        return list1;
     }
 
     public static void main(String[] args) throws InterruptedException {
         List<Integer> listInt = new ArrayList<>();
         enterSection("1");
         Thread.sleep(300);
-
         enterSection("2");
         Thread.sleep(200);
-
-        enterSection("3");
-        Thread.sleep(100);
-        exitSection("3");
-
         exitSection("2");
-
-        enterSection("2");
-        Thread.sleep(200);
-
         enterSection("3");
-        Thread.sleep(100);
+        Thread.sleep(300);
         exitSection("3");
-
-        exitSection("2");
-
-        enterSection("2");
-        Thread.sleep(200);
-
-        enterSection("3");
-        Thread.sleep(100);
-        exitSection("3");
-
-        exitSection("2");
         exitSection("1");
+
+
+
 
 
         System.out.println(getStatisticInfo());
