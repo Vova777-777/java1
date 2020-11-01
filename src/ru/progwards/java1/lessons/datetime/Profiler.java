@@ -72,23 +72,14 @@ public static int countExit = 0;
             count777 = 0;
         }
 
-
-
-
-
-
-
-
-
-    public static List<StatisticInfo> getStatisticInfo(){ //это пока чтоб не путался
-        Collections.sort(list2, new Comparator<StatisticInfo>() {
-            int result;
+        public static List<StatisticInfo> getStatisticInfo(){ //это пока чтоб не путался
+        list1.sort(new Comparator<StatisticInfo>() {
             @Override
             public int compare(StatisticInfo o1, StatisticInfo o2) {
-              if  (o1.sectionName.equals(o2.sectionName)) result = 0;
-              else if (o1.sectionName.compareTo(o2.sectionName) == 1) result = 1;
-              else if (o2.sectionName.compareTo(o1.sectionName) == -1) result = -1;
-              return result;
+                if (o1.equals(o2))
+                return 0;
+                if (o1.sectionName.compareTo(o2.sectionName) > 0) return 1;
+                else return -1;
             }
         });
         return list1;
