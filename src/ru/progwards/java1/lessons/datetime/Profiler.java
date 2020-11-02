@@ -73,13 +73,6 @@ public class Profiler {
         }
     }
 
-    public static boolean checkList2(StatisticInfo statisticInfo){
-        if (list2.isEmpty()) return false;
-        for (int i = 0; i < list2.size(); i++){
-            if (statisticInfo.sectionName.equals(list2.get(i).sectionName)) return true;
-        }
-        return false;
-    }
 
 
    static Comparator<StatisticInfo> comparator = new Comparator<StatisticInfo>() {
@@ -96,7 +89,7 @@ public class Profiler {
 
     public static void main(String[] args) throws InterruptedException {
         List<Integer> listInt = new ArrayList<>();
-        enterSection("1");
+     /*   enterSection("1");
         Thread.sleep(100);
 
         enterSection("Process2");
@@ -113,7 +106,7 @@ public class Profiler {
        exitSection("Process3");
         exitSection("Process2");
 
-        exitSection("1");
+        exitSection("1");*/
 
         enterSection("1");
         Thread.sleep(100);
