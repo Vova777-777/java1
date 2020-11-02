@@ -8,7 +8,7 @@ public class Profiler {
 
     static Instant insEnter ;
     static Instant insExit ;
-   static List<StatisticInfo> statisticInfoList = new ArrayList<>();
+   static List<StatisticInfo> listStatisticInfo = new ArrayList<>();
    static List<StatisticInfo> resultList = new ArrayList<>();
 
 
@@ -37,11 +37,11 @@ public class Profiler {
         long timeWorkSection = Duration.between(st.timeOfEnter, st.timeOfExit).toMillis();
         st.fullTime = (int) timeWorkSection;
         st.selfTime = st.fullTime;
-        statisticInfoList.add(st);
+        listStatisticInfo.add(st);
     }
 
         public static List<StatisticInfo> getStatisticInfo(){
-        if (statisticInfoList.size() == 1) resultList.add(statisticInfoList.get(0));
+        if (listStatisticInfo.size() == 1) resultList.add(listStatisticInfo.get(0));
         getSelfTimeForEach();
         method2();
         resultList.sort(comparator);
@@ -50,34 +50,29 @@ public class Profiler {
 
     public static void getSelfTimeForEach(){
 
-        for (int i = 0; i < statisticInfoList.size(); i++){
-            for (int j = 0; j < statisticInfoList.size(); j++)
-            if (statisticInfoList.get(i).timeOfEnter.isBefore(statisticInfoList.get(j).timeOfEnter)
-                    && statisticInfoList.get(i).timeOfExit.isAfter(statisticInfoList.get(j).timeOfExit))
-                statisticInfoList.get(i).selfTime = statisticInfoList.get(i).selfTime - statisticInfoList.get(j).selfTime;
+        for (int i = 0; i < listStatisticInfo.size(); i++){
+            for (int j = 0; j < listStatisticInfo.size(); j++)
+            if (listStatisticInfo.get(i).timeOfEnter.isBefore(listStatisticInfo.get(j).timeOfEnter)
+                    && listStatisticInfo.get(i).timeOfExit.isAfter(listStatisticInfo.get(j).timeOfExit))
+                listStatisticInfo.get(i).selfTime = listStatisticInfo.get(i).selfTime - listStatisticInfo.get(j).selfTime;
         }
     }
 
     public static void method2(){
-        for (int i = 0; i < statisticInfoList.size(); i ++){
-            StatisticInfo statisticInfo = statisticInfoList.get(i);
+        for (int i = 0; i < listStatisticInfo.size(); i ++){
+            StatisticInfo statisticInfo = listStatisticInfo.get(i);
             if(resultList.contains(statisticInfo)) continue;
-            for (int j = i + 1; j <= statisticInfoList.size(); j++){
-                if (j == statisticInfoList.size()) break;
-                if (statisticInfo.equals(statisticInfoList.get(j))){
-                    statisticInfo.fullTime = statisticInfo.fullTime + statisticInfoList.get(j).fullTime;
-                    statisticInfo.count = statisticInfo.count + statisticInfoList.get(j).count;
-                    statisticInfo.selfTime = statisticInfo.selfTime + statisticInfoList.get(j).selfTime;
-
+            for (int j = i + 1; j <= listStatisticInfo.size(); j++){
+                if (j == listStatisticInfo.size()) break; //чтобы не было исключения по размеру списка
+                if (statisticInfo.equals(listStatisticInfo.get(j))){
+                    statisticInfo.fullTime = statisticInfo.fullTime + listStatisticInfo.get(j).fullTime;
+                    statisticInfo.count = statisticInfo.count + listStatisticInfo.get(j).count;
+                    statisticInfo.selfTime = statisticInfo.selfTime + listStatisticInfo.get(j).selfTime;
                 }
             }
-
-
             resultList.add(statisticInfo);
         }
     }
-
-
 
    static Comparator<StatisticInfo> comparator = new Comparator<StatisticInfo>() {
         @Override
@@ -89,8 +84,6 @@ public class Profiler {
         }
     };
 
-
-
     public static void main(String[] args) throws InterruptedException {
         List<Integer> listInt = new ArrayList<>();
         enterSection("1");
@@ -101,24 +94,24 @@ public class Profiler {
        enterSection("Process3");
        Thread.sleep(100);
       exitSection("Process3");
-        exitSection("Process2");
+      exitSection("Process2");
 
-       // enterSection("Process2");
-      //  Thread.sleep(200);
-      // enterSection("Process3");
-      // Thread.sleep(100);
-       //exitSection("Process3");
-       // exitSection("Process2");
+       enterSection("Process2");
+      Thread.sleep(200);
+       enterSection("Process3");
+      Thread.sleep(100);
+       exitSection("Process3");
+        exitSection("Process2");
 
         exitSection("1");
 
-      //  enterSection("1");
-      //  Thread.sleep(100);
-      //  exitSection("1");
+        enterSection("1");
+        Thread.sleep(100);
+        exitSection("1");
 
-      //  enterSection("1");
-        ///Thread.sleep(100);
-        //exitSection("1");
+        enterSection("1");
+        Thread.sleep(100);
+        exitSection("1");
         System.out.println(getStatisticInfo());
     }
 
