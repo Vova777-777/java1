@@ -48,6 +48,7 @@ public class Profiler {
     }
 
     public static void method1(){
+        if (list1.size() == 1) list2.add(list1.get(0));
         for (int i = list1.size() - 1; i > 0; i--){
             for (int j = i - 1; j>= 0; j--)
             if (list1.get(i).timeOfEnter.isBefore(list1.get(j).timeOfEnter)
@@ -105,12 +106,12 @@ public class Profiler {
       exitSection("Process3");
         exitSection("Process2");
 
-       // enterSection("Process2");
-       // Thread.sleep(200);
-       // enterSection("Process3");
-       // Thread.sleep(100);
-       // exitSection("Process3");
-       // exitSection("Process2");
+        enterSection("Process2");
+        Thread.sleep(200);
+       enterSection("Process3");
+       Thread.sleep(100);
+       exitSection("Process3");
+        exitSection("Process2");
 
         exitSection("1");
 
