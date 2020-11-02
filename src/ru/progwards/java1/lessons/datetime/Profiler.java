@@ -117,4 +117,5 @@ public class Profiler {
         exitSection("1");
         System.out.println(getStatisticInfo());
     }
+
 }
