@@ -105,6 +105,7 @@ public class Profiler {
 
         exitSection("1");
 
+
         enterSection("1");
         Thread.sleep(100);
         exitSection("1");
