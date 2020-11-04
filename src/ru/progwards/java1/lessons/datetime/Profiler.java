@@ -54,7 +54,7 @@ public class Profiler {
     }
 
 
-    private static List<StatisticInfo> getStatisticInfo() {
+    public static List<StatisticInfo> getStatisticInfo() {
         List<StatisticInfo> commonStatistic = new ArrayList<>();
         statisticInfos.sort(comparator);
 
@@ -75,7 +75,7 @@ public class Profiler {
         return commonStatistic;
     }
 
-    private static List<StatisticInfo> filterBySectionName(List<StatisticInfo> statisticInfos, String sectionName) {
+    public static List<StatisticInfo> filterBySectionName(List<StatisticInfo> statisticInfos, String sectionName) {
         List<StatisticInfo> filteredByName = new ArrayList<>();
         for (StatisticInfo statisticInfo : statisticInfos) {
             if (statisticInfo.sectionName.equals(sectionName)) {
