@@ -11,7 +11,7 @@ public class Profiler {
     private static ArrayDeque<StatisticInfo> stack = new ArrayDeque<>();
 
     //войти в профилировочную секцию, замерить время входа./
-    private static void enterSection(String name) {
+    public static void enterSection(String name) {
         StatisticInfo staticInfo = createStatisticInfo(name);
         stack.push(staticInfo);
         statisticInfos.add(staticInfo);
@@ -27,7 +27,7 @@ public class Profiler {
 
     /*выйти из профилировочной секции. Замерить время выхода, вычислить промежуток времени между входом и
     выходом в миллисекундах.*/
-    private static void exitSection(String name) {
+    public static void exitSection(String name) {
         StatisticInfo si = stack.pop();
         int indexOfSt = statisticInfos.lastIndexOf(si);
         Instant insExit = Instant.now();
