@@ -6,82 +6,98 @@ import java.util.*;
 
 public class Profiler {
 
-    static Instant insEnter ;
-    static Instant insExit ;
-   static List<StatisticInfo> listStatisticInfo = new ArrayList<>();
-   static List<StatisticInfo> resultList = new ArrayList<>();
+    private static LinkedList<StatisticInfo> statisticInfos = new LinkedList<>();
 
+    private static ArrayDeque<StatisticInfo> stack = new ArrayDeque<>();
 
-
-  static ArrayDeque<StatisticInfo> stack = new ArrayDeque<>();
-/*войти в профилировочную секцию, замерить время входа.*/
-    public static void enterSection(String name){
-        insEnter = Instant.now();
-        stack.push(createStaticInfo(name));
+    //войти в профилировочную секцию, замерить время входа./
+    private static void enterSection(String name) {
+        StatisticInfo staticInfo = createStatisticInfo(name);
+        stack.push(staticInfo);
+        statisticInfos.add(staticInfo);
     }
 
-    public static StatisticInfo createStaticInfo(String name){
+    private static StatisticInfo createStatisticInfo(String name) {
         StatisticInfo statisticInfo = new StatisticInfo();
         statisticInfo.sectionName = name;
-        statisticInfo.timeOfEnter = insEnter;
+        statisticInfo.timeOfEnter = Instant.now();
         statisticInfo.count++;
         return statisticInfo;
     }
 
-/*выйти из профилировочной секции. Замерить время выхода, вычислить промежуток времени между входом и
-выходом в миллисекундах.*/
-    public static void exitSection(String name){
-        StatisticInfo st = stack.pop();
-        insExit = Instant.now();
-        st.timeOfExit = insExit;
-        long timeWorkSection = Duration.between(st.timeOfEnter, st.timeOfExit).toMillis();
-        st.fullTime = (int) timeWorkSection;
-        st.selfTime = st.fullTime;
-        listStatisticInfo.add(st);
-    }
+    /*выйти из профилировочной секции. Замерить время выхода, вычислить промежуток времени между входом и
+    выходом в миллисекундах.*/
+    private static void exitSection(String name) {
+        StatisticInfo si = stack.pop();
+        int indexOfSt = statisticInfos.lastIndexOf(si);
+        Instant insExit = Instant.now();
+        si.timeOfExit = insExit;
+        long timeWorkSection = Duration.between(si.timeOfEnter, insExit).toMillis();
+        si.fullTime = (int) timeWorkSection;
 
-        public static List<StatisticInfo> getStatisticInfo(){
-        if (listStatisticInfo.size() == 1) resultList.add(listStatisticInfo.get(0));
-        getSelfTimeForEach();
-        method2();
-        resultList.sort(comparator);
-        return resultList;
-    }
-
-    public static void getSelfTimeForEach(){
-
-        for (int i = 0; i < listStatisticInfo.size(); i++){
-            for (int j = 0; j < listStatisticInfo.size(); j++)
-            if (listStatisticInfo.get(i).timeOfEnter.isBefore(listStatisticInfo.get(j).timeOfEnter)
-                    && listStatisticInfo.get(i).timeOfExit.isAfter(listStatisticInfo.get(j).timeOfExit))
-                listStatisticInfo.get(i).selfTime = listStatisticInfo.get(i).selfTime - listStatisticInfo.get(j).selfTime;
+        if (indexOfSt == statisticInfos.size() - 1) {
+            si.selfTime = si.fullTime;
+        } else {
+            StatisticInfo childSi = statisticInfos.get(indexOfSt + 1);
+            List<StatisticInfo> statisticInfosFiltered = filterBySectionName(Profiler.statisticInfos.subList(indexOfSt, statisticInfos.size()), childSi.sectionName);
+            int fullTimeChild = (int) fullTimeBySection(statisticInfosFiltered);
+            si.selfTime = si.fullTime - fullTimeChild;
         }
     }
 
-    public static void method2(){
-        for (int i = 0; i < listStatisticInfo.size(); i ++){
-            StatisticInfo statisticInfo = listStatisticInfo.get(i);
-            if(resultList.contains(statisticInfo)) continue;
-            for (int j = i + 1; j <= listStatisticInfo.size(); j++){
-                if (j == listStatisticInfo.size()) break; //чтобы не было исключения по размеру списка
-                if (statisticInfo.equals(listStatisticInfo.get(j))){
-                    statisticInfo.fullTime = statisticInfo.fullTime + listStatisticInfo.get(j).fullTime;
-                    statisticInfo.count = statisticInfo.count + listStatisticInfo.get(j).count;
-                    statisticInfo.selfTime = statisticInfo.selfTime + listStatisticInfo.get(j).selfTime;
+    private static long fullTimeBySection(List<StatisticInfo> statisticInfosFiltered) {
+        long fullTime = 0;
+        for (StatisticInfo si: statisticInfosFiltered) {
+            fullTime = fullTime + si.fullTime;
+        }
+        return fullTime;
+    }
+
+
+    private static List<StatisticInfo> getStatisticInfo() {
+        List<StatisticInfo> commonStatistic = new ArrayList<>();
+        statisticInfos.sort(comparator);
+
+        Set<String> uniqueNames = getUniqueStatisticInfoNames(statisticInfos);
+        for (String uniqueName : uniqueNames) {
+            List<StatisticInfo> statisticInfosFilteredByName = filterBySectionName(Profiler.statisticInfos, uniqueName);
+            if(statisticInfosFilteredByName.size() == 1) {
+                commonStatistic.add(statisticInfosFilteredByName.get(0));
+            }else {
+                StatisticInfo reducedStatisticInfo = statisticInfosFilteredByName.get(0);
+                for (int i = 1; i < statisticInfosFilteredByName.size(); i++) {
+                    reducedStatisticInfo = reducedStatisticInfo.plus(statisticInfosFilteredByName.get(i));
                 }
+                commonStatistic.add(reducedStatisticInfo);
             }
-            resultList.add(statisticInfo);
         }
+        commonStatistic.sort(comparator);
+        return commonStatistic;
     }
 
-   static Comparator<StatisticInfo> comparator = new Comparator<StatisticInfo>() {
-        @Override
-        public int compare(StatisticInfo o1, StatisticInfo o2) {
-            if (o1.equals(o2))
-                return 0;
-            if (o1.sectionName.compareTo(o2.sectionName) > 0) return 1;
-            else return -1;
+    private static List<StatisticInfo> filterBySectionName(List<StatisticInfo> statisticInfos, String sectionName) {
+        List<StatisticInfo> filteredByName = new ArrayList<>();
+        for (StatisticInfo statisticInfo : statisticInfos) {
+            if (statisticInfo.sectionName.equals(sectionName)) {
+                filteredByName.add(statisticInfo);
+            }
         }
+        return filteredByName;
+    }
+
+    private static Set<String> getUniqueStatisticInfoNames(List<StatisticInfo> statisticInfos) {
+        List<String> names = new LinkedList<>();
+        for (StatisticInfo statisticInfo : statisticInfos) {
+            names.add(statisticInfo.sectionName);
+        }
+        return new HashSet<>(names);
+    }
+
+    private static Comparator<StatisticInfo> comparator = (o1, o2) -> {
+        if (o1.equals(o2))
+            return 0;
+        if (o1.sectionName.compareTo(o2.sectionName) > 0) return 1;
+        else return -1;
     };
 
     public static void main(String[] args) throws InterruptedException {

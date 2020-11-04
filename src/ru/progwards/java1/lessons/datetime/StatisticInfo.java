@@ -3,17 +3,24 @@ package ru.progwards.java1.lessons.datetime;
 import java.time.Instant;
 import java.util.Objects;
 
- public class StatisticInfo {
+public class StatisticInfo {
     public String sectionName;
     public int fullTime;
     public int selfTime;
 
-
     public int count;
-
 
     public Instant timeOfEnter;
     public Instant timeOfExit;
+
+    public StatisticInfo plus(StatisticInfo other) {
+        StatisticInfo statisticInfo = new StatisticInfo();
+        statisticInfo.sectionName = this.sectionName;
+        statisticInfo.fullTime = this.fullTime + other.fullTime;
+        statisticInfo.selfTime = this.selfTime + other.selfTime;
+        statisticInfo.count = this.count + other.count;
+        return statisticInfo;
+    }
 
     @Override
     public boolean equals(Object o) {
