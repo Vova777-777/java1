@@ -85,7 +85,7 @@ public class Profiler {
         return filteredByName;
     }
 
-    private static Set<String> getUniqueStatisticInfoNames(List<StatisticInfo> statisticInfos) {
+    public static Set<String> getUniqueStatisticInfoNames(List<StatisticInfo> statisticInfos) {
         List<String> names = new LinkedList<>();
         for (StatisticInfo statisticInfo : statisticInfos) {
             names.add(statisticInfo.sectionName);
