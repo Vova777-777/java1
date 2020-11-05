@@ -41,9 +41,9 @@ public class Profiler {
         return resultList;
     }
     public static void getSelfTimeForEach(){
-        for (int i = 0; i < listStatisticInfo.size(); i++){
-            for (int j = 0; j < listStatisticInfo.size(); j++)
-                if (listStatisticInfo.get(i).timeOfEnter.isBefore(listStatisticInfo.get(j).timeOfEnter)
+        for (int i = 1; i < listStatisticInfo.size(); i++){
+            for (int j = 0; j < i; j++)
+                if (listStatisticInfo.get(i).timeOfEnter.isBefore(listStatisticInfo.get(j).timeOfExit)
                         && listStatisticInfo.get(i).timeOfExit.isAfter(listStatisticInfo.get(j).timeOfEnter))
                     listStatisticInfo.get(i).selfTime = listStatisticInfo.get(i).selfTime - listStatisticInfo.get(j).selfTime;
         }
@@ -75,23 +75,18 @@ public class Profiler {
     public static void main(String[] args) throws InterruptedException {
         List<Integer> listInt = new ArrayList<>();
         enterSection("1");
-        Thread.sleep(100);
-        enterSection("Process2");
-        Thread.sleep(200);
-        enterSection("Process3");
-        Thread.sleep(100);
-        exitSection("Process3");
-        exitSection("Process2");
-        enterSection("Process2");
-        Thread.sleep(200);
-        enterSection("Process3");
-        Thread.sleep(100);
-        exitSection("Process3");
-        exitSection("Process2");
-        exitSection("1");
-        enterSection("1");
-        Thread.sleep(100);
-        exitSection("1");
+
+      // enterSection("Process2");
+       // Thread.sleep(200);
+      //  enterSection("Process3");
+      //  Thread.sleep(100);
+      //  exitSection("Process3");
+      //  exitSection("Process2");
+       // Thread.sleep(100);
+       // exitSection("1");
+      //  enterSection("1");
+      //  Thread.sleep(100);
+      //  exitSection("1");
         enterSection("1");
         Thread.sleep(100);
         exitSection("1");
