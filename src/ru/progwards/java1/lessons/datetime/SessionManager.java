@@ -20,7 +20,7 @@ public class SessionManager {
         sessions.add(userSession);
     }
 
-    public UserSession find(String userName){
+    public UserSession find(String userName) throws NullPointerException{
         UserSession userSession = null;
 
         if (sessions.isEmpty()) return null;
@@ -33,7 +33,7 @@ public class SessionManager {
             return userSession;
     }
 
-    public UserSession get(int sessionHandle){
+    public UserSession get(int sessionHandle) throws NullPointerException{
         UserSession userSession = null;
         if (sessions.isEmpty()) return null;
         for (int i = 0; i < sessions.size(); i++){
@@ -51,7 +51,7 @@ public class SessionManager {
         else return false;
     }
 
-    public void delete(int sessionHandle) {
+    public void delete(int sessionHandle) throws NullPointerException {
         for (int i = 0; i < sessions.size(); i++) {
             if (sessionHandle == sessions.get(i).getSessionHandle()) { sessions.remove(i); return;}
         }
@@ -63,13 +63,13 @@ public class SessionManager {
         }
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, NullPointerException {
        // System.out.println(new SessionManager(10).find("asd"));
         UserSession userSession = new UserSession("asd");
         SessionManager sessionManager = new SessionManager(5);
         sessionManager.add(userSession);
         System.out.println(sessionManager.get(userSession.getSessionHandle()).toString());
-        Thread.sleep(31000);
+        Thread.sleep(6000);
         System.out.println(sessionManager.get(userSession.getSessionHandle()).toString());
 
 
