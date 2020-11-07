@@ -46,6 +46,7 @@ public class SessionManager {
 
     public boolean checkValid(UserSession userSession) throws NullPointerException{
         Instant ins = Instant.now();
+        if (userSession == null) return false; ////////////////////////
         if (ins.equals(userSession.getLastAccess().toInstant().plusSeconds((long) sessionValid))) return true;
         if (ins.isBefore(userSession.getLastAccess().toInstant().plusSeconds((long) sessionValid))) return true;
         else return false;
