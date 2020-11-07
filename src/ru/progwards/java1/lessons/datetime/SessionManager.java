@@ -44,7 +44,7 @@ public class SessionManager {
         return userSession;
     }
 
-    public boolean checkValid(UserSession userSession){
+    public boolean checkValid(UserSession userSession) throws NullPointerException{
         Instant ins = Instant.now();
         if (ins.equals(userSession.getLastAccess().toInstant().plusSeconds((long) sessionValid))) return true;
         if (ins.isBefore(userSession.getLastAccess().toInstant().plusSeconds((long) sessionValid))) return true;
@@ -71,7 +71,6 @@ public class SessionManager {
         System.out.println(sessionManager.get(userSession.getSessionHandle()).toString());
         Thread.sleep(6000);
         System.out.println(sessionManager.get(userSession.getSessionHandle()).toString());
-
 
     }
 
