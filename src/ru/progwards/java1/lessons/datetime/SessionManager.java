@@ -22,13 +22,12 @@ public class SessionManager {
 
     public UserSession find(String userName) throws NullPointerException{
         UserSession userSession = null;
-
         if (sessions.isEmpty()) return null;
         for (int i = 0; i < sessions.size(); i++){
             if (userName.equals(sessions.get(i).getUserName())) {userSession = sessions.get(i); break;}
         }
         if (!checkValid(userSession)) return null;
-        if (userSession != null) userSession.updateLastAccess();
+        userSession.updateLastAccess();
 
             return userSession;
     }
@@ -40,13 +39,14 @@ public class SessionManager {
             if (sessionHandle == sessions.get(i).getSessionHandle()) {userSession = sessions.get(i); break;}
         }
         if (!checkValid(userSession)) return null;
-        if (userSession != null) userSession.updateLastAccess();
+        userSession.updateLastAccess();
         return userSession;
     }
 
-    public boolean checkValid(UserSession userSession) throws NullPointerException{
+    public boolean checkValid(UserSession userSession) {
         Instant ins = Instant.now();
-        if (userSession == null) return false; ////////////////////////
+        if (userSession == null) return false; /* вэтом случае в методах откуда вызывется этот метод
+                                                выбрасывается null, что и требует задание*/
         if (ins.equals(userSession.getLastAccess().toInstant().plusSeconds((long) sessionValid))) return true;
         if (ins.isBefore(userSession.getLastAccess().toInstant().plusSeconds((long) sessionValid))) return true;
         else return false;
