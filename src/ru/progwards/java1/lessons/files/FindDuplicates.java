@@ -46,7 +46,7 @@ public List<List<String>> findDuplicates(String startPath), результат -
         return result;
     }
 
-    private boolean checkNameOfFile(Path path1, Path path2){
+    private boolean checkNameOfFile(Path path1, Path path2) throws Exception{
         if (path1.getFileName().equals(path2.getFileName())) return true;
         else return false;
     }
