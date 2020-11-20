@@ -75,21 +75,23 @@ public class Profiler777 {
         List<Integer> listInt = new ArrayList<>();
         enterSection("1");
 
-        // enterSection("Process2");
-        // Thread.sleep(200);
-        //  enterSection("Process3");
-        //  Thread.sleep(100);
-        //  exitSection("Process3");
-        //  exitSection("Process2");
-        // Thread.sleep(100);
-        // exitSection("1");
-        //  enterSection("1");
-        //  Thread.sleep(100);
-        //  exitSection("1");
+         enterSection("Process2");
+         Thread.sleep(200);
+         enterSection("Process3");
+          Thread.sleep(100);
+          exitSection("Process3");
+          exitSection("Process2");
+         Thread.sleep(100);
+         exitSection("1");
+          enterSection("1");
+          Thread.sleep(100);
+          exitSection("1");
         enterSection("1");
         Thread.sleep(100);
         exitSection("1");
         System.out.println(getStatisticInfo());
+
+
     }
 }
 
