@@ -11,36 +11,41 @@ public class FindDuplicates {
 public List<List<String>> findDuplicates(String startPath), результат - список, содержащий списки строк с именами
 и полными путями совпадающих файлов.
  */
-    public List<List<String>> findDuplicates(String startPath) throws IOException {
+    public List<List<String>> findDuplicates(String startPath) {
         List listAllFiles = new ArrayList<>();
         List<List<String>> result = new ArrayList<>();
         Path path = Paths.get(startPath);
-        Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
-                System.out.println(path);
-                listAllFiles.add(path);
-                return FileVisitResult.CONTINUE;
-            }
+        try {
 
-            @Override
-            public FileVisitResult visitFileFailed(Path file, IOException exc) {
-                return FileVisitResult.CONTINUE;
-            }
-        });
-
-        Set<Path> set = new HashSet<>();
-        for (int i = 0; i < listAllFiles.size() - 1; i++) {
-            Path path1 = (Path) listAllFiles.get(i);
-            for (int j = i + 1; j < listAllFiles.size(); j++) {
-                Path path2 = (Path) listAllFiles.get(j);
-                if (checkAllParameters(path1, path2)) {
-                    set.add(path1);
-                    set.add(path2);
+            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
+                    System.out.println(path);
+                    listAllFiles.add(path);
+                    return FileVisitResult.CONTINUE;
                 }
+
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException exc) {
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+
+            Set<Path> set = new HashSet<>();
+            for (int i = 0; i < listAllFiles.size() - 1; i++) {
+                Path path1 = (Path) listAllFiles.get(i);
+                for (int j = i + 1; j < listAllFiles.size(); j++) {
+                    Path path2 = (Path) listAllFiles.get(j);
+                    if (checkAllParameters(path1, path2)) {
+                        set.add(path1);
+                        set.add(path2);
+                    }
+                }
+                result.add(new ArrayList(set));
+                set.clear();
             }
-            result.add(new ArrayList(set));
-            set.clear();
+        }catch (IOException e){
+            System.out.println(e.getMessage());
         }
         return result;
     }

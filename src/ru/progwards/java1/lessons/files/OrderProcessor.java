@@ -1,6 +1,5 @@
 package ru.progwards.java1.lessons.files;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
