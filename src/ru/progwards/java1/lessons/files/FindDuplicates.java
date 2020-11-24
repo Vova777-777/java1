@@ -44,13 +44,13 @@ public List<List<String>> findDuplicates(String startPath), результат -
                 result.add(new ArrayList(set));
                 set.clear();
             }
-        }catch (IOException e){
+        }catch (Exception e){
             System.out.println(e.getMessage());
         }
         return result;
     }
 
-    private boolean checkAllParameters(Path path1, Path path2) throws IOException {
+    private boolean checkAllParameters(Path path1, Path path2) throws Exception {
         if (path1 == null || path2 == null) return false;
         else
             return checkContentOfFile(path1, path2) && checkLastModifiedTime(path1, path2)
@@ -61,11 +61,11 @@ public List<List<String>> findDuplicates(String startPath), результат -
         return path1.getFileName().equals(path2.getFileName());
     }
 
-    private boolean checkLastModifiedTime(Path path1, Path path2) throws IOException {
+    private boolean checkLastModifiedTime(Path path1, Path path2) throws Exception {
         return Files.getLastModifiedTime(path1).equals(Files.getLastModifiedTime(path2));
     }
 
-    private boolean checkSizeOfFile(Path path1, Path path2) throws IOException {
+    private boolean checkSizeOfFile(Path path1, Path path2) throws Exception {
         return Files.size(path1) == Files.size(path2);
     }
 
@@ -81,7 +81,7 @@ public List<List<String>> findDuplicates(String startPath), результат -
         return Arrays.equals(array1, array2);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         System.out.println(new FindDuplicates().findDuplicates("B:/1"));
     }
 }
