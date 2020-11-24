@@ -49,7 +49,7 @@ public List<List<String>> findDuplicates(String startPath), результат -
         return result;
     }
 
-    private boolean checkAllParameters(Path path1, Path path2) throws IOException {
+    private boolean checkAllParameters(Path path1, Path path2) throws Exception {
         if (path1 == null || path2 == null) return false;
         else
             return checkContentOfFile(path1, path2) && checkLastModifiedTime(path1, path2)
@@ -60,15 +60,15 @@ public List<List<String>> findDuplicates(String startPath), результат -
         return path1.getFileName().equals(path2.getFileName());
     }
 
-    private boolean checkLastModifiedTime(Path path1, Path path2) throws IOException {
+    private boolean checkLastModifiedTime(Path path1, Path path2) throws Exception {
         return Files.getLastModifiedTime(path1).equals(Files.getLastModifiedTime(path2));
     }
 
-    private boolean checkSizeOfFile(Path path1, Path path2) throws IOException {
+    private boolean checkSizeOfFile(Path path1, Path path2) throws Exception {
         return Files.size(path1) == Files.size(path2);
     }
 
-    private boolean checkContentOfFile(Path path1, Path path2) {
+    private boolean checkContentOfFile(Path path1, Path path2) throws Exception {
         byte[] array1 = null;
         byte[] array2 = null;
         try {
@@ -80,7 +80,7 @@ public List<List<String>> findDuplicates(String startPath), результат -
         return Arrays.equals(array1, array2);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         System.out.println(new FindDuplicates().findDuplicates("B:/1"));
     }
 }

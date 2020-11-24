@@ -118,6 +118,9 @@ public class OrderProcessor {
           catch (NullPointerException e) {
               result.addAll(listOrders);
           }
+        catch (Exception exception){
+            System.out.println(exception.getMessage());
+        }
         finally {
             Collections.sort(result,
                     new Comparator<Order>() {
@@ -136,8 +139,12 @@ public class OrderProcessor {
 
     public Map<String, Double> statisticsByShop(){
         Map<String, Double> result = new TreeMap<>();
-        for (int i = 0; i < listOrders.size(); i++){
-            result.put(listOrders.get(i).shopId, listOrders.get(i).sum);
+        try {
+            for (int i = 0; i < listOrders.size(); i++) {
+                result.put(listOrders.get(i).shopId, listOrders.get(i).sum);
+            }
+        }catch (Exception e){
+            System.out.println();
         }
         return result;
     }
@@ -148,16 +155,20 @@ public class OrderProcessor {
 
     Map<String, Double> statisticsByGoods(){
         Map<String, Double> result = new TreeMap<>();
-        for (int i = 0; i < listOrders.size(); i++){
-            for (int j = 0; j < listOrders.get(i).items.size(); j++){
-                if (result.containsKey(listOrders.get(i).items.get(j).googsName)){
-                    Double price = result.get(listOrders.get(i).items.get(j).googsName) + listOrders.get(i).items.get(j).price;
-                    result.replace(listOrders.get(i).items.get(j).googsName, result.get(listOrders.get(i).items.get(j).googsName), price);
-                }else {
-                    result.put(listOrders.get(i).items.get(j).googsName, listOrders.get(i).items.get(j).price);
+        try {
+            for (int i = 0; i < listOrders.size(); i++) {
+                for (int j = 0; j < listOrders.get(i).items.size(); j++) {
+                    if (result.containsKey(listOrders.get(i).items.get(j).googsName)) {
+                        Double price = result.get(listOrders.get(i).items.get(j).googsName) + listOrders.get(i).items.get(j).price;
+                        result.replace(listOrders.get(i).items.get(j).googsName, result.get(listOrders.get(i).items.get(j).googsName), price);
+                    } else {
+                        result.put(listOrders.get(i).items.get(j).googsName, listOrders.get(i).items.get(j).price);
+                    }
                 }
-            }
 
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
         }
         return result;
     }
@@ -168,13 +179,16 @@ public class OrderProcessor {
 
     public Map<LocalDate, Double> statisticsByDay(){
         Map<LocalDate, Double> result = new TreeMap<>();
-        for (int i = 0; i < listOrders.size(); i++){
-            LocalDate ld = listOrders.get(i).datetime.toLocalDate();
-            if (result.containsKey(ld)){
-                Double sumGoods = result.get(ld) + listOrders.get(i).sum;
-                result.replace(ld, sumGoods);
+        try {
+            for (int i = 0; i < listOrders.size(); i++) {
+                LocalDate ld = listOrders.get(i).datetime.toLocalDate();
+                if (result.containsKey(ld)) {
+                    Double sumGoods = result.get(ld) + listOrders.get(i).sum;
+                    result.replace(ld, sumGoods);
+                } else result.put(ld, listOrders.get(i).sum);
             }
-            else result.put(ld, listOrders.get(i).sum);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
         }
         return result;
     }
@@ -186,45 +200,43 @@ public class OrderProcessor {
     обработку. Метод возвращает количество файлов с ошибками. При этом, если в классе содержалась информация, ее надо
     удалить*/
 
-    public int loadOrders(LocalDate start, LocalDate finish, String shopId) throws IOException {
+    public int loadOrders(LocalDate start, LocalDate finish, String shopId) {
         int countNotRightFile = 0;
         OrderProcessor oP = new OrderProcessor(startPath);
-        Files.walkFileTree(Paths.get(startPath), new SimpleFileVisitor<>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                System.out.println(file);
-                LocalDate ldLastModFile =
-                        LocalDate.ofInstant(Files.getLastModifiedTime(file).toInstant(), ZoneId.systemDefault());
-                if (shopId == null) {
-                    if(!checkRightFile(file)) oP.countNotRightFiles++;
-                }
-                else
-                if (start == null){
-                    if (finish.isAfter(ldLastModFile) || finish.equals(ldLastModFile)){
-                        if(!checkRightFile(file)) oP.countNotRightFiles++;
+        try {
+            Files.walkFileTree(Paths.get(startPath), new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    System.out.println(file);
+                    LocalDate ldLastModFile =
+                            LocalDate.ofInstant(Files.getLastModifiedTime(file).toInstant(), ZoneId.systemDefault());
+                    if (shopId == null) {
+                        if (!checkRightFile(file)) oP.countNotRightFiles++;
+                    } else if (start == null) {
+                        if (finish.isAfter(ldLastModFile) || finish.equals(ldLastModFile)) {
+                            if (!checkRightFile(file)) oP.countNotRightFiles++;
+                        }
+                    } else if (finish == null) {
+                        if (start.isBefore(ldLastModFile) || start.equals(ldLastModFile)) {
+                            if (!checkRightFile(file)) oP.countNotRightFiles++;
+                        }
+                    } else {
+                        if ((finish.isAfter(ldLastModFile) || finish.equals(ldLastModFile)) &&
+                                (start.isBefore(ldLastModFile) || start.equals(ldLastModFile))) {
+                            if (!checkRightFile(file)) oP.countNotRightFiles++;
+                        }
                     }
-                }
-                else
-                if (finish == null){
-                    if (start.isBefore(ldLastModFile) || start.equals(ldLastModFile)){
-                        if(!checkRightFile(file)) oP.countNotRightFiles++;
-                    }
-                }
-                else{
-                    if ((finish.isAfter(ldLastModFile) || finish.equals(ldLastModFile)) &&
-                            (start.isBefore(ldLastModFile) || start.equals(ldLastModFile))){
-                        if(!checkRightFile(file)) oP.countNotRightFiles++;
-                    }
+                    return FileVisitResult.CONTINUE;
                 }
 
-                return FileVisitResult.CONTINUE;
-            }
-
-            @Override
-            public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-                return FileVisitResult.CONTINUE;
-            }
-        });
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
         return oP.countNotRightFiles;
     }
 
