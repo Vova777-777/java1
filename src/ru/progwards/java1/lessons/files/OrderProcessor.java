@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -162,6 +163,76 @@ public class OrderProcessor {
         return result;
     }
 
+    /*3.8 метод public Map<LocalDate, Double> statisticsByDay() - выдать информацию по объему продаж по дням
+    (отсортированную по ключам): LocalDate - конкретный день, double - сумма стоимости всех проданных товаров
+    в этот день*/
+
+    public Map<LocalDate, Double> statisticsByDay(){
+        Map<LocalDate, Double> result = new TreeMap<>();
+        for (int i = 0; i < listOrders.size(); i++){
+            LocalDate ld = listOrders.get(i).datetime.toLocalDate();
+            if (result.containsKey(ld)){
+                Double sumGoods = result.get(ld) + listOrders.get(i).sum;
+                result.replace(ld, sumGoods);
+            }
+            else result.put(ld, listOrders.get(i).sum);
+        }
+        return result;
+    }
+
+    /*3.4 метод public int loadOrders(LocalDate start, LocalDate finish, String shopId) - загружает заказы за
+    указанный диапазон дат, с start до finish, обе даты включительно. Если start == null, значит нет ограничения
+    по дате слева, если finish == null, значит нет ограничения по дате справа, если shopId == null - грузим для
+    всех магазинов При наличии хотя бы одной ошибке в формате файла, файл полностью игнорируется, т.е. Не поступает в
+    обработку. Метод возвращает количество файлов с ошибками. При этом, если в классе содержалась информация, ее надо
+    удалить*/
+
+    public int loadOrders(LocalDate start, LocalDate finish, String shopId) throws IOException {
+        int countNotRightFile = 0;
+        OrderProcessor oP = new OrderProcessor(startPath);
+        Files.walkFileTree(Paths.get(startPath), new SimpleFileVisitor<>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                System.out.println(file);
+                LocalDate ldLastModFile =
+                        LocalDate.ofInstant(Files.getLastModifiedTime(file).toInstant(), ZoneId.systemDefault());
+                if (shopId == null) {
+                    if(!checkRightFile(file)) oP.countNotRightFiles++;
+                }
+                else
+                if (start == null){
+                    if (finish.isAfter(ldLastModFile) || finish.equals(ldLastModFile)){
+                        if(!checkRightFile(file)) oP.countNotRightFiles++;
+                    }
+                }
+                else
+                if (finish == null){
+                    if (start.isBefore(ldLastModFile) || start.equals(ldLastModFile)){
+                        if(!checkRightFile(file)) oP.countNotRightFiles++;
+                    }
+                }
+                else{
+                    if ((finish.isAfter(ldLastModFile) || finish.equals(ldLastModFile)) &&
+                            (start.isBefore(ldLastModFile) || start.equals(ldLastModFile))){
+                        if(!checkRightFile(file)) oP.countNotRightFiles++;
+                    }
+                }
+
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                return FileVisitResult.CONTINUE;
+            }
+        });
+        return oP.countNotRightFiles;
+    }
+
+    private void loadOllOrders(){
+
+    }
+
     public static void main(String[] args) throws IOException {
         OrderProcessor orderProcessor = new OrderProcessor("B:/1");
         orderProcessor.getAllOrders();
@@ -180,9 +251,13 @@ public class OrderProcessor {
         for (Map.Entry entry : orderProcessor.statisticsByGoods().entrySet()) {
             System.out.println(entry);
         }
+        System.out.println();
 
-        
+        for (Map.Entry entry : orderProcessor.statisticsByDay().entrySet()) {
+            System.out.println(entry);
+        }
+        System.out.println();
+
+        System.out.println(orderProcessor.loadOrders(LocalDate.of(1980,1,1), LocalDate.of(2020,12,31), null));
     }
-
-
 }
