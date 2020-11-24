@@ -1,5 +1,3 @@
-package ru.progwards.java1.lessons.files;
-
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -14,9 +12,8 @@ public List<List<String>> findDuplicates(String startPath), результат -
     public List<List<String>> findDuplicates(String startPath) {
         List listAllFiles = new ArrayList<>();
         List<List<String>> result = new ArrayList<>();
-        Path path = Paths.get(startPath);
         try {
-
+            Path path = Paths.get(startPath);
             Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
@@ -50,7 +47,7 @@ public List<List<String>> findDuplicates(String startPath), результат -
         return result;
     }
 
-    private boolean checkAllParameters(Path path1, Path path2) throws Exception {
+    private boolean checkAllParameters(Path path1, Path path2) throws IOException {
         if (path1 == null || path2 == null) return false;
         else
             return checkContentOfFile(path1, path2) && checkLastModifiedTime(path1, path2)
@@ -61,11 +58,11 @@ public List<List<String>> findDuplicates(String startPath), результат -
         return path1.getFileName().equals(path2.getFileName());
     }
 
-    private boolean checkLastModifiedTime(Path path1, Path path2) throws Exception {
+    private boolean checkLastModifiedTime(Path path1, Path path2) throws IOException {
         return Files.getLastModifiedTime(path1).equals(Files.getLastModifiedTime(path2));
     }
 
-    private boolean checkSizeOfFile(Path path1, Path path2) throws Exception {
+    private boolean checkSizeOfFile(Path path1, Path path2) throws IOException {
         return Files.size(path1) == Files.size(path2);
     }
 
@@ -81,7 +78,7 @@ public List<List<String>> findDuplicates(String startPath), результат -
         return Arrays.equals(array1, array2);
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         System.out.println(new FindDuplicates().findDuplicates("B:/1"));
     }
 }
