@@ -12,7 +12,7 @@ public List<List<String>> findDuplicates(String startPath), результат -
 и полными путями совпадающих файлов.
  */
     public List<List<String>> findDuplicates(String startPath) {
-        List listAllFiles = new ArrayList<>();
+        List<Path> listAllFiles = new ArrayList<>();
         List<List<String>> result = new ArrayList<>();
         try {
             Path path = Paths.get(startPath);
@@ -40,7 +40,7 @@ public List<List<String>> findDuplicates(String startPath), результат -
                         set.add(path2);
                     }
                 }
-                result.add(new ArrayList(set));
+                result.add(createListEquallyFiles(set));
                 set.clear();
             }
         }catch (Exception e){
@@ -78,6 +78,14 @@ public List<List<String>> findDuplicates(String startPath), результат -
             e.printStackTrace();
         }
         return Arrays.equals(array1, array2);
+    }
+
+    private List<String> createListEquallyFiles(Set<Path> set){
+        List<String> result = new ArrayList<>();
+        for (Path path: set) {
+            result.add(path.toString());
+        }
+        return result;
     }
 
     public static void main(String[] args) {

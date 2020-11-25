@@ -6,6 +6,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.ZoneId;
 import java.util.*;
 
@@ -15,93 +16,121 @@ public class OrderProcessor {
         this.startPath = startPath;
     }
 
-    List <String> listNamesAllFiles = new ArrayList();
     List <Order> listOrders = new ArrayList();
     int countNotRightFiles = 0;
 
-    private void getNamesAllFiles(List <String> list) throws IOException {
-        Path path = Paths.get(startPath);
-        Files.walkFileTree(path, new SimpleFileVisitor<Path>(){
-            @Override
-            public FileVisitResult visitFile(Path path1, BasicFileAttributes attrs) throws IOException {
-                list.add(path1.getFileName().toString());
-                return FileVisitResult.CONTINUE;
-            }
-            @Override
-            public FileVisitResult visitFileFailed(Path path, IOException exc) throws IOException {
-                return FileVisitResult.CONTINUE;
-            }
-        });
-    }
+    /*3.4 метод public int loadOrders(LocalDate start, LocalDate finish, String shopId) - загружает заказы за
+    указанный диапазон дат, с start до finish, обе даты включительно. Если start == null, значит нет ограничения
+    по дате слева, если finish == null, значит нет ограничения по дате справа, если shopId == null - грузим для
+    всех магазинов При наличии хотя бы одной ошибке в формате файла, файл полностью игнорируется, т.е. Не поступает в
+    обработку. Метод возвращает количество файлов с ошибками. При этом, если в классе содержалась информация, ее надо
+    удалить*/
 
-    private void getAllOrders() throws IOException {
-        getNamesAllFiles(listNamesAllFiles);
-        for (int i = 0; i < listNamesAllFiles.size(); i++) {
-            Order order = new Order();
-            String nameOfFile = listNamesAllFiles.get(i);
-            String[] array = listNamesAllFiles.get(i).split("-");
-            if (array.length != 3) continue;
-            if (array[0].length() != 3) break;
-            if (array[1].length() != 6) break;
-            String strForEq = array[2].substring(4,8);
-            if (!strForEq.equals(".csv")) break;
-            array[2] = array[2].substring(0,4);
+    public int loadOrders(LocalDate start, LocalDate finish, String shopId) {
+        listOrders.clear();
+        countNotRightFiles = 0;
+        try {
+            Files.walkFileTree(Paths.get(startPath), new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Order order = loadOrder(file, shopId);
+                    if (order != null) filterOrderByTime(start, finish, order);
+                    return FileVisitResult.CONTINUE;
+                }
 
-            if (array[2].length() != 4) break;
-            else {
-            order.shopId = array[0];
-            order.orderId = array[1];
-            order.customerId = array[2];}
-            order = getParametersOrderFromContentOfFile(order, nameOfFile);
-            listOrders.add(order);
-
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        }catch (Exception e){
+            System.out.println(e.getMessage());
         }
+        return countNotRightFiles;
     }
 
-    private Order getParametersOrderFromContentOfFile(Order order, String nameOfFile) throws IOException {
-        Path path = Paths.get(startPath);
-        Files.walkFileTree(path, new SimpleFileVisitor<Path>(){
-            @Override
-            public FileVisitResult visitFile(Path path1, BasicFileAttributes attrs) throws IOException {
-                if (path1.getFileName().toString().equals(nameOfFile)){
-                FileTime fileTime = Files.getLastModifiedTime(path1);
-                order.datetime =  LocalDateTime.ofInstant(fileTime.toInstant(), ZoneId.systemDefault());
-                List<String> listStringsOfOrders = Files.readAllLines(path1);
-                Collections.sort(listStringsOfOrders);
-                order.items = getListOrderItem(listStringsOfOrders, order);}
-                return FileVisitResult.CONTINUE;
-            }
-            @Override
-            public FileVisitResult visitFileFailed(Path path, IOException exc) throws IOException {
-                return FileVisitResult.CONTINUE;
-            }
-        });
-        return order;
+    private Order loadOrder(Path file, String shopId) throws IOException {
+        Order order = new Order();
+        if (!checkRightFile(file)) return null;
+        getParametersOfOrder(order, file);
+        if (shopId == null) return order;
+        else if (order.shopId.equals(shopId)) return order;
+        else return null;
     }
 
-    private List<OrderItem> getListOrderItem(List <String> list, Order order){
+    private boolean checkRightFile(Path path){
+        String fileName = path.getFileName().toString();
+        String[] array = fileName.split("-");
+        if (array.length != 3) {countNotRightFiles++; return false;}
+        if (array[0].length() != 3) {countNotRightFiles++; return false;}
+        if (array[1].length() != 6) {countNotRightFiles++; return false;}
+        String strForEq = array[2].substring(4, array[2].length());
+        if (!strForEq.equals(".csv")) {countNotRightFiles++; return false;}
+        else return true;
+    }
+
+    private void getParametersOfOrder(Order order, Path file) throws IOException {
+        String nameOfOrder = file.getFileName().toString();
+        String[] array = nameOfOrder.split("-");
+        order.shopId = array[0];
+        order.orderId = array[1];
+        order.customerId = array[2].substring(0,4);
+        FileTime fileTime = Files.getLastModifiedTime(file);
+        order.datetime =  LocalDateTime.ofInstant(fileTime.toInstant(), ZoneId.systemDefault());
+        getParametersOrderFromContentOfFile(order, file);
+
+    }
+
+    private void getParametersOrderFromContentOfFile(Order order, Path file) throws IOException {
+        List<String> listStringsOfOrders = Files.readAllLines(file);
+        Collections.sort(listStringsOfOrders);
+        order.items = getListOrderItem(listStringsOfOrders, order);
+    }
+
+    private List<OrderItem> getListOrderItem(List <String> listStringsOfOrders, Order order){
         List<OrderItem> listOrderItem = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < listStringsOfOrders.size(); i++) {
             OrderItem orderItem = new OrderItem();
-            String[] array = list.get(i).split(", ");
+            String[] array = listStringsOfOrders.get(i).split(", ");
+            if (!checkRightContentOfFile(array)) {listOrderItem.clear(); return listOrderItem;}
             orderItem.googsName = array[0];
             orderItem.count = Integer.valueOf(array[1]);
             orderItem.price = Double.valueOf(array[2]);
-            order.sum = order.sum + orderItem.price;
+            order.sum = order.sum + (orderItem.price * orderItem.count);
             listOrderItem.add(orderItem);
         }
         return listOrderItem;
     }
 
-    private boolean checkRightFile(Path path){
-      String fileName = path.getFileName().toString();
-        String[] array = fileName.split("-");
-        if (array.length != 3) return false;
-        if (array[0].length() != 3) return false;
-        if (array[1].length() != 6) return false;
-        String strForEq = array[2].substring(4,8);
-        if (!strForEq.equals(".csv")) return false;
-        else return true;
+    private boolean checkRightContentOfFile(String[] array){
+       if (array.length != 3) return false;
+       if (!isDigit(array)) return false;
+       else return true;
+    }
+
+    private boolean isDigit(String[] array){
+        try {
+            Integer.valueOf(array[1]);
+            Double.valueOf(array[2]);
+            return true;
+        }catch (NumberFormatException e){
+            return false;
+        }
+    }
+
+    private void filterOrderByTime(LocalDate start, LocalDate finish,  Order order){
+        if (start == null && finish != null){
+            if (!order.datetime.toLocalDate().isAfter(finish)) {listOrders.add(order);}
+        }
+        else if (finish == null && start != null){
+            if (!order.datetime.toLocalDate().isBefore(start)) {listOrders.add(order);}
+        }
+        else if (start != null && finish != null){
+            if (!order.datetime.toLocalDate().isAfter(finish) && !order.datetime.toLocalDate().isBefore(start))
+                {listOrders.add(order);}
+            }
+        else if (start == null && finish == null) listOrders.add(order);
+
     }
 
     /*метод public List<Order> process(String shopId) - выдать список заказов в порядке обработки (отсортированные
@@ -109,19 +138,11 @@ public class OrderProcessor {
 
     public List<Order> process(String shopId){
         List<Order> result = new ArrayList<>();
-        try{
-        if (shopId.equals(null));
-        for (int i = 0; i < listOrders.size(); i++){
-            if (shopId.equals(listOrders.get(i).shopId)) result.add(listOrders.get(i));
+            for (int i = 0; i < listOrders.size(); i++){
+                if (shopId == null && !listOrders.get(i).items.isEmpty()) result.add(listOrders.get(i));
+                else
+                if (shopId !=null && shopId.equals(listOrders.get(i).shopId)) result.add(listOrders.get(i));
             }
-        }
-          catch (NullPointerException e) {
-              result.addAll(listOrders);
-          }
-        catch (Exception exception){
-            System.out.println(exception.getMessage());
-        }
-        finally {
             Collections.sort(result,
                     new Comparator<Order>() {
                         @Override
@@ -132,8 +153,8 @@ public class OrderProcessor {
                         }
                     });
             return result;
-        }
     }
+
     /*3.6 метод public Map<String, Double> statisticsByShop() - выдать информацию по объему продаж по магазинам
     (отсортированную по ключам): String - shopId, double - сумма стоимости всех проданных товаров в этом магазине*/
 
@@ -141,7 +162,10 @@ public class OrderProcessor {
         Map<String, Double> result = new TreeMap<>();
         try {
             for (int i = 0; i < listOrders.size(); i++) {
-                result.put(listOrders.get(i).shopId, listOrders.get(i).sum);
+                String key = listOrders.get(i).shopId;
+                Double value = listOrders.get(i).sum;
+                if (!result.containsKey(listOrders.get(i).shopId)) result.put(key, value);
+                else{ value = value + result.get(key); result.replace(key, value);}
             }
         }catch (Exception e){
             System.out.println();
@@ -149,7 +173,7 @@ public class OrderProcessor {
         return result;
     }
 
-    /*3.7 метод public Map<String, Double> statisticsByGoods() - выдать информацию по объему продаж по товарам
+     /*3.7 метод public Map<String, Double> statisticsByGoods() - выдать информацию по объему продаж по товарам
     (отсортированную по ключам): String - goodsName, double - сумма стоимости всех проданных
     товаров этого наименования*/
 
@@ -158,14 +182,11 @@ public class OrderProcessor {
         try {
             for (int i = 0; i < listOrders.size(); i++) {
                 for (int j = 0; j < listOrders.get(i).items.size(); j++) {
-                    if (result.containsKey(listOrders.get(i).items.get(j).googsName)) {
-                        Double price = result.get(listOrders.get(i).items.get(j).googsName) + listOrders.get(i).items.get(j).price;
-                        result.replace(listOrders.get(i).items.get(j).googsName, result.get(listOrders.get(i).items.get(j).googsName), price);
-                    } else {
-                        result.put(listOrders.get(i).items.get(j).googsName, listOrders.get(i).items.get(j).price);
-                    }
+                    String key = listOrders.get(i).items.get(j).googsName;
+                    Double value = listOrders.get(i).items.get(j).price * listOrders.get(i).items.get(j).count;
+                    if (!result.containsKey(key)) result.put(key, value);
+                    else {value = result.get(key) + value; result.replace(key, value);}
                 }
-
             }
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -193,72 +214,31 @@ public class OrderProcessor {
         return result;
     }
 
-    /*3.4 метод public int loadOrders(LocalDate start, LocalDate finish, String shopId) - загружает заказы за
-    указанный диапазон дат, с start до finish, обе даты включительно. Если start == null, значит нет ограничения
-    по дате слева, если finish == null, значит нет ограничения по дате справа, если shopId == null - грузим для
-    всех магазинов При наличии хотя бы одной ошибке в формате файла, файл полностью игнорируется, т.е. Не поступает в
-    обработку. Метод возвращает количество файлов с ошибками. При этом, если в классе содержалась информация, ее надо
-    удалить*/
-
-    public int loadOrders(LocalDate start, LocalDate finish, String shopId) {
-        int countNotRightFile = 0;
-        OrderProcessor oP = new OrderProcessor(startPath);
-        try {
-            Files.walkFileTree(Paths.get(startPath), new SimpleFileVisitor<>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    System.out.println(file);
-                    LocalDate ldLastModFile =
-                            LocalDate.ofInstant(Files.getLastModifiedTime(file).toInstant(), ZoneId.systemDefault());
-                    if (shopId == null) {
-                        if (!checkRightFile(file)) oP.countNotRightFiles++;
-                    } else if (start == null) {
-                        if (finish.isAfter(ldLastModFile) || finish.equals(ldLastModFile)) {
-                            if (!checkRightFile(file)) oP.countNotRightFiles++;
-                        }
-                    } else if (finish == null) {
-                        if (start.isBefore(ldLastModFile) || start.equals(ldLastModFile)) {
-                            if (!checkRightFile(file)) oP.countNotRightFiles++;
-                        }
-                    } else {
-                        if ((finish.isAfter(ldLastModFile) || finish.equals(ldLastModFile)) &&
-                                (start.isBefore(ldLastModFile) || start.equals(ldLastModFile))) {
-                            if (!checkRightFile(file)) oP.countNotRightFiles++;
-                        }
-                    }
-                    return FileVisitResult.CONTINUE;
-                }
-
-                @Override
-                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-        return oP.countNotRightFiles;
-    }
-
-    private void loadOllOrders(){
-
-    }
-
     public static void main(String[] args) throws IOException {
-        OrderProcessor orderProcessor = new OrderProcessor("B:/1");
-        orderProcessor.getAllOrders();
-        
-        System.out.println(orderProcessor.listOrders);
-        System.out.println();
-        
-        System.out.println(orderProcessor.process("aaa"));
+     OrderProcessor orderProcessor = new OrderProcessor("B:/1");
+
+     /*   System.out.println(orderProcessor.loadOrders(null, null, null));
+        System.out.println("Список со всеми заказами:");
+        for (int i = 0; i < orderProcessor.listOrders.size(); i++) {
+            System.out.println(orderProcessor.listOrders.get(i));
+        }
         System.out.println();
 
+        System.out.println("Метод process:");
+        for (int i = 0; i < orderProcessor.process(null).size(); i++) {
+            System.out.println(orderProcessor.process(null).get(i));
+        }
+        System.out.println();
+
+        orderProcessor.loadOrders(LocalDate.of(2020, Month.JANUARY, 1), LocalDate.of(2020, Month.JANUARY, 10), null);
+        System.out.println("Метод statisticsByShop:");
         for (Map.Entry entry : orderProcessor.statisticsByShop().entrySet()) {
             System.out.println(entry);
         }
-        System.out.println();
+        System.out.println();  */
 
+        orderProcessor.loadOrders(LocalDate.of(2020, Month.JANUARY, 11), null, null);
+        System.out.println("Метод statisticsByGoods():");
         for (Map.Entry entry : orderProcessor.statisticsByGoods().entrySet()) {
             System.out.println(entry);
         }
@@ -269,6 +249,11 @@ public class OrderProcessor {
         }
         System.out.println();
 
-        System.out.println(orderProcessor.loadOrders(LocalDate.of(1980,1,1), LocalDate.of(2020,12,31), null));
+       orderProcessor.loadOrders(null, LocalDate.of(2020, Month.JANUARY, 16), "S01");
+        System.out.println("Метод statisticsByDay:");
+        for (Map.Entry entry : orderProcessor.statisticsByDay().entrySet()) {
+            System.out.println(entry);
+        }
     }
+
 }
