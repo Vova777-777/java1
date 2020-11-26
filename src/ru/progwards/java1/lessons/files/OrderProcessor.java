@@ -34,10 +34,12 @@ public class OrderProcessor {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     if (Files.isHidden(file)) return FileVisitResult.CONTINUE;
+                    if (!filterOrderByTime(start, finish, file)) return FileVisitResult.CONTINUE;
                     if (!checkRightFile(file)) return FileVisitResult.CONTINUE;
                     Order order = loadOrder(file, shopId);
                     if (order == null) return FileVisitResult.CONTINUE;
-                    filterOrderByTime(start, finish, order);
+
+                    listOrders.add(order);
                     return FileVisitResult.CONTINUE;
                 }
 
@@ -50,6 +52,27 @@ public class OrderProcessor {
             System.out.println(e.getMessage());
         }
         return countNotRightFiles;
+    }
+
+    private boolean filterOrderByTime(LocalDate start, LocalDate finish, Path file) throws IOException {
+        boolean result = true;
+        FileTime fileTime = Files.getLastModifiedTime(file);
+        LocalDate ld = LocalDate.ofInstant(fileTime.toInstant(), ZoneId.systemDefault());
+        if (start == null && finish != null){
+            if (!ld.isAfter(finish)) result = true;
+            else result = false;
+        }
+        else if (finish == null && start != null){
+            if (!ld.isBefore(start)) result = true;
+            else result = false;
+        }
+        else if (start != null && finish != null){
+            if (!ld.isAfter(finish) && !ld.isBefore(start)) result = true;
+            else result = false;
+        }
+        else if (start == null && finish == null) result = true;
+        else result = false;
+        return result;
     }
 
     private Order loadOrder(Path file, String shopId) throws IOException {
@@ -120,20 +143,6 @@ public class OrderProcessor {
         }
     }
 
-    private void filterOrderByTime(LocalDate start, LocalDate finish,  Order order){
-        if (start == null && finish != null){
-            if (!order.datetime.toLocalDate().isAfter(finish)) {listOrders.add(order);}
-        }
-        else if (finish == null && start != null){
-            if (!order.datetime.toLocalDate().isBefore(start)) {listOrders.add(order);}
-        }
-        else if (start != null && finish != null){
-            if (!order.datetime.toLocalDate().isAfter(finish) && !order.datetime.toLocalDate().isBefore(start))
-            {listOrders.add(order);}
-        }
-        else if (start == null && finish == null) listOrders.add(order);
-
-    }
 
     /*метод public List<Order> process(String shopId) - выдать список заказов в порядке обработки (отсортированные
     по дате-времени), для заданного магазина. Если shopId == null, то для всех*/
@@ -218,21 +227,21 @@ public class OrderProcessor {
     }
 
     public static void main(String[] args) throws IOException {
-        OrderProcessor orderProcessor = new OrderProcessor("B:/1");
+        OrderProcessor777 orderProcessor = new OrderProcessor777("B:/1");
 
-        System.out.println(orderProcessor.loadOrders(LocalDate.of(2020, Month.JANUARY, 1), LocalDate.of(2020, Month.JANUARY, 10), null));
-        System.out.println("Список со всеми заказами:");
-        for (int i = 0; i < orderProcessor.listOrders.size(); i++) {
-            System.out.println(orderProcessor.listOrders.get(i));
-        }
-        System.out.println();
+        /*    System.out.println(orderProcessor.loadOrders(LocalDate.of(2020, Month.JANUARY, 1), LocalDate.of(2020, Month.JANUARY, 10), null));
+            System.out.println("Список со всеми заказами:");
+            for (int i = 0; i < orderProcessor.listOrders.size(); i++) {
+                System.out.println(orderProcessor.listOrders.get(i));
+            }
+            System.out.println();
 
-       /* orderProcessor.loadOrders(null, null, null);
-        System.out.println("Метод process:");
-        for (int i = 0; i < orderProcessor.process("S02").size(); i++) {
-            System.out.println(orderProcessor.process("S02").get(i));
-        }
-        System.out.println();
+            orderProcessor.loadOrders(null, null, null);
+            System.out.println("Метод process:");
+            for (int i = 0; i < orderProcessor.process("S02").size(); i++) {
+                System.out.println(orderProcessor.process("S02").get(i));
+            }
+           */ System.out.println();
 
         orderProcessor.loadOrders(LocalDate.of(2020, Month.JANUARY, 1), LocalDate.of(2020, Month.JANUARY, 10), null);
         System.out.println("Метод statisticsByShop:");
@@ -250,10 +259,10 @@ public class OrderProcessor {
 
 
 
-       orderProcessor.loadOrders(null, LocalDate.of(2020, Month.JANUARY, 16), "S01");
+        orderProcessor.loadOrders(null, LocalDate.of(2020, Month.JANUARY, 16), "S01");
         System.out.println("Метод statisticsByDay:");
         for (Map.Entry entry : orderProcessor.statisticsByDay().entrySet()) {
             System.out.println(entry);
-        }*/
+        }
     }
 }
