@@ -33,8 +33,10 @@ public class OrderProcessor {
             Files.walkFileTree(Paths.get(startPath), new SimpleFileVisitor<>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    if (Files.isHidden(file)) return FileVisitResult.CONTINUE;
+                    if (!checkRightFile(file)) return FileVisitResult.CONTINUE;
                     Order order = loadOrder(file, shopId);
-                    if (order != null) filterOrderByTime(start, finish, order);
+                    filterOrderByTime(start, finish, order);
                     return FileVisitResult.CONTINUE;
                 }
 
@@ -51,7 +53,6 @@ public class OrderProcessor {
 
     private Order loadOrder(Path file, String shopId) throws IOException {
         Order order = new Order();
-        if (!checkRightFile(file)) return null;
         getParametersOfOrder(order, file);
         if (shopId == null) return order;
         else if (order.shopId.equals(shopId)) return order;
@@ -217,7 +218,7 @@ public class OrderProcessor {
     public static void main(String[] args) throws IOException {
      OrderProcessor orderProcessor = new OrderProcessor("B:/1");
 
-     /*   System.out.println(orderProcessor.loadOrders(null, null, null));
+       System.out.println(orderProcessor.loadOrders(LocalDate.of(2020, Month.JANUARY, 1), LocalDate.of(2020, Month.JANUARY, 10), null));
         System.out.println("Список со всеми заказами:");
         for (int i = 0; i < orderProcessor.listOrders.size(); i++) {
             System.out.println(orderProcessor.listOrders.get(i));
@@ -235,7 +236,7 @@ public class OrderProcessor {
         for (Map.Entry entry : orderProcessor.statisticsByShop().entrySet()) {
             System.out.println(entry);
         }
-        System.out.println();  */
+        System.out.println();
 
         orderProcessor.loadOrders(LocalDate.of(2020, Month.JANUARY, 11), null, null);
         System.out.println("Метод statisticsByGoods():");
