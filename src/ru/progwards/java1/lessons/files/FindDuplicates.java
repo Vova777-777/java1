@@ -40,6 +40,7 @@ public List<List<String>> findDuplicates(String startPath), результат -
                         set.add(path2);
                     }
                 }
+                if (!createListEquallyFiles(set).isEmpty())//проверить эту строчку
                 result.add(createListEquallyFiles(set));
                 set.clear();
             }
