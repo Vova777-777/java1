@@ -36,6 +36,7 @@ public class OrderProcessor {
                     if (Files.isHidden(file)) return FileVisitResult.CONTINUE;
                     if (!checkRightFile(file)) return FileVisitResult.CONTINUE;
                     Order order = loadOrder(file, shopId);
+                    if (order == null) return FileVisitResult.CONTINUE;
                     filterOrderByTime(start, finish, order);
                     return FileVisitResult.CONTINUE;
                 }
@@ -140,6 +141,7 @@ public class OrderProcessor {
     public List<Order> process(String shopId){
         List<Order> result = new ArrayList<>();
             for (int i = 0; i < listOrders.size(); i++){
+                if (listOrders.get(i).items.isEmpty()) continue;
                 if (shopId == null && !listOrders.get(i).items.isEmpty()) result.add(listOrders.get(i));
                 else
                 if (shopId !=null && shopId.equals(listOrders.get(i).shopId)) result.add(listOrders.get(i));
@@ -218,7 +220,7 @@ public class OrderProcessor {
     public static void main(String[] args) throws IOException {
      OrderProcessor orderProcessor = new OrderProcessor("B:/1");
 
-       System.out.println(orderProcessor.loadOrders(LocalDate.of(2020, Month.JANUARY, 1), LocalDate.of(2020, Month.JANUARY, 10), null));
+    /*   System.out.println(orderProcessor.loadOrders(LocalDate.of(2020, Month.JANUARY, 1), LocalDate.of(2020, Month.JANUARY, 10), null));
         System.out.println("Список со всеми заказами:");
         for (int i = 0; i < orderProcessor.listOrders.size(); i++) {
             System.out.println(orderProcessor.listOrders.get(i));
@@ -227,8 +229,8 @@ public class OrderProcessor {
 
         orderProcessor.loadOrders(null, null, null);
         System.out.println("Метод process:");
-        for (int i = 0; i < orderProcessor.process("SO2").size(); i++) {
-            System.out.println(orderProcessor.process("SO2").get(i));
+        for (int i = 0; i < orderProcessor.process("S02").size(); i++) {
+            System.out.println(orderProcessor.process("S02").get(i));
         }
         System.out.println();
 
@@ -244,12 +246,9 @@ public class OrderProcessor {
         for (Map.Entry entry : orderProcessor.statisticsByGoods().entrySet()) {
             System.out.println(entry);
         }
-        System.out.println();
+        System.out.println();*/
 
-        for (Map.Entry entry : orderProcessor.statisticsByDay().entrySet()) {
-            System.out.println(entry);
-        }
-        System.out.println();
+
 
        orderProcessor.loadOrders(null, LocalDate.of(2020, Month.JANUARY, 16), "S01");
         System.out.println("Метод statisticsByDay:");
