@@ -227,7 +227,7 @@ public class OrderProcessor {
     }
 
     public static void main(String[] args) throws IOException {
-        OrderProcessor777 orderProcessor = new OrderProcessor777("B:/1");
+        OrderProcessor orderProcessor = new OrderProcessor("B:/1");
 
         /*    System.out.println(orderProcessor.loadOrders(LocalDate.of(2020, Month.JANUARY, 1), LocalDate.of(2020, Month.JANUARY, 10), null));
             System.out.println("Список со всеми заказами:");
