@@ -225,9 +225,10 @@ public class OrderProcessor {
         }
         System.out.println();
 
+        orderProcessor.loadOrders(null, null, null);
         System.out.println("Метод process:");
-        for (int i = 0; i < orderProcessor.process(null).size(); i++) {
-            System.out.println(orderProcessor.process(null).get(i));
+        for (int i = 0; i < orderProcessor.process("SO2").size(); i++) {
+            System.out.println(orderProcessor.process("SO2").get(i));
         }
         System.out.println();
 
