@@ -14,32 +14,38 @@ public class FilesSelect {
     в outFolder. */
 
     public void selectFiles(String inFolder, String outFolder, List<String> keys) throws IOException {
-        PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**/**.txt");
-        Files.walkFileTree(Paths.get(inFolder), new SimpleFileVisitor<>(){
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                List<String> contentFile = new ArrayList<>();
+        try {
 
-                if (pathMatcher.matches(file)) contentFile = Files.readAllLines(file);
-                else return FileVisitResult.CONTINUE;
-                List<String> key = checkContentFileAndGetKey(contentFile, keys); //Создать отдельно метод на проверку и вызвать его
 
-                if (key.isEmpty()) return FileVisitResult.CONTINUE;
-                for (int i = 0; i < key.size(); i++) {
-                    if (!Files.exists(Paths.get(outFolder + "/" + key.get(i)))) {
-                        Path dirForCopy = Paths.get(outFolder + "/" + key.get(i));
-                        dirForCopy = Files.createDirectory(Paths.get(outFolder + "/" + key.get(i)));
-                        Files.copy(file, dirForCopy.resolve(file.getFileName()));
-                    } else Files.copy(file, Paths.get(outFolder + "/" + key.get(i)).resolve(file.getFileName()));
+            PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**/**.txt");
+            Files.walkFileTree(Paths.get(inFolder), new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    List<String> contentFile = new ArrayList<>();
+
+                    if (pathMatcher.matches(file)) contentFile = Files.readAllLines(file);
+                    else return FileVisitResult.CONTINUE;
+                    List<String> key = checkContentFileAndGetKey(contentFile, keys); //Создать отдельно метод на проверку и вызвать его
+
+                    if (key.isEmpty()) return FileVisitResult.CONTINUE;
+                    for (int i = 0; i < key.size(); i++) {
+                        if (!Files.exists(Paths.get(outFolder + "/" + key.get(i)))) {
+                            Path dirForCopy = Paths.get(outFolder + "/" + key.get(i));
+                            dirForCopy = Files.createDirectory(Paths.get(outFolder + "/" + key.get(i)));
+                            Files.copy(file, dirForCopy.resolve(file.getFileName()));
+                        } else Files.copy(file, Paths.get(outFolder + "/" + key.get(i)).resolve(file.getFileName()));
+                    }
+                    return FileVisitResult.CONTINUE;
                 }
-                return FileVisitResult.CONTINUE;
-            }
 
-            @Override
-            public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-                return FileVisitResult.CONTINUE;
-            }
-        });
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        }catch (IOException e){
+            System.out.println(e.getStackTrace());
+        }
     }
 
     private List<String> checkContentFileAndGetKey(List<String> contentFile, List<String> keys){
