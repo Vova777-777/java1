@@ -26,10 +26,10 @@ public class FilesSelect {
                     if (key.isEmpty()) return FileVisitResult.CONTINUE;
                     for (int i = 0; i < key.size(); i++) {
                         if (!Files.exists(Paths.get(outFolder + "/" + key.get(i)))) {
-                            Path dirForCopy = Paths.get(outFolder + "/" + key.get(i));
-                            dirForCopy = Files.createDirectory(Paths.get(outFolder + "/" + key.get(i)));
+                            Path dirForCopy = Files.createDirectory(Paths.get(outFolder + "/" + key.get(i)));
                             Files.copy(file, dirForCopy.resolve(file.getFileName()));
-                        } else Files.copy(file, Paths.get(outFolder + "/" + key.get(i)).resolve(file.getFileName()));
+                        } else{if (Files.notExists(Paths.get(outFolder + "/" + key.get(i)).resolve(file.getFileName())))
+                            Files.copy(file, Paths.get(outFolder + "/" + key.get(i)).resolve(file.getFileName()));}
                     }
                     return FileVisitResult.CONTINUE;
                 }
@@ -57,14 +57,21 @@ public class FilesSelect {
     }
 
     public static void main(String[] args) throws IOException {
+       /* dir1/file1.txt(111), dir1/file2.txt(111), dir1/file3.txt(123), dir2/dir3/file1.txt(111),
+       dir2/dir3/file3.txt(123), dir2/file1.txt(222), dir2/file2.txt(111), file2.txt(111)
+        В каталоге outFolder обнаружена структура файлов:
+        111/file1.txt, 111/file2.txt, 123/file3.txt
+        Ожидалось:
+        111/file1.txt, 111/file2.txt, 123/file3.txt, 222/file1.txt  */
+
         FilesSelect filesSelect = new FilesSelect();
 
         List<String> keys = new ArrayList<>();
-        keys.add("люблю");
-        keys.add("папу");
-        keys.add("пофиг");
-        keys.add("на хер");
+        keys.add("111");
+        keys.add("222");
+        keys.add("333");
+        keys.add("123");
 
-        filesSelect.selectFiles("B:/1", "B:/1/2", keys);
+        filesSelect.selectFiles("B:/1", "B:/2", keys);
     }
 }
