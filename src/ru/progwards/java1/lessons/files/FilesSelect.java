@@ -20,11 +20,9 @@ public class FilesSelect {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     List<String> contentFile = new ArrayList<>();
-
                     if (pathMatcher.matches(file)) contentFile = Files.readAllLines(file);
                     else return FileVisitResult.CONTINUE;
-                    List<String> key = checkContentFileAndGetKey(contentFile, keys); //Создать отдельно метод на проверку и вызвать его
-
+                    List<String> key = checkContentFileAndGetKey(contentFile, keys);; //Создать отдельно метод на проверку и вызвать его
                     if (key.isEmpty()) return FileVisitResult.CONTINUE;
                     for (int i = 0; i < key.size(); i++) {
                         if (!Files.exists(Paths.get(outFolder + "/" + key.get(i)))) {
@@ -46,7 +44,7 @@ public class FilesSelect {
         }
     }
 
-    private List<String> checkContentFileAndGetKey(List<String> contentFile, List<String> keys) throws Exception{
+    private List<String> checkContentFileAndGetKey(List<String> contentFile, List<String> keys) {
         List<String> list = new ArrayList();
 
         for (int i = 0; i < contentFile.size(); i++){
