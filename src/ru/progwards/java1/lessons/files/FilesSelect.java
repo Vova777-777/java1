@@ -42,11 +42,11 @@ public class FilesSelect {
                 }
             });
         }catch (Exception e){
-            System.out.println(e.getStackTrace());
+            System.out.println(e.getMessage());
         }
     }
 
-    private List<String> checkContentFileAndGetKey(List<String> contentFile, List<String> keys){
+    private List<String> checkContentFileAndGetKey(List<String> contentFile, List<String> keys) throws Exception{
         List<String> list = new ArrayList();
 
         for (int i = 0; i < contentFile.size(); i++){
