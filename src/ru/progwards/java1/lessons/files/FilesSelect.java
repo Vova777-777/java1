@@ -13,10 +13,8 @@ public class FilesSelect {
     то скопировать его в подпапку с соответствующим именем, этого элемента keys, все подпапки должны находиться
     в outFolder. */
 
-    public void selectFiles(String inFolder, String outFolder, List<String> keys) throws IOException {
+    public void selectFiles(String inFolder, String outFolder, List<String> keys){
         try {
-
-
             PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**/**.txt");
             Files.walkFileTree(Paths.get(inFolder), new SimpleFileVisitor<>() {
                 @Override
@@ -43,7 +41,7 @@ public class FilesSelect {
                     return FileVisitResult.CONTINUE;
                 }
             });
-        }catch (IOException e){
+        }catch (Exception e){
             System.out.println(e.getStackTrace());
         }
     }
