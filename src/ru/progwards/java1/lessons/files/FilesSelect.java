@@ -19,18 +19,12 @@ public class FilesSelect {
             Files.walkFileTree(Paths.get(inFolder), new SimpleFileVisitor<>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    List<String> contentFile = new ArrayList<>();
+                    List<String> contentFile;
                     if (pathMatcher.matches(file)) contentFile = Files.readAllLines(file);
                     else return FileVisitResult.CONTINUE;
-                    List<String> key = checkContentFileAndGetKey(contentFile, keys);; //Создать отдельно метод на проверку и вызвать его
-                    if (key.isEmpty()) return FileVisitResult.CONTINUE;
-                    for (int i = 0; i < key.size(); i++) {
-                        if (!Files.exists(Paths.get(outFolder + "/" + key.get(i)))) {
-                            Path dirForCopy = Files.createDirectory(Paths.get(outFolder + "/" + key.get(i)));
-                            Files.copy(file, dirForCopy.resolve(file.getFileName()));
-                        } else{if (Files.notExists(Paths.get(outFolder + "/" + key.get(i)).resolve(file.getFileName())))
-                            Files.copy(file, Paths.get(outFolder + "/" + key.get(i)).resolve(file.getFileName()));}
-                    }
+                    List<String> listNamesDirForCopy = getNameOfDirForCopyFile(contentFile, keys);
+                    if (listNamesDirForCopy.isEmpty()) return FileVisitResult.CONTINUE;
+                    createDirForCopyAndCopyFile(listNamesDirForCopy,outFolder, file);
                     return FileVisitResult.CONTINUE;
                 }
 
@@ -44,9 +38,8 @@ public class FilesSelect {
         }
     }
 
-    private List<String> checkContentFileAndGetKey(List<String> contentFile, List<String> keys) {
+    private List<String> getNameOfDirForCopyFile(List<String> contentFile, List<String> keys) {
         List<String> list = new ArrayList();
-
         for (int i = 0; i < contentFile.size(); i++){
             String str = contentFile.get(i);
             for (int j = 0; j < keys.size(); j++) {
@@ -54,6 +47,17 @@ public class FilesSelect {
             }
         }
         return list;
+    }
+
+    private void createDirForCopyAndCopyFile(List<String> namesDirForCopy,String outFolder, Path file) throws IOException {
+        for (int i = 0; i < namesDirForCopy.size(); i++) {
+            Path pathNewDir = Paths.get(outFolder + "/" + namesDirForCopy.get(i));
+            if (!Files.exists(Paths.get(outFolder + "/" + namesDirForCopy.get(i)))) {
+                Path dirForCopy = Files.createDirectory(pathNewDir);
+                Files.copy(file, dirForCopy.resolve(file.getFileName()));
+            } else{if (Files.notExists(pathNewDir.resolve(file.getFileName())))
+                Files.copy(file, pathNewDir.resolve(file.getFileName()));}
+        }
     }
 
     public static void main(String[] args) throws IOException {

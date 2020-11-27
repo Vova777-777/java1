@@ -75,7 +75,7 @@ public class OrderProcessor {
         return result;
     }
 
-    private Order loadOrder(Path file, String shopId) throws IOException {
+    public Order loadOrder(Path file, String shopId) throws IOException {
         Order order = new Order();
         getParametersOfOrder(order, file);
         if (shopId == null) return order;
