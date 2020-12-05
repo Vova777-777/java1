@@ -86,11 +86,11 @@ public class OrderProcessor {
     private boolean checkRightFile(Path path){
         String fileName = path.getFileName().toString();
         String[] array = fileName.split("-");
-        if (array.length != 3) {countNotRightFiles++; return false;}
-        if (array[0].length() != 3) {countNotRightFiles++; return false;}
-        if (array[1].length() != 6) {countNotRightFiles++; return false;}
+        if (array.length != 3) {return false;}
+        if (array[0].length() != 3) {return false;}
+        if (array[1].length() != 6) {return false;}
         String strForEq = array[2].substring(4, array[2].length());
-        if (!strForEq.equals(".csv")) {countNotRightFiles++; return false;}
+        if (!strForEq.equals(".csv")) {return false;}
         else return true;
     }
 
@@ -117,7 +117,7 @@ public class OrderProcessor {
         for (int i = 0; i < listStringsOfOrders.size(); i++) {
             OrderItem orderItem = new OrderItem();
             String[] array = listStringsOfOrders.get(i).split(", ");
-            if (!checkRightContentOfFile(array)) {listOrderItem.clear(); return listOrderItem;}
+            if (!checkRightContentOfFile(array)) {countNotRightFiles++; listOrderItem.clear(); return listOrderItem;}
             orderItem.googsName = array[0];
             orderItem.count = Integer.valueOf(array[1]);
             orderItem.price = Double.valueOf(array[2]);
