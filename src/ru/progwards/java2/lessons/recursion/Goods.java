@@ -34,4 +34,5 @@ public class Goods {
                 ", expired=" + expired +
                 '}';
     }
+
 }
