@@ -1,5 +1,6 @@
 package ru.progwards.java1.lessons.arrays;
 
+
 import java.util.Arrays;
 import java.util.Random;
 
