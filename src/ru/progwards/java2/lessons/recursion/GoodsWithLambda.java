@@ -85,7 +85,6 @@ public class GoodsWithLambda {
 
        list.forEach(System.out::println);
     }
-
 }
 
 
