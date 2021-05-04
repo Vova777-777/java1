@@ -42,7 +42,7 @@ public class DynamicArray<T> {
         size --;
     }
 
-    public T get(int pos) throws Exception{
+    public T get(int pos){
         getArrayOutOfBoundsException(size, pos);
         return array[pos];//добавить ограничения после создания метода size
     }
