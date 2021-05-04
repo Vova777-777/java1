@@ -1,12 +1,6 @@
 package ru.progwards.java2.lessons.generics;
 
-import com.google.inject.internal.cglib.core.$ProcessArrayCallback;
-import com.google.inject.internal.cglib.proxy.$Dispatcher;
-
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class DynamicArray<T> {
 //Реализовать класс по типу BlockArray - обобщающий динамический массив, растущий блоками, на основе обычного
@@ -20,53 +14,48 @@ public class DynamicArray<T> {
 //3.4 метод remove(int pos) - удаляет элемент в позиции pos массива.
 //3.5 метод с get(int pos) - возвращает элемент по индексу pos.
 //3.6 метод с size() - возвращает текущий реальный объем массива.
-
+    private static int size = 0;
     private T[] array = (T[]) new Object[1];
 
     public void add(T t){
-        if (isEndDynamicArray()) array = addBlockWithUseOtherMethod(array);
-        array[findLastIndexValueDynamicArray()] = t;
+        if (isEndDynamicArray()) array = addBlockWithUsingOtherMethod(array);
+        array[size] = t;
+        size ++;
     }
 
     public void insert(int pos, T t){
-        if (isEndDynamicArray()) array = addBlockWithUseOtherMethod(array);
-        if (array.length == 2 && pos == 0) {add(array[0]); array[0] = t; return;}
-        //if (array.length == 2 && pos == 1) {array[1] = t; return;} //??????? при данной реал. если позиция указана больше длины массива то он его туда добавляет
-        for (int i = findLastIndexValueDynamicArray(); i > pos - 1; i--){
+        getArrayOutOfBoundsException(size, pos);
+        if (isEndDynamicArray()) array = addBlockWithUsingOtherMethod(array);
+
+        for (int i = size - 1; i >= pos; i--){
             array[i+1] = array[i];
         }
         array[pos] = t;
+        size ++;
     }
 
     public void remove(int pos){//добавить ограничения после создания метода size
-        for (int i = pos; i < findLastIndexValueDynamicArray(); i++){
+        getArrayOutOfBoundsException(size, pos);
+        for (int i = pos; i < size(); i++){
             array[i] = array[i+1];
         }
+        size --;
     }
 
     public T get(int pos) throws Exception{
-        if (pos >= size()) {
-            throw new Exception();
-        }
+        getArrayOutOfBoundsException(size, pos);
         return array[pos];//добавить ограничения после создания метода size
     }
 
     public int size(){
-        return findLastIndexValueDynamicArray() + 1;
+        return size;
     }
 
     public int realSize(){
         return array.length;
     }
 
-    private int findLastIndexValueDynamicArray(){
-        for (int i = 0; i < array.length; i++){
-            if  (array[i] == null) return (i);
-        }
-        return 0;
-    }
-
-    private T[] addBlockWithUseOtherMethod(T[] array){
+    private T[] addBlockWithUsingOtherMethod(T[] array){
        array  = Arrays.copyOf(array, array.length * 2);
        return array;
     }
@@ -75,21 +64,34 @@ public class DynamicArray<T> {
         return ((array[array.length - 1]) != null);
     }
 
+     private void getArrayOutOfBoundsException(int size, int pos){
+         if (pos >= size()) throw new IndexOutOfBoundsException("Выход за границу массива. Длина массива " + size +
+                 ", индекс " +  pos);
+         if (pos < 0 ) throw new IndexOutOfBoundsException("Выход за границу массива. Индекс массива не может быть отрицательным");
+    }
 
+
+
+
+//    @Override
+//    public String toString() {
+//        String result = "[";
+//        for (T t: array) {
+//            if (t == null) break;
+//            result += t + ", ";
+//        }
+//        result = result.substring(0, result.length()-2) + "]";
+//        return "DynamicArray=" +
+//                result;
+//    }
 
 
     @Override
     public String toString() {
-        String result = "[";
-        for (T t: array) {
-            if (t == null) break;
-            result += t + ", ";
-        }
-        result = result.substring(0, result.length()-2) + "]";
-        return "DynamicArray=" +
-                result;
+        return "DynamicArray{" +
+                "array=" + Arrays.toString(array) +
+                '}';
     }
-
 
     public static void main(String[] args) throws Exception {
 //        Integer[] arr = new Integer[10];
@@ -100,13 +102,23 @@ public class DynamicArray<T> {
         dynamicArray.add(3);
         dynamicArray.add(5);
         dynamicArray.add(6);
+        dynamicArray.add(7);
         System.out.println("Метод add(): " + dynamicArray.toString());
-        dynamicArray.insert(3,122);// можно ли вставить в конец;
-        System.out.println("Метод insert(): " + dynamicArray.toString());
-        dynamicArray.remove(3);
-        System.out.println("Метод remove(): " + dynamicArray.toString());
-        System.out.println("Метод get(): " + dynamicArray.get(2));
         System.out.println("Метод size(): " + dynamicArray.size());
         System.out.println("Метод realSize(): " + dynamicArray.realSize());
+
+        dynamicArray.insert(2,122);// можно ли вставить в конец;
+        System.out.println("Метод insert(): " + dynamicArray.toString());
+        System.out.println("Метод size(): " + dynamicArray.size());
+        System.out.println("Метод realSize(): " + dynamicArray.realSize());
+
+       dynamicArray.remove(0);
+       System.out.println("Метод remove(): " + dynamicArray.toString());
+       System.out.println("Метод size(): " + dynamicArray.size());
+       System.out.println("Метод realSize(): " + dynamicArray.realSize());
+
+       System.out.println("Метод get(): " + dynamicArray.get(0));
+        //System.out.println("Метод size(): " + dynamicArray.size());
+      // System.out.println("Метод realSize(): " + dynamicArray.realSize());
     }
 }//азобраться с методом findLastIndexValueDynamicArray()
