@@ -34,7 +34,7 @@ public class DynamicArray<T> {
         size ++;
     }
 
-    public void remove(int pos){//добавить ограничения после создания метода size
+    public void remove(int pos){
         getArrayOutOfBoundsException(size, pos);
         for (int i = pos; i < size(); i++){
             array[i] = array[i+1];
