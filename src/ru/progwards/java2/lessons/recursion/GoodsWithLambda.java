@@ -59,9 +59,10 @@ public class GoodsWithLambda {
 //    public List<Goods> сountBetween(int count1, int count2) - вернуть список, с товаром, количество на складе
 //    которого больше count1 и меньше count2, отсортированный по количеству
 
+
     List<Goods> сountBetween(int count1, int count2){
-        return this.list.stream().takeWhile(a -> (a.available < count2 && a.available > count1)).
-                sorted(Comparator.comparing(a -> a.available)).collect(Collectors.toList());
+        return this.list.stream().sorted(Comparator.comparing(a -> a.available)).filter(a -> a.available > count1).
+                takeWhile(a -> a.available < count2).collect(Collectors.toList());
     }
 
     public static void main(String[] args) {
@@ -82,6 +83,9 @@ public class GoodsWithLambda {
        // list = goodsWithLambda.sortByName();
         //list = goodsWithLambda.sortByNumber();
         //list = goodsWithLambda.sortByPartNumber();
+        //list = goodsWithLambda.сountLess(17);
+        list = goodsWithLambda.сountBetween(5,100);
+
 
        list.forEach(System.out::println);
     }
