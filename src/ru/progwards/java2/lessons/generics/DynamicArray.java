@@ -70,22 +70,6 @@ public class DynamicArray<T> {
          if (pos < 0 ) throw new IndexOutOfBoundsException("Выход за границу массива. Индекс массива не может быть отрицательным");
     }
 
-
-
-
-//    @Override
-//    public String toString() {
-//        String result = "[";
-//        for (T t: array) {
-//            if (t == null) break;
-//            result += t + ", ";
-//        }
-//        result = result.substring(0, result.length()-2) + "]";
-//        return "DynamicArray=" +
-//                result;
-//    }
-
-
     @Override
     public String toString() {
         return "DynamicArray{" +
@@ -121,4 +105,4 @@ public class DynamicArray<T> {
         //System.out.println("Метод size(): " + dynamicArray.size());
       // System.out.println("Метод realSize(): " + dynamicArray.realSize());
     }
-}//азобраться с методом findLastIndexValueDynamicArray()
+}
