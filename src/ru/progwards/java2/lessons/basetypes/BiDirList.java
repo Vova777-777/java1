@@ -22,10 +22,9 @@ public class BiDirList<T> implements Iterable<T> {
         private T iteam;
          ListIteam<T> next;
          ListIteam<T> prev;
-        ListIteam(T item){
+         ListIteam(T item){
             this.iteam = item;
         }
-
 
         @Override
         public boolean hasNext() {
@@ -47,15 +46,31 @@ public class BiDirList<T> implements Iterable<T> {
     }
     public ListIteam<T> tail;
     public ListIteam<T> head;
-    ListIteam<T> iterator = new ListIteam<T>(null);
 
+    ListIteam<T> iterator = new ListIteam<T>(null);
 
     @Override
     public Iterator iterator() {
-
         iterator.next = head;
         return iterator;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     public void addLast(T item){
