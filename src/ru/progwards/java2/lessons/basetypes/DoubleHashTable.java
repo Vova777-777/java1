@@ -1,0 +1,197 @@
+package ru.progwards.java2.lessons.basetypes;
+
+//Реализовать класс DoubleHashTable - хэш таблица с двойным хэшированием
+//        В качестве размера таблицы выбирать простое число, первоначальное значение 101
+//        При количестве коллизий более 10% при одной серии пробирований - перестраивать таблицу, увеличивая размер
+//        Стратегия роста - удвоение размера, но с учетом правила - размер таблицы простое число. Т.е. искать ближайшее ,большее простое
+//        Ключи должны реализовывать интерфейс
+//          interface HashValue {
+//          int getHash();
+//
+//}
+//Таким образом, мы унифицируем ключи любого типа, приведя их к целочисленному.
+//        Реализовать 2 класса ключей:
+//        - IntKey - алгоритм хэширования может быть любой, можно вернуть просто сам число.
+//        - StringKey - выбрать что-то, из функций, представленных в лекции,
+//        Само двойное хэширование реализуем уже после получения целочисленного значения через getHas().
+//        В самой хэш-таблице должно быть 2 функции хэширования: деление и умножение
+//        Методы
+//        2.1 public void add(K key, V value) - добавить пару ключ-значение
+//        2.2 public V get(K key) - получить значение по ключу
+//        2.3 public void remove(K key) - удалить элемент по ключу
+//        2.4 public void change(K key1, Key key2) - изменить значение ключа у элемента с key1 на key2
+//        2.5 public int size() - получить количество элементов
+//        2.6 реализовать интерфейс Iterable<T>
+
+
+import java.util.Arrays;
+
+public class DoubleHashTable<K, V> {
+    static int bufferSize = 101; // размер самого массива, сколько памяти выделено под хранение нашей таблицы
+    static int countCollision = 0;
+    final int percentCollisionBeforeIncrease = 10;
+    int size = 0;// фактический размер (колличество пар)
+
+    boolean state; // если значение флага state = false, значит элемент массива был удален (deleted)
+    int sizeWithDelete; // сколько элементов у нас сейчас в массиве (без учета deleted)
+    int size_all_non_nullptr; // сколько элементов у нас сейчас в массиве (с учетом deleted)
+    Item[] array = new Item[bufferSize];
+
+    class Item<K, V>{
+        K key;
+        V value;
+        Item (K key, V value){
+            this.key = key;
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return key + " - " + value;
+        }
+    }
+
+    public void add(K key, V value){
+        HashValue hashValue = getObjectNeedTypeHashValue(key);
+        int hash = hashValue.getFirstHash();
+        if (array[hash] == null) {array[hash] = new Item(key, value); size++;}
+        else{
+            int n = hashValue.getHash();
+            for (int i = (hash); i < array.length; ){
+                if (array[i] != null && array[i].key.equals(key)) { array[i] = new Item(key, value); return;}
+                if (array[i] == null)
+                { array[i] = new Item(key, value); countCollision = 0; size++; return;}
+                else {
+                    countCollision++;
+                    if (isPercentCollision()) {increaseArray(); add(key, value);}
+                }
+                i+=n;
+                if (i > array.length) {increaseArray(); add(key, value);}
+            }
+            countCollision = 0;
+
+
+        }
+    }
+
+    private void increaseArray(){
+      bufferSize = bufferSize * 2 + 1;
+      Item[] arr = new Item[bufferSize];
+        for (int i = 0; i < array.length; i++){
+            if (array[i] == null) continue;
+            HashValue hashValue = getObjectNeedTypeHashValue((K) array[i].key);
+            int firstHash = hashValue.getFirstHash();
+            if (arr[firstHash] == null) arr[firstHash] = new Item((K) array[i].key, (V) array[i].value);
+            else{
+                int n = hashValue.getHash();
+                for (int j = (firstHash + n); j < arr.length;){
+                    if (arr[j] == null){ arr[j] = new Item((K) array[i].key, (V) array[i].value); array = arr;  return;}
+                    i+=n;
+                }
+            }
+        }
+        array = arr;
+    }
+
+    private boolean isPercentCollision(){
+            if (((countCollision * 100) / bufferSize)> percentCollisionBeforeIncrease) return true;
+            else return false;
+    }
+
+    private HashValue getObjectNeedTypeHashValue(K key){
+        HashValue hashValue;
+        if (key instanceof String) hashValue = new StringKey((String) key, bufferSize);
+        else hashValue = new IntKey((int) key, bufferSize);
+        return hashValue;
+    }
+
+
+    public static void main(String[] args) {
+        DoubleHashTable table = new DoubleHashTable();
+        table.add(1, 123);
+        System.out.println(bufferSize);
+        table.add(22, 124);
+        System.out.println(bufferSize);
+        table.add(33, 125);
+        System.out.println(bufferSize);
+        table.add(44, 127);
+        System.out.println(bufferSize);
+        table.add(55, 130);
+        System.out.println(bufferSize);
+        table.add(555, 7777777);
+        System.out.println(bufferSize);
+        System.out.println("колличество значений: " + table.size);
+
+        System.out.println(table);
+    }
+
+    @Override
+    public String toString() {
+        return "DoubleHashTable{" +
+                "array=" + Arrays.toString(array) +
+                '}';
+    }
+}
+
+    interface HashValue {
+        int getFirstHash();
+        int getHash();
+    }
+
+class StringKey implements HashValue{
+    String key;
+    int default_size;
+
+    public StringKey(String key, int default_size) {
+        this.key = key;
+        this.default_size = default_size;
+    }
+
+    public int getFirstHash() {
+        int hash = 0;
+        for(int i = 0; i < key.length(); i++)
+            hash = (31 * hash + key.charAt(i)) % default_size;
+        return hash;
+    }
+
+    @Override
+    public int getHash() {
+        return (int) (getFirstHash() * 0.1 % default_size);
+    }
+}
+
+class IntKey implements HashValue{
+    int key;
+    int default_size;
+
+    public IntKey(int key, int default_size) {
+        this.key = key;
+        this.default_size = default_size;
+    }
+
+    @Override
+    public int getFirstHash(){
+        final double A = (Math.sqrt(5) - 1) / 2;
+        double d = A * key;
+        return (int)(default_size * (d - Math.floor(d)));
+    }
+
+    @Override
+    public int getHash() {
+        return (getFirstHash() % default_size);
+    }
+
+    public static void main(String[] args) {
+
+    }
+}
+
+
+
+
+
+// разобраться в методе добавить почему не заменяется при одинаковом ключе и
+
+
+
+
