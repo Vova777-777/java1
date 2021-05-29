@@ -25,21 +25,39 @@ package ru.progwards.java2.lessons.basetypes;
 
 
 import java.util.Arrays;
+import java.util.Iterator;
 
-public class DoubleHashTable<K, V> {
+public class DoubleHashTable<K, V> implements Iterable {
     static int bufferSize = 101; // размер самого массива, сколько памяти выделено под хранение нашей таблицы
     static int countCollision = 0;
     final int percentCollisionBeforeIncrease = 10;
     int size = 0;// фактический размер (колличество пар)
-
-    boolean state; // если значение флага state = false, значит элемент массива был удален (deleted)
-    int sizeWithDelete; // сколько элементов у нас сейчас в массиве (без учета deleted)
-    int size_all_non_nullptr; // сколько элементов у нас сейчас в массиве (с учетом deleted)
+    int sizeWithoutDelete; // сколько элементов у нас сейчас в массиве (без учета deleted)
+    int sizeWithDelete; // сколько элементов у нас сейчас в массиве (с учетом deleted)
+    //эти значения понадобились бы ели при опр колличестве удалееных мы перерасчитывали позицию всех элементов обнулив удалленны,
+    // но заданием это не треб-ся
     Item[] array = new Item[bufferSize];
+    int iteration = 0;
 
-    class Item<K, V>{
+    @Override
+    public Iterator iterator() {
+        Item item = null;
+        for (int i = 0; i < array.length; i++){
+            iteration++;
+            if (array[i] != null && array[i].state) {item = array[i]; break;}
+
+        }
+        if (item == null) throw new UnsupportedOperationException("table is empty");
+        return item;
+    }
+
+
+
+    class Item<K, V> implements Iterator<Item> {
+
         K key;
         V value;
+        boolean state = true;
         Item (K key, V value){
             this.key = key;
             this.value = value;
@@ -49,18 +67,41 @@ public class DoubleHashTable<K, V> {
         public String toString() {
             return key + " - " + value;
         }
+
+
+        @Override
+        public boolean hasNext() {
+            if  (iteration  < array.length) return true;
+            else if (iteration == array.length && array[array.length-1] != null && array[array.length-1].state)
+            {iteration++; return true;} //это условие чтобы если последний элемент null, крайний элемент не повторялся 2 раза
+            else return false;
+        }
+
+        Item it = this;
+
+        @Override
+        public Item next() {
+            Item result = it;
+            for (int i = iteration ; i < array.length; i++){
+                iteration++;
+                if (array[i] != null && array[i].state) {it = array[i]; break;}
+
+            }
+
+            return result;
+        }
     }
 
     public void add(K key, V value){
         HashValue hashValue = getObjectNeedTypeHashValue(key);
         int hash = hashValue.getFirstHash();
-        if (array[hash] == null) {array[hash] = new Item(key, value); size++;}
+        if (array[hash] == null || !array[hash].state) {array[hash] = new Item(key, value); size++; return;}
         else{
             int n = hashValue.getHash();
             for (int i = (hash); i < array.length; ){
                 if (array[i] != null && array[i].key.equals(key)) { array[i] = new Item(key, value); return;}
-                if (array[i] == null)
-                { array[i] = new Item(key, value); countCollision = 0; size++; return;}
+                if (array[i] == null || !array[hash].state)
+                {array[i] = new Item(key, value); countCollision = 0; size++; return;}
                 else {
                     countCollision++;
                     if (isPercentCollision()) {increaseArray(); add(key, value);}
@@ -69,15 +110,54 @@ public class DoubleHashTable<K, V> {
                 if (i > array.length) {increaseArray(); add(key, value);}
             }
             countCollision = 0;
-
-
         }
+    }
+
+    public V get(K key){
+        HashValue hashValue = getObjectNeedTypeHashValue(key);
+        int hash = hashValue.getFirstHash();
+        if (array[hash] != null && key.equals(array[hash].key) && array[hash].state) return (V) array[hash].value;
+        else {
+            int n = hashValue.getHash();
+            for (int i = hash + n; i < array.length;){
+                if (array[i] == null) return null;
+                if (key.equals(array[i].key) && array[i].state) return (V) array[i].value;
+                i += n;
+            }
+        }
+        //throw new NullPointerException("Value with such key have not found");
+        return null;
+    }
+
+    public void remove(K key){
+        HashValue hashValue = getObjectNeedTypeHashValue(key);
+        int hash = hashValue.getFirstHash();
+        if (array[hash] != null && key.equals(array[hash].key) && array[hash].state){array[hash].state = false; size--;}
+        else {
+            int n = hashValue.getHash();
+            for (int i = hash + n; i < array.length;){
+                if (array[i] != null && key.equals(array[i].key) && array[i].state){array[i].state = false; size--; return;}
+                i += n;
+            }
+            System.out.println("Not value with such key");
+        }
+    }
+
+    public void change(K key1, K key2){//надо удалять и пересчитывать хэшфункцию. ПЕРЕДелать метод
+        V value = get(key1);
+        remove(key1);
+        add(key2, value);
+    }
+
+    public int size(){
+        return size;
     }
 
     private void increaseArray(){
       bufferSize = bufferSize * 2 + 1;
       Item[] arr = new Item[bufferSize];
         for (int i = 0; i < array.length; i++){
+            if (!array[i].state) continue;// не копируем в новый массив и окончательно избавляемся от удаленного элемента;
             if (array[i] == null) continue;
             HashValue hashValue = getObjectNeedTypeHashValue((K) array[i].key);
             int firstHash = hashValue.getFirstHash();
@@ -106,24 +186,7 @@ public class DoubleHashTable<K, V> {
     }
 
 
-    public static void main(String[] args) {
-        DoubleHashTable table = new DoubleHashTable();
-        table.add(1, 123);
-        System.out.println(bufferSize);
-        table.add(22, 124);
-        System.out.println(bufferSize);
-        table.add(33, 125);
-        System.out.println(bufferSize);
-        table.add(44, 127);
-        System.out.println(bufferSize);
-        table.add(55, 130);
-        System.out.println(bufferSize);
-        table.add(555, 7777777);
-        System.out.println(bufferSize);
-        System.out.println("колличество значений: " + table.size);
 
-        System.out.println(table);
-    }
 
     @Override
     public String toString() {
@@ -131,9 +194,35 @@ public class DoubleHashTable<K, V> {
                 "array=" + Arrays.toString(array) +
                 '}';
     }
+
+    public static void main(String[] args) {
+        DoubleHashTable table = new DoubleHashTable();
+        table.add(1, 123);
+        table.add(22, 124);
+        table.add(33, 125);
+        table.add(44, 127);
+        table.add(55, 130);
+        table.add(555, 7777777);
+//        System.out.println(bufferSize);
+//        System.out.println("колличество значений: " + table.size);
+//        System.out.println(table.get(555));
+        System.out.println(table);
+//        table.remove(33);
+//        System.out.println("колличество значений: " + table.size);
+//        System.out.println(table.get(33));
+//        System.out.println("колличество значений: " + table.size);
+//        table.change(555, 777);
+//        System.out.println("Revise of change. Must get value 7777777. This value: " + table.get(777));
+//        System.out.println("колличество значений: " + table.size());
+        Iterator iterator = table.iterator();
+        while (iterator.hasNext()){
+            System.out.println(iterator.next());
+        }
+    }
 }
 
-    interface HashValue {
+
+interface HashValue {
         int getFirstHash();
         int getHash();
     }
@@ -181,16 +270,8 @@ class IntKey implements HashValue{
         return (getFirstHash() % default_size);
     }
 
-    public static void main(String[] args) {
-
-    }
 }
 
-
-
-
-
-// разобраться в методе добавить почему не заменяется при одинаковом ключе и
 
 
 
