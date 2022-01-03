@@ -70,11 +70,11 @@
                 <artifactId>PluginSendJar</artifactId>
                 <version>1.0</version>
                 <configuration>
-                    <emailTo>vova.klok.00@mail.ru</emailTo>
-                    <emailFrom>vova.klok.00@mail.ru</emailFrom>
+                    <emailTo>*****</emailTo>
+                    <emailFrom>*****</emailFrom>
                     <authServ>smtp.mail.ru</authServ>
-                    <authUser>vova.klok.00@mail.ru</authUser>
-                    <authPass>WC6mWygaaWz6d0Acd6i3</authPass>
+                    <authUser>***</authUser>
+                    <authPass>***</authPass>
                 </configuration>
                 <executions>
                     <execution>
