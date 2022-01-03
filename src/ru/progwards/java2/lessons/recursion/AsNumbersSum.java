@@ -59,6 +59,6 @@ public class AsNumbersSum {
 
     public static void main(String[] args) {
        System.out.println(asNumbersSum(5));
-       System.out.println(asNumbersSum(7));
+       System.out.println(asNumbersSum(20));
     }
 }

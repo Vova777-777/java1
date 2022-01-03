@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Homework.iml" filepath="$PROJECT_DIR$/Homework.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/ru/progwards/java2/lessons/builders/MavenCalculator/MavenCalculator.iml" filepath="$PROJECT_DIR$/src/ru/progwards/java2/lessons/builders/MavenCalculator/MavenCalculator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/ru/progwards/java2/lessons/builders/PluginSendJar/PluginSendJar.iml" filepath="$PROJECT_DIR$/src/ru/progwards/java2/lessons/builders/PluginSendJar/PluginSendJar.iml" />
     </modules>
   </component>
 </project>

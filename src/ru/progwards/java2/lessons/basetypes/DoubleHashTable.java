@@ -174,8 +174,7 @@ public class DoubleHashTable<K, V> implements Iterable {
     }
 
     private boolean isPercentCollision(){
-            if (((countCollision * 100) / bufferSize)> percentCollisionBeforeIncrease) return true;
-            else return false;
+            return  (((countCollision * 100) / bufferSize)> percentCollisionBeforeIncrease);
     }
 
     private HashValue getObjectNeedTypeHashValue(K key){
@@ -271,6 +270,22 @@ class IntKey implements HashValue{
     }
 
 }
+
+
+//        -----------
+//
+//        DoubleHashTable
+//        - идея со 2-м параметром конструктора    public StringKey(String key, int default_size) {
+//        мне кажется неудачной.
+//        - пришлось реализовывать доп. Метод         int getFirstHash(); в интерфейсе. В т.з. его нет
+//        - с унификацией ключей любого типа не получилось:
+//        if (key instanceof String) hashValue = new StringKey((String) key, bufferSize);
+//        else hashValue = new IntKey((int) key, bufferSize);
+//        придётся всё время править этот метод при добавлении нового типа.
+//        - правильно было бы переопределить методы    equals hashCode в классах IntKey и StringKey
+//        - лучше всё-таки выделять интерфейс и класс с ключами в отдельные файлы.
+//
+//        Оценка 66 / 100
 
 
 

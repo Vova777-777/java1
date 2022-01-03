@@ -28,12 +28,7 @@ public class BiDirList<T> implements Iterable<T> {
 
         @Override
         public boolean hasNext() {
-            if (iterator == tail){
-
-                return false;}
-            else {
-                return true;
-            }
+            return !(iterator == tail);
         }
 
         @Override
@@ -54,24 +49,6 @@ public class BiDirList<T> implements Iterable<T> {
         iterator.next = head;
         return iterator;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public void addLast(T item){
         if (head == null){
@@ -102,7 +79,6 @@ public class BiDirList<T> implements Iterable<T> {
     }
 
     public void remove(T item){
-        if (head == null) throw new NullPointerException("List is empty");
         if (item.equals(head.iteam)) {
             if (head.next == null) {head = null; return;}
             this.removeFirst();
@@ -127,7 +103,6 @@ public class BiDirList<T> implements Iterable<T> {
     }
 
     public void removeFirst(){
-        if (head == null) throw new NullPointerException("List is empty");
         if (head.next == null) {head = null; return;}
         head = head.next;
         head.prev.next = null;
@@ -136,7 +111,6 @@ public class BiDirList<T> implements Iterable<T> {
     }
 
     public void removeLast(){
-        if (head == null) throw new NullPointerException("List is empty");
         if (tail.prev == null) {tail = null; return;}
         tail = tail.prev;
         tail.next.prev = null;
@@ -197,6 +171,12 @@ public class BiDirList<T> implements Iterable<T> {
             i++;
         }
     }
+
+    public int size(){
+        return size;
+    }
+
+
 
     @Override
     public String toString() {
