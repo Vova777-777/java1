@@ -61,6 +61,18 @@ public class Heap {
                 + "если переданный указатель не является началом блока");
     }
 
+    public void defrag(){
+        Iterator<Block> iterator = listFreeBlocks.iterator();
+        Block previousBlock = null;
+        while (iterator.hasNext()){
+            Block block = iterator.next();
+            for (Block blockInside: listFreeBlocks) {
+                if (block == blockInside){continue;}
+                if (block.indicator == blockInside.indicator)
+            }
+        }
+    }
+
 
 
     private class Block{
