@@ -91,6 +91,32 @@ public class Heap {
         defrag();
     }
 
+    //. Метод public void compact() - компактизация кучи - перенос всех занятых блоков в начало хипа, с копированием
+    // самих данных - элементов массива. Для более точной имитации производительности копировать просто в цикле по
+    // одному элементу, не используя System.arraycopy. Обязательно запускаем compact из malloc если не нашли блок
+    // подходящего размера
+
+    public void compact(){
+       int j = 0;
+        listOccupiedBlocks.sort(Comparator.comparing(x -> x.indicator));
+        for (Block block : listOccupiedBlocks) {
+            for (int i = block.indicator; i <= block.finishIndicator; i ++){
+                bytes[j] = bytes[i];
+                bytes[i] = 0;
+                j++;
+            }
+        }
+    }
+
+    public void getBytes(int ptr, byte[] bytes) {
+        System.arraycopy(this.bytes, ptr, bytes, 0, this.bytes.length);
+    }
+
+    public void setBytes(int ptr, byte[] bytes) {
+        System.arraycopy(bytes, 0, this.bytes, ptr, bytes.length);
+    }
+
+
 
 
     private class Block{
@@ -178,6 +204,39 @@ public class Heap {
             System.out.println(block.toString());
         }
         System.out.println("\n");
+
+        System.out.println("REVISE COMPACT");
+        heap.bytes = new byte[] {0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,2,2,2,0,0};
+        heap.malloc(5);
+        heap.malloc(5);
+        heap.malloc(5);
+        heap.malloc(3);
+        heap.free(0);
+        heap.free(10);
+        System.out.println("Before");
+        System.out.println("Blocks of listFreeBlocks");
+        for (Block block: heap.listFreeBlocks) {
+            System.out.println(block.toString());
+        }
+        System.out.println("");
+
+        System.out.println("Blocks of listOccupiedBlocks");
+        for (Block block: heap.listOccupiedBlocks) {
+            System.out.println(block.toString());
+        }
+        heap.compact();
+        System.out.println("After");
+        System.out.println("Blocks of listFreeBlocks");
+        for (Block block: heap.listFreeBlocks) {
+            System.out.println(block.toString());
+        }
+        System.out.println("");
+
+        System.out.println("Blocks of listOccupiedBlocks");
+        for (Block block: heap.listOccupiedBlocks) {
+            System.out.println(block.toString());
+        }
+        System.out.println(Arrays.toString(heap.bytes));
 
 
 
