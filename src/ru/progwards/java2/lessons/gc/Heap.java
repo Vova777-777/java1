@@ -7,6 +7,7 @@ import java.util.*;
 public class Heap {
     int maxHeapSize;
     byte[] bytes = new byte[maxHeapSize];
+
     List<Block> listFreeBlocks = new ArrayList<>();
     List<Block> listOccupiedBlocks = new ArrayList<>();
     static Queue<Block> queueDefrag = new ArrayDeque<>();
@@ -60,52 +61,90 @@ public class Heap {
                 break;
             }
         }
-        if (validPtr == false) throw new InvalidPointerException("неверный указатель. Возникает при освобождении блока, "
+        if (!validPtr) throw new InvalidPointerException("неверный указатель. Возникает при освобождении блока, "
                 + "если переданный указатель не является началом блока");
     }
 
+//    public void defrag2() {
+//        List<Block> newList = new ArrayList<>();
+//        listFreeBlocks.sort(Comparator.comparing(x -> x.indicator));
+//        for (int i = 0; i < ; i++) {
+//            if(можно мержить) мерж
+//
+//                    newList.add()
+//        }
+//    }
+
+//    public void defrag(){
+//        Iterator<Block> iterator = listFreeBlocks.iterator();
+//        if (listFreeBlocks.isEmpty()) return;
+//        Queue<Block> queueRemove = new ArrayDeque<>();
+//        Block blockResult = null;
+//        Block block = null;
+//        while (iterator.hasNext()){
+//            block = iterator.next();
+//            for (Block element: listFreeBlocks) {
+//                if (element == block) continue;
+//                if (block.indicator == (element.finishIndicator + 1)){
+//                    blockResult = new Block(element.indicator, (block.sizeOfBlock + element.sizeOfBlock));
+//                    queueRemove.add(block);
+//                    queueRemove.add(element);
+//                    break;
+//                }
+//            }
+//            if (blockResult !=null) break;
+//        }
+//        for (Block blo : queueRemove) {
+//            listFreeBlocks.remove(blo);
+//        }
+//        if (blockResult == null) return;
+//        listFreeBlocks.add(blockResult);
+//        defrag();
+//    }
+
     public void defrag(){
-        Iterator<Block> iterator = listFreeBlocks.iterator();
-        if (listFreeBlocks.isEmpty()) return;
-        Queue<Block> queueRemove = new ArrayDeque<>();
-        Block blockResult = null;
-        Block block = null;
+        listFreeBlocks.sort(Comparator.comparing(x -> x.indicator));
+        List<Block> listForRemove = new ArrayList<>();
+        ListIterator<Block> iterator = listFreeBlocks.listIterator();
+        if (listFreeBlocks.size() < 2) return;// there are one big block or no free space
+        Block block = iterator.next();
         while (iterator.hasNext()){
-            block = iterator.next();
-            for (Block element: listFreeBlocks) {
-                if (element == block) continue;
-                if (block.indicator == (element.finishIndicator + 1)){
-                    blockResult = new Block(element.indicator, (block.sizeOfBlock + element.sizeOfBlock));
-                    queueRemove.add(block);
-                    queueRemove.add(element);
-                    break;
-                }
+            //Block blockNext = iterator.previous();
+
+            Block blockNext = iterator.next();
+            Block blockPre = listFreeBlocks.get(listFreeBlocks.indexOf(blockNext) - 1);
+            if (blockNext.indicator == blockPre.finishIndicator + 1){
+                iterator.add(new Block(blockPre.indicator, blockNext.sizeOfBlock + blockPre.sizeOfBlock));
+                listForRemove.add(blockPre);
+                listForRemove.add(blockNext);
             }
-            if (blockResult !=null) break;
         }
-        for (Block blo : queueRemove) {
-            listFreeBlocks.remove(blo);
-        }
-        if (blockResult == null) return;
-        listFreeBlocks.add(blockResult);
-        defrag();
+        listFreeBlocks.removeAll(listForRemove);
     }
 
-    //. Метод public void compact() - компактизация кучи - перенос всех занятых блоков в начало хипа, с копированием
+    // Метод public void compact() - компактизация кучи - перенос всех занятых блоков в начало хипа, с копированием
     // самих данных - элементов массива. Для более точной имитации производительности копировать просто в цикле по
     // одному элементу, не используя System.arraycopy. Обязательно запускаем compact из malloc если не нашли блок
     // подходящего размера
 
     public void compact(){
+        int sizeOfAlOccupied = 0;
        int j = 0;
         listOccupiedBlocks.sort(Comparator.comparing(x -> x.indicator));
         for (Block block : listOccupiedBlocks) {
             for (int i = block.indicator; i <= block.finishIndicator; i ++){
+                if (i == block.indicator){block.indicator = j; }
                 bytes[j] = bytes[i];
                 bytes[i] = 0;
+                if (i == block.finishIndicator){block.finishIndicator = block.indicator + block.sizeOfBlock - 1;}
                 j++;
             }
+            sizeOfAlOccupied += block.sizeOfBlock;
         }
+        listFreeBlocks.clear();
+        Block blockLastOfListOccupied = listOccupiedBlocks.get(listOccupiedBlocks.size()-1);
+        listFreeBlocks.add(new Block(blockLastOfListOccupied.finishIndicator + 1,
+                maxHeapSize - sizeOfAlOccupied));
     }
 
     public void getBytes(int ptr, byte[] bytes) {
@@ -118,11 +157,12 @@ public class Heap {
 
 
 
-
     private class Block{
         int indicator;
         int sizeOfBlock;
         int finishIndicator;
+
+
 
 
         Block(int indicator, int sizeOfBlock){
@@ -130,6 +170,7 @@ public class Heap {
             this.sizeOfBlock = sizeOfBlock;
             this.finishIndicator = indicator + sizeOfBlock - 1;
         }
+
 
         @Override
         public String toString() {
@@ -144,7 +185,7 @@ public class Heap {
 
     public static void main(String[] args) throws OutOfMemoryException, InvalidPointerException {
         Heap heap = new Heap(20);
-
+        System.out.println(heap.bytes.length);
         System.out.println("REVISE MALLOC\n");
         System.out.println("used method mooloc(5)");
         heap.malloc(5);
