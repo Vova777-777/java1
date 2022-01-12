@@ -27,17 +27,17 @@ public class HeapTest {
 //    }
 
     static class Block{
-        int ptr;
-        int size;
-        int finishIndicator;
+        int ptrStart;
+        int sizeOfBlock;
+        int ptrFinish;
 
 
 
 
         Block(int indicator, int sizeOfBlock){
-            this.ptr = indicator;
-            this.size = sizeOfBlock;
-            this.finishIndicator = indicator + sizeOfBlock - 1;
+            this.ptrStart = indicator;
+            this.sizeOfBlock = sizeOfBlock;
+            this.ptrFinish = indicator + sizeOfBlock - 1;
         }
 
 //        public Block merge(Block otherBlock) {
@@ -48,12 +48,13 @@ public class HeapTest {
 //            }
 //        }
 
+
         @Override
         public String toString() {
             return "Block{" +
-                    "indicator=" + ptr +
-                    ", sizeOfBlock=" + size +
-                    ", finishIndicator=" + finishIndicator +
+                    "ptrStart=" + ptrStart +
+                    ", sizeOfBlock=" + sizeOfBlock +
+                    ", ptrFinish=" + ptrFinish +
                     '}';
         }
     }
@@ -93,6 +94,7 @@ public class HeapTest {
             lstart = System.currentTimeMillis();
             //if(forDefrag % 400 == 0) heap.defrag();//!!!!!!!!!!!!!!!!
             if(forDefrag % 50 == 0) heap.compact();//!!!!!!!!!!!!!!!!
+            forDefrag++;
             int ptr = heap.malloc(size);
             lstop = System.currentTimeMillis();
             allocTime += lstop-lstart;
@@ -105,10 +107,10 @@ public class HeapTest {
                     if (block == null)
                         break;
                     lstart = System.currentTimeMillis();
-                    heap.free(block.ptr);
+                    heap.free(block.ptrStart);
                     lstop = System.currentTimeMillis();
                     freeTime += lstop - lstart;
-                    allocated -= block.size;
+                    allocated -= block.sizeOfBlock;
                 }
                 //blocks.remove(n);
             }

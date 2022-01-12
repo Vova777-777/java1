@@ -6,7 +6,7 @@ import java.util.*;
 
 public class Heap {
     int maxHeapSize;
-    byte[] bytes = new byte[maxHeapSize];
+    byte[] bytes;
 
     List<Block> listFreeBlocks = new ArrayList<>();
     List<Block> listOccupiedBlocks = new ArrayList<>();
@@ -14,8 +14,10 @@ public class Heap {
 
 
     Heap(int maxHeapSize){
+        bytes = new byte[maxHeapSize];
         this.maxHeapSize = maxHeapSize;
         listFreeBlocks.add(new Block(0, maxHeapSize));
+
     }
 
 
@@ -30,13 +32,13 @@ public class Heap {
         while (iterator.hasNext()){
             Block freeBlock = iterator.next();
             if (size <= freeBlock.sizeOfBlock){
-                Block blockWritten = new Block(freeBlock.indicator, size);
+                Block blockWritten = new Block(freeBlock.ptrStart, size);
                 listOccupiedBlocks.add(blockWritten);
-                Block blockClean = new Block(blockWritten.finishIndicator + 1, freeBlock.sizeOfBlock -
+                Block blockClean = new Block(blockWritten.ptrFinish + 1, freeBlock.sizeOfBlock -
                         size);
                 iterator.remove();
                 queue.add(blockClean);
-                result = blockWritten.indicator;
+                result = blockWritten.ptrStart;
                 break;
             }
         }
@@ -54,7 +56,7 @@ public class Heap {
         Iterator<Block> iterator = listOccupiedBlocks.iterator();
         while (iterator.hasNext()){
             Block block = iterator.next();
-            if (ptr == block.indicator){
+            if (ptr == block.ptrStart){
                 listFreeBlocks.add(block);
                 iterator.remove();
                 validPtr = true;
@@ -65,45 +67,8 @@ public class Heap {
                 + "если переданный указатель не является началом блока");
     }
 
-//    public void defrag2() {
-//        List<Block> newList = new ArrayList<>();
-//        listFreeBlocks.sort(Comparator.comparing(x -> x.indicator));
-//        for (int i = 0; i < ; i++) {
-//            if(можно мержить) мерж
-//
-//                    newList.add()
-//        }
-//    }
-
-//    public void defrag(){
-//        Iterator<Block> iterator = listFreeBlocks.iterator();
-//        if (listFreeBlocks.isEmpty()) return;
-//        Queue<Block> queueRemove = new ArrayDeque<>();
-//        Block blockResult = null;
-//        Block block = null;
-//        while (iterator.hasNext()){
-//            block = iterator.next();
-//            for (Block element: listFreeBlocks) {
-//                if (element == block) continue;
-//                if (block.indicator == (element.finishIndicator + 1)){
-//                    blockResult = new Block(element.indicator, (block.sizeOfBlock + element.sizeOfBlock));
-//                    queueRemove.add(block);
-//                    queueRemove.add(element);
-//                    break;
-//                }
-//            }
-//            if (blockResult !=null) break;
-//        }
-//        for (Block blo : queueRemove) {
-//            listFreeBlocks.remove(blo);
-//        }
-//        if (blockResult == null) return;
-//        listFreeBlocks.add(blockResult);
-//        defrag();
-//    }
-
     public void defrag(){
-        listFreeBlocks.sort(Comparator.comparing(x -> x.indicator));
+        listFreeBlocks.sort(Comparator.comparing(x -> x.ptrStart));
         List<Block> listForRemove = new ArrayList<>();
         ListIterator<Block> iterator = listFreeBlocks.listIterator();
         if (listFreeBlocks.size() < 2) return;// there are one big block or no free space
@@ -113,8 +78,8 @@ public class Heap {
 
             Block blockNext = iterator.next();
             Block blockPre = listFreeBlocks.get(listFreeBlocks.indexOf(blockNext) - 1);
-            if (blockNext.indicator == blockPre.finishIndicator + 1){
-                iterator.add(new Block(blockPre.indicator, blockNext.sizeOfBlock + blockPre.sizeOfBlock));
+            if (blockNext.ptrStart == blockPre.ptrFinish + 1){
+                iterator.add(new Block(blockPre.ptrStart, blockNext.sizeOfBlock + blockPre.sizeOfBlock));
                 listForRemove.add(blockPre);
                 listForRemove.add(blockNext);
             }
@@ -130,21 +95,23 @@ public class Heap {
     public void compact(){
         int sizeOfAlOccupied = 0;
        int j = 0;
-        listOccupiedBlocks.sort(Comparator.comparing(x -> x.indicator));
+        listOccupiedBlocks.sort(Comparator.comparing(x -> x.ptrStart));
         for (Block block : listOccupiedBlocks) {
-            for (int i = block.indicator; i <= block.finishIndicator; i ++){
-                if (i == block.indicator){block.indicator = j; }
+            for (int i = block.ptrStart; i <= block.ptrFinish; i ++){
+                if (i == block.ptrStart){block.ptrStart = j; }
                 bytes[j] = bytes[i];
                 bytes[i] = 0;
-                if (i == block.finishIndicator){block.finishIndicator = block.indicator + block.sizeOfBlock - 1;}
+                if (i == block.ptrFinish){block.ptrFinish = block.ptrStart + block.sizeOfBlock - 1;}
                 j++;
             }
             sizeOfAlOccupied += block.sizeOfBlock;
         }
-        listFreeBlocks.clear();
-        Block blockLastOfListOccupied = listOccupiedBlocks.get(listOccupiedBlocks.size()-1);
-        listFreeBlocks.add(new Block(blockLastOfListOccupied.finishIndicator + 1,
-                maxHeapSize - sizeOfAlOccupied));
+        if (listOccupiedBlocks.size() > 0) {
+            listFreeBlocks.clear();
+            Block blockLastOfListOccupied = listOccupiedBlocks.get(listOccupiedBlocks.size() - 1);
+            listFreeBlocks.add(new Block(blockLastOfListOccupied.ptrFinish + 1,
+                    maxHeapSize - sizeOfAlOccupied));
+        }
     }
 
     public void getBytes(int ptr, byte[] bytes) {
@@ -158,128 +125,129 @@ public class Heap {
 
 
     private class Block{
-        int indicator;
+        int ptrStart;
         int sizeOfBlock;
-        int finishIndicator;
+        int ptrFinish;
 
 
 
 
         Block(int indicator, int sizeOfBlock){
-            this.indicator = indicator;
+            this.ptrStart = indicator;
             this.sizeOfBlock = sizeOfBlock;
-            this.finishIndicator = indicator + sizeOfBlock - 1;
+            this.ptrFinish = indicator + sizeOfBlock - 1;
         }
 
 
         @Override
         public String toString() {
             return "Block{" +
-                    "indicator=" + indicator +
+                    "indicator=" + ptrStart +
                     ", sizeOfBlock=" + sizeOfBlock +
-                    ", finishIndicator=" + finishIndicator +
+                    ", finishIndicator=" + ptrFinish +
                     '}';
         }
     }
 
 
-    public static void main(String[] args) throws OutOfMemoryException, InvalidPointerException {
-        Heap heap = new Heap(20);
-        System.out.println(heap.bytes.length);
-        System.out.println("REVISE MALLOC\n");
-        System.out.println("used method mooloc(5)");
-        heap.malloc(5);
-        System.out.println("Blocks of listFreeBlocks");
-        for (Block block: heap.listFreeBlocks) {
-            System.out.println(block.toString());
-        }
-        System.out.println("");
-
-        System.out.println("Blocks of listOccupiedBlocks");
-        for (Block block: heap.listOccupiedBlocks) {
-            System.out.println(block.toString());
-        }
-        System.out.println("\n");
-        System.out.println("used method mooloc(3)");
-        heap.malloc(3);
-        System.out.println("Blocks of listFreeBlocks");
-        for (Block block: heap.listFreeBlocks) {
-            System.out.println(block.toString());
-        }
-        System.out.println("");
-
-        System.out.println("Blocks of listOccupiedBlocks");
-        for (Block block: heap.listOccupiedBlocks) {
-            System.out.println(block.toString());
-        }
-        System.out.println("\n\n");
-
-        System.out.println("REVISE FREE\n\n");
-        //heap.free(10);
-        heap.free(0);
-        System.out.println("used method free(0)");
-        System.out.println("Blocks of listFreeBlocks");
-        for (Block block: heap.listFreeBlocks) {
-            System.out.println(block.toString());
-        }
-        System.out.println("");
-
-        System.out.println("Blocks of listOccupiedBlocks");
-        for (Block block: heap.listOccupiedBlocks) {
-            System.out.println(block.toString());
-        }
-        System.out.println("\n");
-
-        System.out.println("REVISE Defrag");
-        System.out.println("use methods free(5) and defrag. After that all blocks have to connect in one free block");
-        heap.free(5);
-        heap.defrag();
-        System.out.println("Blocks of listFreeBlocks");
-        for (Block block: heap.listFreeBlocks) {
-            System.out.println(block.toString());
-        }
-        System.out.println("");
-
-        System.out.println("Blocks of listOccupiedBlocks");
-        for (Block block: heap.listOccupiedBlocks) {
-            System.out.println(block.toString());
-        }
-        System.out.println("\n");
-
-        System.out.println("REVISE COMPACT");
-        heap.bytes = new byte[] {0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,2,2,2,0,0};
-        heap.malloc(5);
-        heap.malloc(5);
-        heap.malloc(5);
-        heap.malloc(3);
-        heap.free(0);
-        heap.free(10);
-        System.out.println("Before");
-        System.out.println("Blocks of listFreeBlocks");
-        for (Block block: heap.listFreeBlocks) {
-            System.out.println(block.toString());
-        }
-        System.out.println("");
-
-        System.out.println("Blocks of listOccupiedBlocks");
-        for (Block block: heap.listOccupiedBlocks) {
-            System.out.println(block.toString());
-        }
-        heap.compact();
-        System.out.println("After");
-        System.out.println("Blocks of listFreeBlocks");
-        for (Block block: heap.listFreeBlocks) {
-            System.out.println(block.toString());
-        }
-        System.out.println("");
-
-        System.out.println("Blocks of listOccupiedBlocks");
-        for (Block block: heap.listOccupiedBlocks) {
-            System.out.println(block.toString());
-        }
-        System.out.println(Arrays.toString(heap.bytes));
-
-
-
-    }
+//    public static void main(String[] args) throws OutOfMemoryException, InvalidPointerException {
+//        Heap heap = new Heap(20);
+//        System.out.println(heap.bytes[4]);
+//        System.out.println(heap.bytes.length);
+//        System.out.println("REVISE MALLOC\n");
+//        System.out.println("used method mooloc(5)");
+//        heap.malloc(5);
+//        System.out.println("Blocks of listFreeBlocks");
+//        for (Block block: heap.listFreeBlocks) {
+//            System.out.println(block.toString());
+//        }
+//        System.out.println("");
+//
+//        System.out.println("Blocks of listOccupiedBlocks");
+//        for (Block block: heap.listOccupiedBlocks) {
+//            System.out.println(block.toString());
+//        }
+//        System.out.println("\n");
+//        System.out.println("used method mooloc(3)");
+//        heap.malloc(3);
+//        System.out.println("Blocks of listFreeBlocks");
+//        for (Block block: heap.listFreeBlocks) {
+//            System.out.println(block.toString());
+//        }
+//        System.out.println("");
+//
+//        System.out.println("Blocks of listOccupiedBlocks");
+//        for (Block block: heap.listOccupiedBlocks) {
+//            System.out.println(block.toString());
+//        }
+//        System.out.println("\n\n");
+//
+//        System.out.println("REVISE FREE\n\n");
+//        //heap.free(10);
+//        heap.free(0);
+//        System.out.println("used method free(0)");
+//        System.out.println("Blocks of listFreeBlocks");
+//        for (Block block: heap.listFreeBlocks) {
+//            System.out.println(block.toString());
+//        }
+//        System.out.println("");
+//
+//        System.out.println("Blocks of listOccupiedBlocks");
+//        for (Block block: heap.listOccupiedBlocks) {
+//            System.out.println(block.toString());
+//        }
+//        System.out.println("\n");
+//
+//        System.out.println("REVISE Defrag");
+//        System.out.println("use methods free(5) and defrag. After that all blocks have to connect in one free block");
+//        heap.free(5);
+//        heap.defrag();
+//        System.out.println("Blocks of listFreeBlocks");
+//        for (Block block: heap.listFreeBlocks) {
+//            System.out.println(block.toString());
+//        }
+//        System.out.println("");
+//
+//        System.out.println("Blocks of listOccupiedBlocks");
+//        for (Block block: heap.listOccupiedBlocks) {
+//            System.out.println(block.toString());
+//        }
+//        System.out.println("\n");
+//
+//        System.out.println("REVISE COMPACT");
+//        heap.bytes = new byte[] {0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,2,2,2,0,0};
+//        heap.malloc(5);
+//        heap.malloc(5);
+//        heap.malloc(5);
+//        heap.malloc(3);
+//        heap.free(0);
+//        heap.free(10);
+//        System.out.println("Before");
+//        System.out.println("Blocks of listFreeBlocks");
+//        for (Block block: heap.listFreeBlocks) {
+//            System.out.println(block.toString());
+//        }
+//        System.out.println("");
+//
+//        System.out.println("Blocks of listOccupiedBlocks");
+//        for (Block block: heap.listOccupiedBlocks) {
+//            System.out.println(block.toString());
+//        }
+//        heap.compact();
+//        System.out.println("After");
+//        System.out.println("Blocks of listFreeBlocks");
+//        for (Block block: heap.listFreeBlocks) {
+//            System.out.println(block.toString());
+//        }
+//        System.out.println("");
+//
+//        System.out.println("Blocks of listOccupiedBlocks");
+//        for (Block block: heap.listOccupiedBlocks) {
+//            System.out.println(block.toString());
+//        }
+//        System.out.println(Arrays.toString(heap.bytes));
+//
+//
+//
+//    }
 }
