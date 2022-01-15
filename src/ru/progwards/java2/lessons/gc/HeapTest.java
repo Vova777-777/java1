@@ -92,8 +92,7 @@ public class HeapTest {
             allocated += size;
             count++;
             lstart = System.currentTimeMillis();
-            //if(forDefrag % 400 == 0) heap.defrag();//!!!!!!!!!!!!!!!!
-            if(forDefrag % 50 == 0) heap.compact();//!!!!!!!!!!!!!!!!
+            if(forDefrag % 300 == 0) heap.defrag();//!!!!!!!!!!!!!!!!
             forDefrag++;
             int ptr = heap.malloc(size);
             lstop = System.currentTimeMillis();
@@ -117,6 +116,7 @@ public class HeapTest {
             n = Math.abs(ThreadLocalRandom.current().nextInt()%100000);
             if (n==0)
                 System.out.println(maxSize-allocated);
+            blocks.clear();//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
         }
         long stop = System.currentTimeMillis();
         System.out.println("malloc time: "+allocTime+" free time: "+freeTime);
@@ -144,3 +144,18 @@ public class HeapTest {
 //malloc time: 2194 free time: 278816
 //total time: 281512 count: 4292447
 //we can look that malloc time became less but free time increase and total time increase, so every 300 only defrag optimal
+
+//before malloc defrag every 300 times and compact from malloc every 100000
+//malloc time: 23375 free time: 685550
+//total time: 709101 count: 3571916
+// worse than with only defrag
+
+//before malloc defrag every 300 times and compact from malloc every 150000
+//malloc time: 4732 free time: 705847
+//total time: 710925 count: 3568996
+// worse total time, better than before for malloc, because less times was running, but worse for free
+
+//before malloc defrag every 300 times and compact from malloc every 200000
+//malloc time: 12325 free time: 728205
+//total time: 740801 count: 3568509
+// worse total time, better than before for malloc, because less times was running, but worse for free

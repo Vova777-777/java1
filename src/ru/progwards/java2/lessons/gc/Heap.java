@@ -7,11 +7,10 @@ import java.util.*;
 public class Heap {
     int maxHeapSize;
     byte[] bytes;
+    static int countSkipCompact = 0;
 
     List<Block> listFreeBlocks = new ArrayList<>();
     List<Block> listOccupiedBlocks = new ArrayList<>();
-    static Queue<Block> queueDefrag = new ArrayDeque<>();
-
 
     Heap(int maxHeapSize){
         bytes = new byte[maxHeapSize];
@@ -27,7 +26,7 @@ public class Heap {
 
     int malloc(int size) throws OutOfMemoryException {
         int result = -1;
-        Queue queue = new ArrayDeque();
+
         ListIterator<Block> iterator = listFreeBlocks.listIterator();
         while (iterator.hasNext()){
             Block cleanBlock = iterator.next();
@@ -41,8 +40,17 @@ public class Heap {
                 //queue.add(creatingBlockClean);
                   listFreeBlocks.add(creatingBlockClean);
                 }
-                else iterator.remove();
-                result = blockWritten.ptrStart;
+                else {
+                    iterator.remove();
+                }
+                countSkipCompact ++;
+                if (countSkipCompact % 1500000 == 0){
+                    compact();
+                    result = listOccupiedBlocks.get(listOccupiedBlocks.size() - 1).ptrStart;
+                    countSkipCompact = 0;
+
+                }
+                else result = blockWritten.ptrStart;
                 break;
             }
         }
@@ -100,10 +108,10 @@ public class Heap {
     public void compact(){
         int sizeOfAlOccupied = 0;
        int j = 0;
-        listOccupiedBlocks.sort(Comparator.comparing(x -> x.ptrStart));
+        //listOccupiedBlocks.sort(Comparator.comparing(x -> x.ptrStart));
         for (Block block : listOccupiedBlocks) {
             for (int i = block.ptrStart; i <= block.ptrFinish; i ++){
-                if (i == block.ptrStart){block.ptrStart = j; }
+               // if (i == block.ptrStart){block.ptrStart = j; }
                 bytes[j] = bytes[i];
                 bytes[i] = 0;
                 if (i == block.ptrFinish){block.ptrFinish = block.ptrStart + block.sizeOfBlock - 1;}
