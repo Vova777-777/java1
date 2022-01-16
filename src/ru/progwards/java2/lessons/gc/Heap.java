@@ -8,6 +8,7 @@ public class Heap {
     int maxHeapSize;
     byte[] bytes;
     static int countSkipCompact = 0;
+    static int countSkipDefrag = 0;
 
     List<Block> listFreeBlocks = new ArrayList<>();
     List<Block> listOccupiedBlocks = new ArrayList<>();
@@ -19,6 +20,27 @@ public class Heap {
 
     }
 
+    public class Block{
+        int ptrStart;
+        int sizeOfBlock;
+        int ptrFinish;
+
+        Block(int indicator, int sizeOfBlock){
+            this.ptrStart = indicator;
+            this.sizeOfBlock = sizeOfBlock;
+            this.ptrFinish = indicator + sizeOfBlock - 1;
+        }
+
+        @Override
+        public String toString() {
+            return "Block{" +
+                    "indicator=" + ptrStart +
+                    ", sizeOfBlock=" + sizeOfBlock +
+                    ", finishIndicator=" + ptrFinish +
+                    '}';
+        }
+    }
+
 
     // Метод public int malloc(int size) - "размещает", т.е. помечает как занятый блок памяти с количеством ячеек
     // массива heap равным size. Соответственно это должен быть непрерывный блок (последовательность ячеек), которые на
@@ -26,7 +48,6 @@ public class Heap {
 
     int malloc(int size) throws OutOfMemoryException {
         int result = -1;
-
         ListIterator<Block> iterator = listFreeBlocks.listIterator();
         while (iterator.hasNext()){
             Block cleanBlock = iterator.next();
@@ -37,34 +58,28 @@ public class Heap {
                 Block creatingBlockClean = new Block(blockWritten.ptrFinish + 1, cleanBlock.sizeOfBlock -
                         size);
                 iterator.remove();
-                //queue.add(creatingBlockClean);
+
                   listFreeBlocks.add(creatingBlockClean);
                 }
                 else {
                     iterator.remove();
                 }
-                countSkipCompact ++;
-                if (countSkipCompact % 1500000 == 0){
-                    compact();
-                    result = listOccupiedBlocks.get(listOccupiedBlocks.size() - 1).ptrStart;
-                    countSkipCompact = 0;
-
-                }
-                else result = blockWritten.ptrStart;
+                result = blockWritten.ptrStart;
                 break;
             }
         }
-        //listFreeBlocks.addAll(queue);
         if (result < 0) throw new OutOfMemoryException("нет свободного блока подходящего размера");
         return result;
-
     }
+
+
 
     //Метод public void free(int ptr) - "удаляет", т.е. помечает как свободный блок памяти по "указателю". Проверять
     // валидность указателя - т.е. то, что он соответствует началу ранее выделенного блока, а не его середине,
     // или вообще, уже свободному.
 
     void free(int ptr) throws InvalidPointerException {
+//        runCompactFromOtherMethod(1);
         boolean validPtr = false;
         Iterator<Block> iterator = listOccupiedBlocks.iterator();
         while (iterator.hasNext()){
@@ -80,7 +95,7 @@ public class Heap {
                 + "если переданный указатель не является началом блока");
     }
 
-    public void defrag(){
+     public void defrag(){
         listFreeBlocks.sort(Comparator.comparing(x -> x.ptrStart));
         List<Block> listForRemove = new ArrayList<>();
         ListIterator<Block> iterator = listFreeBlocks.listIterator();
@@ -100,6 +115,13 @@ public class Heap {
         listFreeBlocks.removeAll(listForRemove);
     }
 
+    void runDefragFromOtherMethod (int frequencyRunning){
+        countSkipDefrag++;
+        if (countSkipDefrag % frequencyRunning != 0) return;
+        defrag();
+        countSkipDefrag =0;
+    }
+
     // Метод public void compact() - компактизация кучи - перенос всех занятых блоков в начало хипа, с копированием
     // самих данных - элементов массива. Для более точной имитации производительности копировать просто в цикле по
     // одному элементу, не используя System.arraycopy. Обязательно запускаем compact из malloc если не нашли блок
@@ -108,10 +130,11 @@ public class Heap {
     public void compact(){
         int sizeOfAlOccupied = 0;
        int j = 0;
-        //listOccupiedBlocks.sort(Comparator.comparing(x -> x.ptrStart));
+        listOccupiedBlocks.sort(Comparator.comparing(x -> x.ptrStart));
         for (Block block : listOccupiedBlocks) {
             for (int i = block.ptrStart; i <= block.ptrFinish; i ++){
-               // if (i == block.ptrStart){block.ptrStart = j; }
+               if (i == j) {j = j + block.sizeOfBlock; break;}
+               if (i == block.ptrStart){block.ptrStart = j; }
                 bytes[j] = bytes[i];
                 bytes[i] = 0;
                 if (i == block.ptrFinish){block.ptrFinish = block.ptrStart + block.sizeOfBlock - 1;}
@@ -127,6 +150,13 @@ public class Heap {
         }
     }
 
+     void runCompactFromOtherMethod (int frequencyRunning){
+        countSkipCompact++;
+        if (countSkipCompact % frequencyRunning != 0) return;
+        compact();
+        countSkipCompact =0;
+    }
+
     public void getBytes(int ptr, byte[] bytes) {
         System.arraycopy(this.bytes, ptr, bytes, 0, this.bytes.length);
     }
@@ -137,30 +167,7 @@ public class Heap {
 
 
 
-    private class Block{
-        int ptrStart;
-        int sizeOfBlock;
-        int ptrFinish;
 
-
-
-
-        Block(int indicator, int sizeOfBlock){
-            this.ptrStart = indicator;
-            this.sizeOfBlock = sizeOfBlock;
-            this.ptrFinish = indicator + sizeOfBlock - 1;
-        }
-
-
-        @Override
-        public String toString() {
-            return "Block{" +
-                    "indicator=" + ptrStart +
-                    ", sizeOfBlock=" + sizeOfBlock +
-                    ", finishIndicator=" + ptrFinish +
-                    '}';
-        }
-    }
 
 
     public static void main(String[] args) throws OutOfMemoryException, InvalidPointerException {
@@ -259,8 +266,6 @@ public class Heap {
             System.out.println(block.toString());
         }
         System.out.println(Arrays.toString(heap.bytes));
-
-
 
     }
 }

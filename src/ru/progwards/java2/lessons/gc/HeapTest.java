@@ -86,14 +86,14 @@ public class HeapTest {
 
         long start = System.currentTimeMillis();
         // alloc and free 30% random
-        while ((maxSize - allocated) > 50000) {
+        while ((maxSize - allocated) > 1700000000) {//50000
             long lstart, lstop;
             int size = getRandomSize();
             allocated += size;
             count++;
             lstart = System.currentTimeMillis();
-            if(forDefrag % 300 == 0) heap.defrag();//!!!!!!!!!!!!!!!!
-            forDefrag++;
+
+            heap.runDefragFromOtherMethod(300);//!!!!!!!!!!!!!!!!!!
             int ptr = heap.malloc(size);
             lstop = System.currentTimeMillis();
             allocTime += lstop-lstart;
@@ -111,51 +111,24 @@ public class HeapTest {
                     freeTime += lstop - lstart;
                     allocated -= block.sizeOfBlock;
                 }
-                //blocks.remove(n);
+//                blocks.remove(n);
+                blocks.clear();//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
             n = Math.abs(ThreadLocalRandom.current().nextInt()%100000);
             if (n==0)
                 System.out.println(maxSize-allocated);
-            blocks.clear();//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+
+//            for (Heap.Block block : heap.listOccupiedBlocks){//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//               blocks.add(new Block(block.ptrStart, block.sizeOfBlock));
+//            }
         }
         long stop = System.currentTimeMillis();
         System.out.println("malloc time: "+allocTime+" free time: "+freeTime);
         System.out.println("total time: "+(stop-start)+" count: "+count);
     }
 }
-//only malloc and free without defrag and compact
-//malloc time: 5525349 free time: 343329
-//total time: 5870021 count: 4284937
 
 
-//before malloc only defrag every 100 times
-//malloc time: 2694 free time: 272897
-//total time: 275813 count: 4279216
-
-//before malloc only defrag every 200 times
-//malloc time: 2470 free time: 265328
-//total time: 268120 count: 4312444
-
-//before malloc only defrag every 300 times
-//malloc time: 2404 free time: 257529
-//total time: 260251 count: 4287204
-
-//before malloc only defrag every 400 times
-//malloc time: 2194 free time: 278816
-//total time: 281512 count: 4292447
-//we can look that malloc time became less but free time increase and total time increase, so every 300 only defrag optimal
-
-//before malloc defrag every 300 times and compact from malloc every 100000
-//malloc time: 23375 free time: 685550
-//total time: 709101 count: 3571916
-// worse than with only defrag
-
-//before malloc defrag every 300 times and compact from malloc every 150000
-//malloc time: 4732 free time: 705847
-//total time: 710925 count: 3568996
-// worse total time, better than before for malloc, because less times was running, but worse for free
-
-//before malloc defrag every 300 times and compact from malloc every 200000
-//malloc time: 12325 free time: 728205
-//total time: 740801 count: 3568509
-// worse total time, better than before for malloc, because less times was running, but worse for free
+//defrag 300
+//malloc time: 47 free time: 44583
+//       total time: 44708 count: 510958
