@@ -5,8 +5,9 @@ package ru.progwards.java2.lessons.gc;
 //import ru.progwards.java2.lessons.gc_art.OutOfMemoryException;
 import ru.progwards.java2.lessons.gc.OutOfMemoryException;
 
-import java.util.ArrayDeque;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public class HeapTest {
     static final int maxSize = 1932735283;
@@ -81,46 +82,53 @@ public class HeapTest {
         int count = 0;
         int allocTime = 0;
         int freeTime = 0;
+        Random random = new Random();
 
 
 
         long start = System.currentTimeMillis();
         // alloc and free 30% random
-        while ((maxSize - allocated) > 1700000000) {//50000
+        while ((maxSize - allocated) > 1600000000) {//50000
             long lstart, lstop;
             int size = getRandomSize();
             allocated += size;
             count++;
             lstart = System.currentTimeMillis();
 
-            heap.runDefragFromOtherMethod(300);//!!!!!!!!!!!!!!!!!!
+           ;//!!!!!!!!!!!!!!!!!!
+            heap.runCompactFromOtherMethod(200000);
+            heap.runDefragFromOtherMethod(200000);
             int ptr = heap.malloc(size);
             lstop = System.currentTimeMillis();
             allocTime += lstop-lstart;
-            blocks.offer(new Block(ptr, size));
             int n = Math.abs(ThreadLocalRandom.current().nextInt()%25);
             if (n == 0) {
                 //n = Math.abs(ThreadLocalRandom.current().nextInt()%blocks.size());
-                for (int i=0; i<5; i++) {
-                    Block block = blocks.poll();
-                    if (block == null)
-                        break;
+                int countRandom;//создаем сдучайные номера ячеек для удаления из heap
+                if (heap.listOccupiedBlocks.isEmpty()) countRandom = 0;
+                else if (heap.listOccupiedBlocks.size() < 5) countRandom = heap.listOccupiedBlocks.size() - 1;
+                else countRandom = 5;
+                Set<Integer> set = new HashSet<>();
+                while(set.size() != countRandom) {
+                    int maxRandom = heap.listOccupiedBlocks.size() - 1;
+                    set.add(random.nextInt(maxRandom));
+                }
+                List<Integer> listNumberCell = new ArrayList<>(set);
+                Collections.sort(listNumberCell);
+                int number = 0;
+                while (!listNumberCell.isEmpty()) {
                     lstart = System.currentTimeMillis();
+                    Heap.Block block = heap.listOccupiedBlocks.get(listNumberCell.get(listNumberCell.size()-1));
+                    listNumberCell.remove(listNumberCell.size()-1);
                     heap.free(block.ptrStart);
                     lstop = System.currentTimeMillis();
                     freeTime += lstop - lstart;
                     allocated -= block.sizeOfBlock;
                 }
-//                blocks.remove(n);
-                blocks.clear();//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
             n = Math.abs(ThreadLocalRandom.current().nextInt()%100000);
             if (n==0)
                 System.out.println(maxSize-allocated);
-
-//            for (Heap.Block block : heap.listOccupiedBlocks){//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//               blocks.add(new Block(block.ptrStart, block.sizeOfBlock));
-//            }
         }
         long stop = System.currentTimeMillis();
         System.out.println("malloc time: "+allocTime+" free time: "+freeTime);
@@ -128,7 +136,55 @@ public class HeapTest {
     }
 }
 
+//    malloc time: 2392 free time: 44919
+//        total time: 47326 count: 740058
 
-//defrag 300
-//malloc time: 47 free time: 44583
-//       total time: 44708 count: 510958
+
+//defrag 500
+//malloc time: 2418 free time: 49500
+//        total time: 52043 count: 740421
+
+
+//defrag 10000
+//malloc time: 2324 free time: 45406
+//        total time: 47841 count: 740225
+
+//defrag 50000
+//malloc time: 1561 free time: 47340
+//        total time: 48996 count: 737343
+
+//defrag 100000
+//malloc time: 2341 free time: 45449
+//        total time: 47916 count: 737020
+
+
+//defrag 200000
+//    malloc time: 1915 free time: 43887
+//        total time: 45927 count: 734396
+
+//defrag 300000
+//malloc time: 1299 free time: 45450
+//        total time: 46783 count: 742143
+
+//defrag 400000
+//malloc time: 2666 free time: 45588
+//        total time: 48272 count: 742575
+
+
+//compact 100000
+//malloc time: 2137 free time: 49653
+//        total time: 51903 count: 732177
+
+
+//compact 200000
+//malloc time: 1476 free time: 51580
+//        total time: 53167 count: 738267
+
+
+//compact 200000
+//    malloc time: 1497 free time: 67146
+//        total time: 68692 count: 735089
+
+// defrag and compact every 200 000
+//    malloc time: 1526 free time: 51970
+//        total time: 53573 count: 735193
